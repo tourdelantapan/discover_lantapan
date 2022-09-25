@@ -1,53 +1,167 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+// To parse this JSON data, do
+//
+//     final directions = directionsFromJson(jsonString);
+
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:meta/meta.dart';
+import 'dart:convert';
+
+Directions directionsFromJson(String str) =>
+    Directions.fromJson(json.decode(str));
+
+String directionsToJson(Directions data) => json.encode(data.toJson());
 
 class Directions {
-  // final LatLngBounds bounds;
-  final List<PointLatLng> polylinePoints;
-  final String totalDistance;
-  final String totalDuration;
-  final List totalSteps;
+  Directions({
+    required this.routes,
+    required this.waypoints,
+    required this.code,
+    required this.uuid,
+  });
 
-  const Directions(
-      {
-      // required this.bounds,
-      required this.polylinePoints,
-      required this.totalDistance,
-      required this.totalDuration,
-      required this.totalSteps});
+  List<Route> routes;
+  List<Waypoint> waypoints;
+  String code;
+  String uuid;
 
-  factory Directions.fromMap(Map<String, dynamic> map) {
-    // Check if route is not available
-    // if((map['routes'] as List).isEmpty) return null;
+  factory Directions.fromJson(Map<String, dynamic> json) => Directions(
+        routes: List<Route>.from(json["routes"].map((x) => Route.fromJson(x))),
+        waypoints: List<Waypoint>.from(
+            json["waypoints"].map((x) => Waypoint.fromJson(x))),
+        code: json["code"],
+        uuid: json["uuid"],
+      );
 
-    // Get route information
-    final data = Map<String, dynamic>.from(map['routes'][0]);
+  Map<String, dynamic> toJson() => {
+        "routes": List<dynamic>.from(routes.map((x) => x.toJson())),
+        "waypoints": List<dynamic>.from(waypoints.map((x) => x.toJson())),
+        "code": code,
+        "uuid": uuid,
+      };
+}
 
-    //Bounds
-    final northeast = data['bounds']['northeast'];
-    final southwest = data['bounds']['southwest'];
-    final bounds = LatLngBounds(
-        southwest: LatLng(southwest['lat'], southwest['lng']),
-        northeast: LatLng(northeast['lat'], northeast['lng']));
+class Route {
+  Route({
+    required this.countryCrossed,
+    required this.weightName,
+    required this.weight,
+    required this.duration,
+    required this.distance,
+    required this.legs,
+    required this.geometry,
+  });
 
-    //Distance & Duration
-    String distance = '';
-    String duration = '';
-    if ((data['legs'] as List).isNotEmpty) {
-      final leg = data['legs'][0];
-      distance = leg['distance']['text'];
-      duration = leg['duration']['text'];
-    }
+  bool countryCrossed;
+  String weightName;
+  double weight;
+  double duration;
+  double distance;
+  List<Leg> legs;
+  List<PointLatLng> geometry;
 
-    return Directions(
-        polylinePoints: PolylinePoints()
-            .decodePolyline(data['overview_polyline']['points']),
-        totalDistance: distance,
-        totalDuration: duration,
-        totalSteps: data['legs'][0]['steps'] as List);
-  }
+  factory Route.fromJson(Map<String, dynamic> json) => Route(
+        countryCrossed: json["country_crossed"],
+        weightName: json["weight_name"],
+        weight: json["weight"].toDouble(),
+        duration: json["duration"].toDouble(),
+        distance: json["distance"].toDouble(),
+        legs: List<Leg>.from(json["legs"].map((x) => Leg.fromJson(x))),
+        geometry: PolylinePoints().decodePolyline(json["geometry"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "country_crossed": countryCrossed,
+        "weight_name": weightName,
+        "weight": weight,
+        "duration": duration,
+        "distance": distance,
+        "legs": List<dynamic>.from(legs.map((x) => x.toJson())),
+        "geometry": geometry,
+      };
+}
+
+class Leg {
+  Leg({
+    required this.viaWaypoints,
+    required this.admins,
+    required this.weight,
+    required this.duration,
+    required this.steps,
+    required this.distance,
+    required this.summary,
+  });
+
+  List<dynamic> viaWaypoints;
+  List<Admin> admins;
+  double weight;
+  double duration;
+  List<dynamic> steps;
+  double distance;
+  String summary;
+
+  factory Leg.fromJson(Map<String, dynamic> json) => Leg(
+        viaWaypoints: List<dynamic>.from(json["via_waypoints"].map((x) => x)),
+        admins: List<Admin>.from(json["admins"].map((x) => Admin.fromJson(x))),
+        weight: json["weight"].toDouble(),
+        duration: json["duration"].toDouble(),
+        steps: List<dynamic>.from(json["steps"].map((x) => x)),
+        distance: json["distance"].toDouble(),
+        summary: json["summary"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "via_waypoints": List<dynamic>.from(viaWaypoints.map((x) => x)),
+        "admins": List<dynamic>.from(admins.map((x) => x.toJson())),
+        "weight": weight,
+        "duration": duration,
+        "steps": List<dynamic>.from(steps.map((x) => x)),
+        "distance": distance,
+        "summary": summary,
+      };
+}
+
+class Admin {
+  Admin({
+    required this.iso31661Alpha3,
+    required this.iso31661,
+  });
+
+  String iso31661Alpha3;
+  String iso31661;
+
+  factory Admin.fromJson(Map<String, dynamic> json) => Admin(
+        iso31661Alpha3: json["iso_3166_1_alpha3"],
+        iso31661: json["iso_3166_1"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "iso_3166_1_alpha3": iso31661Alpha3,
+        "iso_3166_1": iso31661,
+      };
+}
+
+class Waypoint {
+  Waypoint({
+    required this.distance,
+    required this.name,
+    required this.location,
+  });
+
+  double distance;
+  String name;
+  List<double> location;
+
+  factory Waypoint.fromJson(Map<String, dynamic> json) => Waypoint(
+        distance: json["distance"].toDouble(),
+        name: json["name"],
+        location: List<double>.from(json["location"].map((x) => x.toDouble())),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "distance": distance,
+        "name": name,
+        "location": List<dynamic>.from(location.map((x) => x)),
+      };
 }
 
 // https://api.mapbox.com/directions/v5/mapbox/driving/125.017118%2C8.000077%3B125.148467%2C8.051715?alternatives=true&geometries=polyline&language=en&overview=simplified&steps=true&access_token=pk.eyJ1IjoidmlzaXRvdXIiLCJhIjoiY2ttYnd6Y21oMjVycjJvcXMxbjQzcHRmbSJ9.VAV4qSYSXfFYwiuCFYarTQ

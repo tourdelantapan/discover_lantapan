@@ -1,24 +1,50 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:app/models/directions_model.dart';
-import 'package:dio/dio.dart';
+import 'package:app/services/api_status.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class DirectionsRepository {
-  static const String _baseUrl =
-      'https://maps.googleapis.com/maps/api/directions/json?';
-
-  Future<Directions> getDirections({
-    required LatLng origin,
-    required LatLng dest,
+  static Future<Directions?> getDirections({
+    required LatLng location,
+    required LatLng destination,
   }) async {
-    final response = await Dio().get(_baseUrl, queryParameters: {
-      'origin': '${origin.latitude},${origin.longitude}',
-      'destination': '${dest.latitude},${dest.longitude}',
-      'key': "AIzaSyDTWLi_4rcmbPblZxSV9VETfoPvwI4tTHM"
+    String base_url = "https://api.mapbox.com/directions/v5/mapbox";
+    String routing_profile = "driving";
+    String point_one = "${location.longitude}%2C${location.latitude}";
+    String point_two = "${destination.longitude}%2C${destination.latitude}";
+    bool alternatives = true;
+    String geometries = "polyline";
+    String language = "en";
+    String overview = "simplified";
+    bool steps = false;
+    String access_token = dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? "";
+
+    String direction_url =
+        "${base_url}/${routing_profile}/${point_one}%3B${point_two}";
+
+    var url = Uri.parse(direction_url).replace(queryParameters: {
+      "alternatives": alternatives.toString(),
+      "geometries": geometries,
+      "language": language,
+      "overview": overview,
+      "steps": steps.toString(),
+      "access_token": access_token
     });
 
+    var response = await http.get(url, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
+
+    print(response.body);
+
     if (response.statusCode == 200) {
-      return Directions.fromMap(response.data);
+      return Directions.fromJson(jsonDecode(response.body));
+    } else {
+      return null;
     }
-    return Future.error("An error occurred");
   }
 }

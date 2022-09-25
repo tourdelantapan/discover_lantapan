@@ -15,7 +15,7 @@ class AppProvider extends ChangeNotifier {
   //     {required Map<String, dynamic> credentials,
   //     required Function callback}) async {
   //   setLoading("login");
-  //   var response =
+  //   var response =di
   //       await APIServices.post(endpoint: "/login", payload: credentials);
   //   if (response is Success) {
   //     setLoading("stop");

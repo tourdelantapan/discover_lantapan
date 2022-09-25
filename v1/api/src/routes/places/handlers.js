@@ -108,8 +108,6 @@ internals.place_info = async (req, reply) => {
       place.isLiked = isLiked > 0;
     }
 
-    console.log(place);
-
     return reply
       .response({
         message: "Place fetched successfully",

@@ -32,7 +32,7 @@ class LocationProvider extends ChangeNotifier {
   List<LatLng> polylineCoordinates = [];
   List<String> stepsInstructions = [];
 
-  double _distance = 39.3;
+  double _distance = 0;
   double get distance => _distance;
   double _liters = 0;
   double get liters => _liters;
@@ -48,7 +48,8 @@ class LocationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  calculateGasFuelPrice() {
+  calculateGasFuelPrice({required double distanceByMeters}) {
+    _distance = distanceByMeters / 1000;
     _liters = _distance / 12.5;
     _fuelPrice = _liters * 74.20;
   }
@@ -84,28 +85,29 @@ class LocationProvider extends ChangeNotifier {
       onTap: () {},
     );
     markers[locationMarkerId] = locationMarker;
-    calculateGasFuelPrice();
     notifyListeners();
+    _getPolyline();
   }
 
   _getPolyline() async {
     LatLng origin = _coordinates;
     LatLng dest = _destination.coordinates;
-    Directions direction =
-        await DirectionsRepository().getDirections(origin: origin, dest: dest);
+    Directions? direction = await DirectionsRepository.getDirections(
+        location: origin, destination: dest);
     if (direction != null) {
       info = direction;
-      notifyListeners();
+      calculateGasFuelPrice(distanceByMeters: direction.routes[0].distance);
       polylineCoordinates.clear();
-      direction.polylinePoints.forEach((PointLatLng point) {
+      direction.routes[0].geometry.forEach((PointLatLng point) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       });
-    }
+      notifyListeners();
 
-    _addPolyLine(info!);
+      _addPolyLine();
+    }
   }
 
-  _addPolyLine(Directions info) {
+  _addPolyLine() {
     PolylineId id = PolylineId("poly");
     Polyline polyline = Polyline(
         polylineId: id,
@@ -115,10 +117,10 @@ class LocationProvider extends ChangeNotifier {
     polylines.add(polyline);
 
     stepsInstructions = [];
-    for (int i = 0; i <= info.totalSteps.length; i++) {
-      stepsInstructions.add(removeAllHtmlTags(
-          info.totalSteps[i]['html_instructions'].toString()));
-    }
+    // for (int i = 0; i <= info.totalSteps.length; i++) {
+    //   stepsInstructions.add(removeAllHtmlTags(
+    //       info.totalSteps[i]['html_instructions'].toString()));
+    // }
   }
 
   String removeAllHtmlTags(String htmlText) {

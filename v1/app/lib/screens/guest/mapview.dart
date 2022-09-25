@@ -171,7 +171,7 @@ class _MapViewState extends State<MapView> {
                 ),
                 Details(
                   label: "Trip Distance",
-                  value: "${locationProvider.distance}km",
+                  value: "${locationProvider.distance.toStringAsFixed(2)}km",
                   measurement: "Kilometers(km)",
                   iconAsset: 'assets/images/distance.png',
                 ),
@@ -190,7 +190,7 @@ class _MapViewState extends State<MapView> {
                 ),
                 Details(
                   label: "Gas Fuel Price",
-                  value: "₱${locationProvider.fuelPrice}",
+                  value: "₱${locationProvider.fuelPrice.toStringAsFixed(2)}",
                   measurement: "₱74.20 per Liter",
                   iconAsset: 'assets/images/price.png',
                 ),
@@ -303,10 +303,16 @@ class _SelectLocationState extends State<SelectLocation> {
               'Location permissions are permanently denied, we cannot request permissions.');
     }
     var res = await Geolocator.getCurrentPosition();
+    double tempLat = 8.042233792899466;
+    double tempLong = 125.15568791362584;
+    // THIS IS JUST TEMPORARY
+    // mapController?.animateCamera(CameraUpdate.newCameraPosition(
+    //     CameraPosition(target: LatLng(res.latitude, res.latitude), zoom: 17)));
+    // setMarker(LatLng(res.latitude, res.latitude));
     mapController?.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(res.latitude, res.latitude), zoom: 17)));
+        CameraPosition(target: LatLng(tempLat, tempLong), zoom: mapZoom)));
+    setMarker(LatLng(tempLat, tempLong));
     setState(() => detectingLocation = false);
-    setMarker(LatLng(res.latitude, res.latitude));
   }
 
   @override
@@ -336,8 +342,6 @@ class _SelectLocationState extends State<SelectLocation> {
 
     List<Placemark> placemarks =
         await placemarkFromCoordinates(pos.latitude, pos.longitude);
-    // print(pos);
-    // print(placemarks);
     setState(() => address =
         "${placemarks[0].street}${placemarks[0].street!.isEmpty ? "" : ","} ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].administrativeArea}");
   }
@@ -346,7 +350,7 @@ class _SelectLocationState extends State<SelectLocation> {
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     return Scaffold(
-      body: Column(children: [
+      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Expanded(
             child: GoogleMap(
           onLongPress: (pos) => setMarker(pos),
@@ -368,16 +372,16 @@ class _SelectLocationState extends State<SelectLocation> {
             color: Colors.black,
             fontWeight: FontWeight.normal,
             label: "Your Location"),
-        IconText(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            mainAxisAlignment: MainAxisAlignment.start,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            label: address.isNotEmpty
-                ? address.trim()
-                : detectingLocation
-                    ? "Detecting location..."
-                    : "Select Location"),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Text(
+              address.isNotEmpty
+                  ? address.trim()
+                  : detectingLocation
+                      ? "Detecting location..."
+                      : "Select Location",
+              style: const TextStyle(fontWeight: FontWeight.bold)),
+        ),
         const SizedBox(
           height: 15,
         ),
@@ -394,7 +398,7 @@ class _SelectLocationState extends State<SelectLocation> {
                     message: "No location yet.");
                 return;
               }
-          
+
               Provider.of<LocationProvider>(context, listen: false)
                   .setCoordinates(coordinates!, address);
               Navigator.pop(context);
