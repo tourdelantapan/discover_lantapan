@@ -205,7 +205,10 @@ class _PlaceInfoState extends State<PlaceInfo> {
                       Provider.of<LocationProvider>(context, listen: false)
                           .setDestination(placeProvider.placeInfo);
                       Navigator.pushNamed(context, "/mapview");
-                    })
+                    }),
+                const SizedBox(
+                  height: 20,
+                ),
               ],
             ),
     );

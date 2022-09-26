@@ -350,7 +350,7 @@ class _SelectLocationState extends State<SelectLocation> {
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     return Scaffold(
-      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      body: Column(children: [
         Expanded(
             child: GoogleMap(
           onLongPress: (pos) => setMarker(pos),

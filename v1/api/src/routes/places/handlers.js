@@ -5,7 +5,7 @@ const Place = require("../../database/models/Place");
 const Favorite = require("../../database/models/Favorite");
 
 internals.places = async (req, reply) => {
-  let userId = req.auth.credentials._id;
+  let userId = req.auth.credentials?._id;
 
   try {
     let query = [
@@ -83,7 +83,7 @@ internals.places = async (req, reply) => {
 };
 
 internals.place_info = async (req, reply) => {
-  let userId = req.auth.credentials._id;
+  let userId = req.auth.credentials?._id;
 
   try {
     let _place = await Place.findOne({
