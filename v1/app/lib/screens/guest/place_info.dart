@@ -86,9 +86,11 @@ class _PlaceInfoState extends State<PlaceInfo> {
                     items: List.generate(
                         placeProvider.placeInfo.photos.isNotEmpty
                             ? placeProvider.placeInfo.photos.length
-                            : [Photo(medium: placeholderImage)].length,
+                            : 1,
                         (index) => ImageCarousel(
-                              photo: placeProvider.placeInfo.photos[index],
+                              photo: placeProvider.placeInfo.photos.isNotEmpty
+                                  ? placeProvider.placeInfo.photos[index]
+                                  : Photo(medium: placeholderImage),
                               onPress: () => openImageViewer(context, index),
                             )),
                     options: CarouselOptions(
