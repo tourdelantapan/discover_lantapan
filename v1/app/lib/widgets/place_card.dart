@@ -64,8 +64,8 @@ class PlaceCard extends StatelessWidget {
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color.fromARGB(108, 0, 0, 0),
-                            Color.fromARGB(17, 0, 0, 0)
+                            Color.fromARGB(158, 0, 0, 0),
+                            Color.fromARGB(30, 0, 0, 0)
                           ],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,

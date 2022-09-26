@@ -2,6 +2,7 @@ import 'package:app/models/photo_model.dart';
 import 'package:app/provider/location_provider.dart';
 import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/user_provider.dart';
+import 'package:app/screens/image-viewer.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/action_modal.dart';
 import 'package:app/widgets/button.dart';
@@ -43,8 +44,29 @@ class _PlaceInfoState extends State<PlaceInfo> {
 
   @override
   Widget build(BuildContext context) {
+    int index = -1;
     PlaceProvider placeProvider = context.watch<PlaceProvider>();
     UserProvider userProvider = context.watch<UserProvider>();
+
+    void openImageViewer(BuildContext context, final int index) {
+      if (placeProvider.placeInfo.photos.isEmpty) {
+        return;
+      }
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GalleryPhotoViewWrapper(
+            galleryItems: placeProvider.placeInfo.photos,
+            backgroundDecoration: const BoxDecoration(
+              color: Colors.black,
+            ),
+            initialIndex: index,
+            scrollDirection: Axis.horizontal,
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -57,17 +79,23 @@ class _PlaceInfoState extends State<PlaceInfo> {
           ? const PlaceInfoShimmer()
           : ListView(
               children: [
+                const SizedBox(
+                  height: 20,
+                ),
                 CarouselSlider(
-                    items: ([Photo(small: placeholderImage)]
-                        .map((item) => ImageCarousel(
-                              photo: item,
-                              onPress: () {},
-                            ))
-                        .toList()),
+                    items: List.generate(
+                        placeProvider.placeInfo.photos.isNotEmpty
+                            ? placeProvider.placeInfo.photos.length
+                            : [Photo(medium: placeholderImage)].length,
+                        (index) => ImageCarousel(
+                              photo: placeProvider.placeInfo.photos[index],
+                              onPress: () => openImageViewer(context, index),
+                            )),
                     options: CarouselOptions(
+                      enableInfiniteScroll: false,
                       aspectRatio: 1,
                       autoPlay: true,
-                      // enlargeCenterPage: true,
+                      enlargeCenterPage: true,
                       pageViewKey:
                           const PageStorageKey<String>('carousel_slider'),
                     )),

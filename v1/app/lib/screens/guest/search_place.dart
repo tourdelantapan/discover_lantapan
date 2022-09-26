@@ -87,6 +87,9 @@ class SearchPlace extends StatelessWidget {
                     itemBuilder: (BuildContext context, int index) {
                       Place place = placeProvider.searchResult[index];
                       return PlaceCard(
+                          photoUrl: place.photos.isNotEmpty
+                              ? place.photos[0].small
+                              : placeholderImage,
                           onPress: () {
                             Navigator.pushNamed(context, "/place/info",
                                 arguments: {"placeId": place.id});

@@ -138,11 +138,15 @@ class _MapViewState extends State<MapView> {
                         child: Row(children: [
                           ClipRRect(
                               borderRadius: BorderRadius.circular(100),
-                              child: const Image(
+                              child: Image(
                                   width: 40,
                                   height: 40,
                                   fit: BoxFit.cover,
-                                  image: NetworkImage(placeholderImage))),
+                                  image: NetworkImage(locationProvider
+                                          .destination.photos.isNotEmpty
+                                      ? locationProvider
+                                          .destination.photos[0].small!
+                                      : placeholderImage))),
                           const SizedBox(
                             width: 10,
                           ),

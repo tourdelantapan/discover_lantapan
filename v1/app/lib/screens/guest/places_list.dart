@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:app/models/place_model.dart';
 import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/user_provider.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/grid_count.dart';
 import 'package:app/widgets/action_modal.dart';
 import 'package:app/widgets/icon_text.dart';
@@ -96,6 +97,9 @@ class _PlacesListState extends State<PlacesList> {
                     }
 
                     return PlaceCard(
+                        photoUrl: place.photos.isNotEmpty
+                            ? place.photos[0].small
+                            : placeholderImage,
                         onPress: () {
                           Navigator.pushNamed(context, "/place/info",
                               arguments: {"placeId": place.id});

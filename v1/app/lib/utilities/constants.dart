@@ -8,6 +8,6 @@ String BASE_URL = IS_PODUCTION ? "WALA_PA" : dotenv.env['BASE_URL_LOCAL'] ?? "";
 
 const double HORIZONTAL_PADDING = 15.0;
 const String placeholderImage =
-    "https://i0.wp.com/joansfootprints.com/wp-content/uploads/2022/01/IMG_20200229_064250-2.jpg?resize=1000%2C750&ssl=1";
+    "https://dpointernational.com/wp-content/uploads/2015/12/placeholder-image.jpg";
 
 double mapZoom = 15;

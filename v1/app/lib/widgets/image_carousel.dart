@@ -10,12 +10,11 @@ class ImageCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // margin: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(0),
+        borderRadius: BorderRadius.circular(15),
         image: DecorationImage(
-          image: NetworkImage(photo.small ?? ""),
+          image: NetworkImage(photo.medium ?? ""),
           fit: BoxFit.cover,
         ),
       ),
