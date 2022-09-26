@@ -349,63 +349,62 @@ class _SelectLocationState extends State<SelectLocation> {
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
-    return Scaffold(
-      body: Column(children: [
-        Expanded(
-            child: GoogleMap(
-          onLongPress: (pos) => setMarker(pos),
-          mapType: MapType.normal,
-          initialCameraPosition: _kGooglePlex,
-          markers: Set<Marker>.of(markers.values),
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-            mapController = controller;
-          },
-        )),
-        if (detectingLocation) const LinearProgressIndicator(),
-        const SizedBox(
-          height: 15,
-        ),
-        IconText(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            mainAxisAlignment: MainAxisAlignment.start,
-            color: Colors.black,
-            fontWeight: FontWeight.normal,
-            label: "Your Location"),
-        Padding(
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      if (detectingLocation) const LinearProgressIndicator(),
+      const SizedBox(
+        height: 15,
+      ),
+      IconText(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Text(
-              address.isNotEmpty
-                  ? address.trim()
-                  : detectingLocation
-                      ? "Detecting location..."
-                      : "Select Location",
-              style: const TextStyle(fontWeight: FontWeight.bold)),
-        ),
-        const SizedBox(
-          height: 15,
-        ),
-        Button(
-            backgroundColor: Colors.black87,
-            borderColor: Colors.transparent,
-            margin: const EdgeInsets.symmetric(horizontal: 15),
-            label: "Select Location",
-            onPress: () {
-              if (coordinates == null) {
-                launchSnackbar(
-                    context: context,
-                    mode: "ERROR",
-                    message: "No location yet.");
-                return;
-              }
+          mainAxisAlignment: MainAxisAlignment.start,
+          color: Colors.black,
+          fontWeight: FontWeight.normal,
+          label: "Your Location"),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Text(
+            address.isNotEmpty
+                ? address.trim()
+                : detectingLocation
+                    ? "Detecting location..."
+                    : "Select Location",
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+      ),
+      const SizedBox(
+        height: 15,
+      ),
+      Button(
+          backgroundColor: Colors.black87,
+          borderColor: Colors.transparent,
+          margin: const EdgeInsets.symmetric(horizontal: 15),
+          label: "Select Location",
+          onPress: () {
+            if (coordinates == null) {
+              launchSnackbar(
+                  context: context, mode: "ERROR", message: "No location yet.");
+              return;
+            }
 
-              Provider.of<LocationProvider>(context, listen: false)
-                  .setCoordinates(coordinates!, address);
-              Navigator.pop(context);
-            }),
-        SizedBox(height: bottomPadding == 0.0 ? 20 : bottomPadding + 10)
-      ]),
-    );
+            Provider.of<LocationProvider>(context, listen: false)
+                .setCoordinates(coordinates!, address);
+            Navigator.pop(context);
+          }),
+      const SizedBox(
+        height: 15,
+      ),
+      Expanded(
+          child: GoogleMap(
+        key: const Key("Yuh"),
+        onLongPress: (pos) => setMarker(pos),
+        mapType: MapType.normal,
+        initialCameraPosition: _kGooglePlex,
+        markers: Set<Marker>.of(markers.values),
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+          mapController = controller;
+        },
+      )),
+    ]);
   }
 }
 
