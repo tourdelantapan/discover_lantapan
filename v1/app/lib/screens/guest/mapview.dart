@@ -60,7 +60,12 @@ class _MapViewState extends State<MapView> {
                           return Modal(
                               title: "Long press to pin your location",
                               heightInPercentage: .9,
-                              content: SelectLocation());
+                              content: SelectLocation(
+                                  onSelectLocation: (coordinates, address) {
+                                Provider.of<LocationProvider>(context,
+                                        listen: false)
+                                    .setCoordinates(coordinates, address);
+                              }));
                         });
                       });
                 },
@@ -255,7 +260,8 @@ class Details extends StatelessWidget {
 }
 
 class SelectLocation extends StatefulWidget {
-  SelectLocation({Key? key}) : super(key: key);
+  Function onSelectLocation;
+  SelectLocation({Key? key, required this.onSelectLocation}) : super(key: key);
 
   @override
   State<SelectLocation> createState() => _SelectLocationState();
@@ -307,15 +313,15 @@ class _SelectLocationState extends State<SelectLocation> {
               'Location permissions are permanently denied, we cannot request permissions.');
     }
     var res = await Geolocator.getCurrentPosition();
-    double tempLat = 8.042233792899466;
-    double tempLong = 125.15568791362584;
+    // double tempLat = 8.042233792899466;
+    // double tempLong = 125.15568791362584;
     // THIS IS JUST TEMPORARY
     // mapController?.animateCamera(CameraUpdate.newCameraPosition(
-    //     CameraPosition(target: LatLng(res.latitude, res.latitude), zoom: 17)));
-    // setMarker(LatLng(res.latitude, res.latitude));
+    //     CameraPosition(target: LatLng(tempLat, tempLong), zoom: mapZoom)));
+    // setMarker(LatLng(tempLat, tempLong));
     mapController?.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(tempLat, tempLong), zoom: mapZoom)));
-    setMarker(LatLng(tempLat, tempLong));
+        CameraPosition(target: LatLng(res.latitude, res.latitude), zoom: 17)));
+    setMarker(LatLng(res.latitude, res.latitude));
     setState(() => detectingLocation = false);
   }
 
@@ -347,7 +353,7 @@ class _SelectLocationState extends State<SelectLocation> {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(pos.latitude, pos.longitude);
     setState(() => address =
-        "${placemarks[0].street}${placemarks[0].street!.isEmpty ? "" : ","} ${placemarks[0].subLocality}, ${placemarks[0].locality}, ${placemarks[0].administrativeArea}");
+        "${placemarks[0].street}${placemarks[0].street!.isEmpty ? "" : ","} ${placemarks[0].subLocality}${placemarks[0].subLocality!.isEmpty ? "" : ","}${placemarks[0].locality}, ${placemarks[0].administrativeArea}");
   }
 
   @override
@@ -389,8 +395,7 @@ class _SelectLocationState extends State<SelectLocation> {
               return;
             }
 
-            Provider.of<LocationProvider>(context, listen: false)
-                .setCoordinates(coordinates!, address);
+            widget.onSelectLocation(coordinates, address);
             Navigator.pop(context);
           }),
       const SizedBox(

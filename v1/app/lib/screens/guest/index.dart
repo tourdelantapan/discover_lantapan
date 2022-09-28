@@ -54,6 +54,13 @@ class _GuestState extends State<Guest> {
         elevation: .5,
         title: const Text("Discover Lantapan"),
         actions: [
+          if (userProvider.currentUser != null &&
+              userProvider.currentUser!.scope.contains("ADMIN"))
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/admin');
+                },
+                icon: const Icon(Icons.switch_account_rounded)),
           IconButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/search/place');

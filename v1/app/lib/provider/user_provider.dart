@@ -45,8 +45,10 @@ class UserProvider extends ChangeNotifier {
     if (response is Success) {
       setLoading("stop");
       setToken(response.response["data"]["accessToken"]);
-      setCurrentUser(User.fromJson(response.response["data"]));
-      callback(response.code, response.response["message"] ?? "Success.");
+      User user = User.fromJson(response.response["data"]);
+      setCurrentUser(user);
+      callback(response.code, response.response["message"] ?? "Success.",
+          user.scope);
     }
     if (response is Failure) {
       setLoading("stop");

@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:io';
+
 import 'package:app/models/place_model.dart';
 import 'package:app/services/api_services.dart';
 import 'package:app/services/api_status.dart';
@@ -20,6 +22,9 @@ class PlaceProvider extends ChangeNotifier {
 
   List<Place> _searchResult = [];
   List<Place> get searchResult => _searchResult;
+
+  List<Place> _adminPlaces = [];
+  List<Place> get adminPlaces => _adminPlaces;
 
   Place _placeInfo = placeNoData;
   Place get placeInfo => _placeInfo;
@@ -53,6 +58,9 @@ class PlaceProvider extends ChangeNotifier {
       if (query["mode"] == "search") {
         _searchResult = places;
       }
+      if (query["mode"] == "admin") {
+        _adminPlaces = places;
+      }
       removeLoading(query["mode"]);
       notifyListeners();
       callback(response.code, response.response["message"] ?? "Success.");
@@ -60,6 +68,25 @@ class PlaceProvider extends ChangeNotifier {
     if (response is Failure) {
       callback(response.code, response.response["message"] ?? "Failed.");
       removeLoading(query["mode"]);
+    }
+  }
+
+  addPlace(
+      {required Map<String, dynamic> payload,
+      required List<File> files,
+      required Function callback}) async {
+    addLoading("place-add");
+    await Future.delayed(const Duration(seconds: 1));
+    var response = await APIServices.post(
+        endpoint: "/place/add", payload: payload, files: files);
+    if (response is Success) {
+      removeLoading("place-add");
+      notifyListeners();
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      callback(response.code, response.response["message"] ?? "Failed.");
+      removeLoading("place-add");
     }
   }
 

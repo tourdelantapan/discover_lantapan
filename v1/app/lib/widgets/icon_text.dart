@@ -39,7 +39,7 @@ class IconText extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius ?? 0)),
       padding: padding ?? const EdgeInsets.all(0),
       child: Row(
-          mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.center,
+          mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
           children: [
             if (icon != null)
               Icon(

@@ -4,6 +4,7 @@ import 'package:app/services/api_status.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class APIServices {
   static Future<Object> get(
@@ -32,16 +33,35 @@ class APIServices {
   }
 
   static Future<Object> post(
-      {required String endpoint, required Map<String, dynamic> payload}) async {
+      {required String endpoint,
+      required Map<String, dynamic> payload,
+      List<File>? files}) async {
     try {
       String token = await getToken();
       var url = Uri.parse("$BASE_URL$endpoint");
 
-      var response = await http
-          .post(url, body: jsonEncode(payload), headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      });
+      var response;
+
+      if (files == null) {
+        response = await http
+            .post(url, body: jsonEncode(payload), headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        });
+      } else {
+        var request = http.MultipartRequest("POST", url);
+        request.headers['Authorization'] = 'Bearer $token';
+        payload.forEach((key, value) {
+          request.fields[key] = value.toString();
+        });
+        files.forEach((e) {
+          request.files.add(http.MultipartFile.fromBytes(
+              'photos', e.readAsBytesSync(),
+              filename: e.path.split("/").last,
+              contentType: MediaType('image', 'jpeg')));
+        });
+        response = await http.Response.fromStream(await request.send());
+      }
 
       if (response.statusCode == 200) {
         return Success(code: 200, response: jsonDecode(response.body));
@@ -54,6 +74,7 @@ class APIServices {
     } on FormatException {
       return Failure(code: 102, response: {"message": 'Invalid Format'});
     } catch (e) {
+      print("API SERVICE ERROR");
       print(e);
       return Failure(code: 103, response: {"message": 'Unknown Error'});
     }

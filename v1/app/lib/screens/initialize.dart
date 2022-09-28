@@ -52,12 +52,14 @@ class _InitializeScreenState extends State<InitializeScreen> {
             height: 15,
           ),
           IconText(
+            mainAxisAlignment: MainAxisAlignment.center,
             label: "Tradisyon Hu Katatao",
             color: Colors.black,
             fontWeight: FontWeight.bold,
             size: 20,
           ),
           IconText(
+            mainAxisAlignment: MainAxisAlignment.center,
             label: "A Tradition Of Excellence",
             color: Colors.black,
           ),

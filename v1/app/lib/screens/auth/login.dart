@@ -1,5 +1,7 @@
 import 'package:app/provider/user_provider.dart';
+import 'package:app/utilities/shared_preferences.dart';
 import 'package:app/widgets/button.dart';
+import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +73,7 @@ class _LoginState extends State<Login> {
                     if (_formKey.currentState!.validate()) {
                       Provider.of<UserProvider>(context, listen: false).login(
                           payload: payload,
-                          callback: (code, message) {
+                          callback: (code, message, scope) {
                             if (code != 200) {
                               launchSnackbar(
                                   context: context,
@@ -79,8 +81,10 @@ class _LoginState extends State<Login> {
                                   message: message ?? "Error!");
                               return;
                             }
+
                             Navigator.pushNamedAndRemoveUntil(
                                 context, "/guest", (route) => false);
+                            return;
                           });
                     }
                   },

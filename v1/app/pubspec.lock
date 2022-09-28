@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.2"
+  badges:
+    dependency: transitive
+    description:
+      name: badges
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.3"
   boolean_selector:
     dependency: transitive
     description:
@@ -64,6 +71,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.6"
+  easy_sidemenu:
+    dependency: "direct main"
+    description:
+      name: easy_sidemenu
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
   fake_async:
     dependency: transitive
     description:
@@ -85,6 +99,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.1.4"
+  file_picker:
+    dependency: "direct main"
+    description:
+      name: file_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.2.0+1"
   flinq:
     dependency: transitive
     description:
@@ -255,7 +276,7 @@ packages:
     source: hosted
     version: "0.13.5"
   http_parser:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http_parser
       url: "https://pub.dartlang.org"

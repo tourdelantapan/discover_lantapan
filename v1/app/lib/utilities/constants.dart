@@ -4,7 +4,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 const bool IS_PODUCTION = false;
 
-String BASE_URL = IS_PODUCTION ? "WALA_PA" : dotenv.env['BASE_URL_LOCAL'] ?? "";
+String BASE_URL = IS_PODUCTION
+    ? dotenv.env['BASE_URL_PRODUCTION'] ?? ""
+    : dotenv.env['BASE_URL_LOCAL'] ?? "";
 
 const double HORIZONTAL_PADDING = 15.0;
 const String placeholderImage =

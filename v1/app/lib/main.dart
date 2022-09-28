@@ -1,13 +1,19 @@
 import 'package:app/provider/place_provider.dart';
+import 'package:app/provider/review_provider.dart';
 import 'package:app/provider/user_provider.dart';
 import 'package:app/utilities/route_generator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'provider/app_provider.dart';
 import 'provider/location_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent, // transparent status bar
+  ));
   await dotenv.load(fileName: "dotenv");
   runApp(const MyApp());
 }
@@ -23,6 +29,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => LocationProvider()),
           ChangeNotifierProvider(create: (_) => PlaceProvider()),
           ChangeNotifierProvider(create: (_) => UserProvider()),
+          ChangeNotifierProvider(create: (_) => ReviewProvider()),
         ],
         child: MaterialApp(
           title: 'Discover Lantapan',

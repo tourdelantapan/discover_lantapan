@@ -77,8 +77,9 @@ class _PlaceInfoState extends State<PlaceInfo> {
       ),
       body: placeProvider.loading.contains("place-info")
           ? const PlaceInfoShimmer()
-          : ListView(
-              children: [
+          : Column(children: [
+              Expanded(
+                  child: ListView(children: [
                 const SizedBox(
                   height: 20,
                 ),
@@ -225,22 +226,81 @@ class _PlaceInfoState extends State<PlaceInfo> {
                 const SizedBox(
                   height: 20,
                 ),
-                Button(
-                    borderColor: Colors.transparent,
-                    backgroundColor: Colors.black,
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: HORIZONTAL_PADDING),
-                    label: "Show on Map",
-                    onPress: () {
-                      Provider.of<LocationProvider>(context, listen: false)
-                          .setDestination(placeProvider.placeInfo);
-                      Navigator.pushNamed(context, "/mapview");
-                    }),
-                const SizedBox(
-                  height: 20,
+              ])),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(.5),
+                      offset: const Offset(0.0, .5), //(x,y)
+                      blurRadius: 10.0,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+                padding: EdgeInsets.only(
+                    left: 10,
+                    right: 10,
+                    top: 10,
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+                child: Row(
+                  children: [
+                    Button(
+                        borderColor: Colors.transparent,
+                        backgroundColor: Colors.blue[700],
+                        icon: Icons.reviews_rounded,
+                        label: "Add Review",
+                        onPress: () {
+                          if (userProvider.currentUser == null) {
+                            showModalBottomSheet(
+                                context: context,
+                                isDismissible: false,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) {
+                                  return StatefulBuilder(builder:
+                                      (BuildContext newContext,
+                                          StateSetter setModalState) {
+                                    return ActionModal(
+                                      isLoading: true,
+                                      title: "Account Required.",
+                                      subTitle:
+                                          "This action requires an account.",
+                                      confirmAction: "Log In/SignUp",
+                                      callback: (action) {
+                                        if (action != "Log In/SignUp") {
+                                          return;
+                                        }
+                                        Navigator.pushNamed(context, "/auth");
+                                      },
+                                    );
+                                  });
+                                });
+                            return;
+                          }
+
+                          Navigator.pushNamed(context, "/review/add");
+                        }),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Button(
+                          borderColor: Colors.transparent,
+                          backgroundColor: Colors.red[700],
+                          icon: Icons.map_rounded,
+                          label: "Show on Map",
+                          onPress: () {
+                            Provider.of<LocationProvider>(context,
+                                    listen: false)
+                                .setDestination(placeProvider.placeInfo);
+                            Navigator.pushNamed(context, "/mapview");
+                          }),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
     );
   }
 }

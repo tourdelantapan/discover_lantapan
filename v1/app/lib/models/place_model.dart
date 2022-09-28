@@ -43,7 +43,8 @@ class Place {
         name: json["name"],
         address: json["address"],
         coordinates: LatLng(
-            json["coordinates"]["latitude"], json["coordinates"]["longitude"]),
+            double.parse(json["coordinates"]["latitude"].toString()),
+            double.parse(json["coordinates"]["longitude"].toString())),
         categoryId: Category.fromJson(json["categoryId"]),
         description: json["description"],
         status: json["status"],
