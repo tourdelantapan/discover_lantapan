@@ -99,8 +99,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             ]),
             const SizedBox(height: 10),
             const Divider(),
-            const SizedBox(height: 15),
-            Row(children: [
+            Wrap(children: [
               ...List.generate(
                   dashboardProvider.dashboardCount.totalPlacesByCategory.length,
                   (index) {
@@ -111,7 +110,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     .toList();
                 return Container(
                   padding: const EdgeInsets.all(15),
-                  margin: const EdgeInsets.only(right: 15),
+                  margin: const EdgeInsets.only(right: 15, top: 15),
                   width: 150,
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.black12),
