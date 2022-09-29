@@ -195,4 +195,36 @@ internals.visitor_form = async (req, reply) => {
   }
 };
 
+internals.visitor_list = async (req, reply) => {
+  try {
+    let visitorList = await Visitor.find({})
+      .populate({
+        path: "placeId",
+        populate: {
+          path: "categoryId",
+        },
+      })
+      .sort({ createdAt: -1 });
+
+    let visitorCount = await Visitor.aggregate([
+      { $group: { _id: 0, count: { $sum: "$numberOfVisitors" } } },
+    ]);
+
+    return reply
+      .response({
+        data: {
+          visitorList,
+          visitorCount: visitorCount?.[0]?.count || 0,
+        },
+      })
+      .code(200);
+  } catch (e) {
+    return reply
+      .response({
+        message: "Server error",
+      })
+      .code(500);
+  }
+};
+
 module.exports = internals;

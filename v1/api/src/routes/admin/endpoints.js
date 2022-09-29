@@ -51,6 +51,14 @@ internals.endpoints = [
       auth: false,
     },
   },
+  {
+    method: "GET",
+    path: "/visitor/list",
+    handler: Handlers.visitor_list,
+    config: {
+      auth: "token",
+    },
+  },
 ];
 
 module.exports = internals;

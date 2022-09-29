@@ -3,6 +3,7 @@
 import 'package:app/provider/user_provider.dart';
 import 'package:app/screens/admin/dashboard.dart';
 import 'package:app/screens/admin/manage_places.dart';
+import 'package:app/screens/admin/visitors_table.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -78,6 +79,15 @@ class _AdminState extends State<Admin> {
                   },
                   icon: const Icon(Icons.place_rounded),
                 ),
+                SideMenuItem(
+                  priority: 2,
+                  title: 'Visitors',
+                  onTap: () {
+                    setState(() => pageIndex = 2);
+                    page.jumpToPage(3);
+                  },
+                  icon: const Icon(Icons.people_alt_rounded),
+                ),
               ],
             ),
             Expanded(
@@ -90,7 +100,8 @@ class _AdminState extends State<Admin> {
                     AdminDashboard(),
                     ManagePlaces(
                       arguments: const {"mode": "admin"},
-                    )
+                    ),
+                    VisitorTable()
                   ],
                 ),
               ),

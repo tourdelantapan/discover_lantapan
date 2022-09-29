@@ -1,4 +1,5 @@
 import 'package:app/models/user_modal.dart';
+import 'package:app/models/visitor_model.dart';
 import 'package:app/services/api_services.dart';
 import 'package:app/services/api_status.dart';
 import 'package:app/utilities/shared_preferences.dart';
@@ -10,6 +11,12 @@ class UserProvider extends ChangeNotifier {
 
   User? _currentUser;
   User? get currentUser => _currentUser;
+
+  List<Visitor> _visitorList = [];
+  List<Visitor> get visitorList => _visitorList;
+
+  int _visitorCount = 0;
+  int get visitorCount => _visitorCount;
 
   setLoading(String loading) async {
     _loading = loading;
@@ -91,6 +98,23 @@ class UserProvider extends ChangeNotifier {
     if (response is Failure) {
       setLoading("stop");
       callback(response.code, response.response["message"] ?? "Failed.");
+    }
+  }
+
+  getVisitors({required Function callback}) async {
+    setLoading("visitor-list");
+    var response = await APIServices.get(endpoint: "/visitor/list");
+    if (response is Success) {
+      _visitorList = List<Visitor>.from(response.response["data"]["visitorList"]
+          .map((x) => Visitor.fromJson(x)));
+      _visitorCount = response.response["data"]["visitorCount"];
+      setLoading("stop");
+
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      callback(response.code, response.response["message"] ?? "Failed.");
+      setLoading("stop");
     }
   }
 }
