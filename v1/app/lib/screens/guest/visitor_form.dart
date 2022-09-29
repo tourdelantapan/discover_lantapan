@@ -1,4 +1,6 @@
+import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/user_provider.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/form/number_picker.dart';
@@ -33,12 +35,32 @@ class _VisitorFormState extends State<VisitorForm> {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = context.watch<UserProvider>();
+    PlaceProvider placeProvider = context.watch<PlaceProvider>();
 
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.black,
         backgroundColor: Colors.white,
         title: const Text("Visitor Form"),
+        actions: [
+          Row(children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Image(
+                      width: 25,
+                      height: 25,
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                          placeProvider.placeInfo.photos.isNotEmpty
+                              ? placeProvider.placeInfo.photos[0].small!
+                              : placeholderImage))),
+            ),
+            Text(placeProvider.placeInfo.name),
+            const SizedBox(width: 15)
+          ]),
+        ],
       ),
       body: Form(
           key: _formKey,
@@ -137,7 +159,7 @@ class _VisitorFormState extends State<VisitorForm> {
                               userProvider.submitVisitorForm(
                                   payload: {
                                     ...payload,
-                                    "placeId": "632eb84f9b2aa14a39bcb6be",
+                                    "placeId": placeProvider.placeInfo.id,
                                     "dateOfVisit":
                                         payload["dateOfVisit"].toIso8601String()
                                   },

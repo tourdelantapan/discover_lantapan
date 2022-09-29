@@ -55,6 +55,9 @@ dependencies:
   http_parser: ^4.0.1
   intl: ^0.17.0
   syncfusion_flutter_charts: ^20.2.50
+  mobile_scanner: ^2.0.0
+  qr_flutter: ^4.0.0
+  image_picker: ^0.8.5+3
 
 dev_dependencies:
   flutter_test:

@@ -6,6 +6,7 @@ import 'package:app/screens/guest/index.dart';
 import 'package:app/screens/guest/mapview.dart';
 import 'package:app/screens/guest/place_info.dart';
 import 'package:app/screens/guest/review_list.dart';
+import 'package:app/screens/guest/scan_qr.dart';
 import 'package:app/screens/guest/search_place.dart';
 import 'package:app/screens/guest/visitor_form.dart';
 import 'package:app/screens/initialize.dart';
@@ -38,6 +39,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => AddReview());
       case '/review/list':
         return CupertinoPageRoute(builder: (_) => ReviewList());
+      case '/scan/qr':
+        return CupertinoPageRoute(builder: (_) => QRScanner());
       case '/visitor/form':
         return CupertinoPageRoute(builder: (_) => VisitorForm());
       default:

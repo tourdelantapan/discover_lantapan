@@ -152,7 +152,8 @@ class _GuestState extends State<Guest> {
 
                       if (index == 5) {
                         Navigator.pop(context);
-                        Navigator.pushNamed(context, '/visitor/form');
+                        Navigator.pushNamed(context, '/scan/qr');
+                        // Navigator.pushNamed(context, '/visitor/form');
                         return;
                       }
 
