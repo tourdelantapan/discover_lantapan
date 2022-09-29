@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:app/models/place_model.dart';
+import 'package:app/models/review_model.dart';
 import 'package:app/services/api_services.dart';
 import 'package:app/services/api_status.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,6 +29,9 @@ class PlaceProvider extends ChangeNotifier {
 
   Place _placeInfo = placeNoData;
   Place get placeInfo => _placeInfo;
+
+  Review? _recentReview;
+  Review? get recentReview => _recentReview;
 
   addLoading(String loading) {
     _loading.add(loading);
@@ -96,6 +100,11 @@ class PlaceProvider extends ChangeNotifier {
     var response = await APIServices.get(endpoint: "/places/$placeId");
     if (response is Success) {
       _placeInfo = Place.fromJson(response.response["data"]["place"]);
+      if (response.response["data"]["review"] != null) {
+        _recentReview = Review.fromJson(response.response["data"]["review"]);
+      } else {
+        _recentReview = null;
+      }
       removeLoading("place-info");
       notifyListeners();
       callback(response.code, response.response["message"] ?? "Success.");

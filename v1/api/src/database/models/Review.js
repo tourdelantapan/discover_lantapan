@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+require("./Category");
+require("./Place");
 
 const Schema = new mongoose.Schema(
   {
@@ -10,9 +12,18 @@ const Schema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    photos: {
+      type: Array,
+    },
+    placeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Place",
+      required: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
   },
   { timestamps: true }

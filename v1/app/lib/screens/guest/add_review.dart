@@ -165,7 +165,7 @@ class _AddReviewState extends State<AddReview> {
                     bottom: 15),
                 child: Button(
                     borderColor: Colors.transparent,
-                    backgroundColor: Colors.black,
+                    backgroundColor: Colors.blue[700],
                     label: "Submit Review",
                     onPress: () {
                       bool res = validateForm();

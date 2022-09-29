@@ -5,8 +5,10 @@ import 'package:app/screens/guest/add_review.dart';
 import 'package:app/screens/guest/index.dart';
 import 'package:app/screens/guest/mapview.dart';
 import 'package:app/screens/guest/place_info.dart';
+import 'package:app/screens/guest/review_list.dart';
 import 'package:app/screens/guest/search_place.dart';
 import 'package:app/screens/initialize.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RouteGenerator {
@@ -15,31 +17,33 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const InitializeScreen());
+        return CupertinoPageRoute(builder: (_) => const InitializeScreen());
       case '/guest':
-        return MaterialPageRoute(builder: (_) => Guest());
+        return CupertinoPageRoute(builder: (_) => Guest());
       case '/admin':
-        return MaterialPageRoute(builder: (_) => Admin());
+        return CupertinoPageRoute(builder: (_) => Admin());
       case '/place/info':
-        return MaterialPageRoute(
+        return CupertinoPageRoute(
             builder: (_) => PlaceInfo(arguments: args as Map<String, dynamic>));
       case '/search/place':
-        return MaterialPageRoute(builder: (_) => SearchPlace());
+        return CupertinoPageRoute(builder: (_) => SearchPlace());
       case '/mapview':
-        return MaterialPageRoute(builder: (_) => MapView());
+        return CupertinoPageRoute(builder: (_) => MapView());
       case '/auth':
-        return MaterialPageRoute(builder: (_) => Auth());
+        return CupertinoPageRoute(builder: (_) => Auth());
       case '/place/add':
-        return MaterialPageRoute(builder: (_) => AddPlace());
+        return CupertinoPageRoute(builder: (_) => AddPlace());
       case '/review/add':
-        return MaterialPageRoute(builder: (_) => AddReview());
+        return CupertinoPageRoute(builder: (_) => AddReview());
+      case '/review/list':
+        return CupertinoPageRoute(builder: (_) => ReviewList());
       default:
         return _errorRoute();
     }
   }
 
   static Route<dynamic> _errorRoute() {
-    return MaterialPageRoute(builder: (context) {
+    return CupertinoPageRoute(builder: (context) {
       return Scaffold(appBar: AppBar(title: const Text('Welcome')));
     });
   }

@@ -17,6 +17,21 @@ module.exports = {
     password: env.MONGODB_PASSWORD,
     clusterUrl: env.MONGODB_STAGING_CLUSTER_URL,
   },
+  aws_credentials: {
+    region: env.AWS_REGION,
+    accessKeyId:
+      process.env.NODE_ENV === "production"
+        ? env.AWS_PRODUCTION_ACCESS_KEY_ID
+        : env.AWS_STAGING_ACCESS_KEY_ID,
+    secretAccessKey:
+      process.env.NODE_ENV === "production"
+        ? env.AWS_PRODUCTION_SECRET_ACCESS_KEY
+        : env.AWS_STAGING_SECRET_ACCESS_KEY,
+    bucket:
+      process.env.NODE_ENV === "production"
+        ? env.AWS_PRODUCTION_BUCKET
+        : env.AWS_STAGING_BUCKET,
+  },
   crypto: {
     privateKey: env.CRYPTO_PRIVATE_KEY,
     tokenExpiry: 1 * 30 * 1000 * 60, //1 hour

@@ -8,8 +8,7 @@ import 'package:app/models/user_modal.dart';
 import 'package:meta/meta.dart';
 import 'dart:convert';
 
-Review reviewsFromJson(String str) =>
-    Review.fromJson(json.decode(str));
+Review reviewsFromJson(String str) => Review.fromJson(json.decode(str));
 
 String reviewsToJson(Review data) => json.encode(data.toJson());
 
@@ -26,7 +25,7 @@ class Review {
   });
 
   String id;
-  int rating;
+  double rating;
   String content;
   List<Photo> photos;
   Place placeId;
@@ -36,9 +35,11 @@ class Review {
 
   factory Review.fromJson(Map<String, dynamic> json) => Review(
         id: json["_id"],
-        rating: json["rating"],
+        rating: json["rating"] + 0.0,
         content: json["content"],
-        photos: List<Photo>.from(json["photos"].map((x) => Photo.fromJson(x))),
+        photos: json["photos"] == null
+            ? []
+            : List<Photo>.from(json["photos"].map((x) => Photo.fromJson(x))),
         placeId: Place.fromJson(json["placeId"]),
         userId: User.fromJson(json["userId"]),
         createdAt: DateTime.parse(json["createdAt"]),

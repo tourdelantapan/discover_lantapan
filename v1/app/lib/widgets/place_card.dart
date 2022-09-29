@@ -8,6 +8,7 @@ class PlaceCard extends StatelessWidget {
   Widget? topLeft;
   Widget? topRight;
   Widget? bottomRight;
+  Widget? upperLabelWidget;
   Function(TapDownDetails)? onTapDown;
   Function? onLongPress;
   String? subLabel;
@@ -21,6 +22,7 @@ class PlaceCard extends StatelessWidget {
       this.topRight,
       this.subLabel,
       this.bottomRight,
+      this.upperLabelWidget,
       this.photoUrl})
       : super(key: key);
 
@@ -75,22 +77,28 @@ class PlaceCard extends StatelessWidget {
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(label,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                  if (subLabel != null)
-                                    Text(subLabel ?? "",
+                            Expanded(
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (upperLabelWidget != null)
+                                      upperLabelWidget!,
+                                    Text(label,
+                                        maxLines: 1,
                                         style: const TextStyle(
                                           color: Colors.white,
-                                          fontSize: 16.0,
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold,
                                         )),
-                                ]),
+                                    if (subLabel != null)
+                                      Text(subLabel ?? "",
+                                          maxLines: 1,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16.0,
+                                          )),
+                                  ]),
+                            ),
                             bottomRight ?? Container()
                           ]),
                     ),

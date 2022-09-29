@@ -22,8 +22,13 @@ const Schema = new mongoose.Schema(
     },
     photos: {
       type: Array,
+      default: [],
     },
     status: {
+      type: String,
+      required: true,
+    },
+    description: {
       type: String,
       required: true,
     },

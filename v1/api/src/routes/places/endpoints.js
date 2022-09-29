@@ -31,6 +31,30 @@ internals.endpoints = [
       auth: "token",
     },
   },
+  {
+    method: ["POST"],
+    path: "/places/review/add/{id}",
+    options: {
+      payload: {
+        output: "file",
+        parse: true,
+        multipart: true,
+        maxBytes: 100000000000,
+      },
+      handler: Handlers.place_review_add,
+      auth: {
+        strategy: "token",
+      },
+    },
+  },
+  {
+    method: ["GET"],
+    path: "/places/reviews/{id}",
+    handler: Handlers.places_reviews_list,
+    config: {
+      auth: false,
+    },
+  },
 ];
 
 module.exports = internals;

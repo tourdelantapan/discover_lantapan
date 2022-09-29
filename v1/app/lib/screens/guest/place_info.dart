@@ -8,10 +8,12 @@ import 'package:app/widgets/action_modal.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/image_carousel.dart';
+import 'package:app/widgets/review_item.dart';
 import 'package:app/widgets/shimmer/place_info_shimmer.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:app/utilities/string_extensions.dart';
 
@@ -72,235 +74,291 @@ class _PlaceInfoState extends State<PlaceInfo> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        elevation: .5,
+        elevation: 0,
         title: const Text("Place Details"),
       ),
-      body: placeProvider.loading.contains("place-info")
-          ? const PlaceInfoShimmer()
-          : Column(children: [
-              Expanded(
-                  child: ListView(children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                CarouselSlider(
-                    items: List.generate(
-                        placeProvider.placeInfo.photos.isNotEmpty
-                            ? placeProvider.placeInfo.photos.length
-                            : 1,
-                        (index) => ImageCarousel(
-                              photo: placeProvider.placeInfo.photos.isNotEmpty
-                                  ? placeProvider.placeInfo.photos[index]
-                                  : Photo(medium: placeholderImage),
-                              onPress: () => openImageViewer(context, index),
-                            )),
-                    options: CarouselOptions(
-                      enableInfiniteScroll: false,
-                      aspectRatio: 1,
-                      autoPlay: true,
-                      enlargeCenterPage: true,
-                      pageViewKey:
-                          const PageStorageKey<String>('carousel_slider'),
-                    )),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: HORIZONTAL_PADDING),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: Container(
+          key: ValueKey<int>(placeProvider.loading.length),
+          child: placeProvider.loading.contains("place-info")
+              ? const PlaceInfoShimmer()
+              : Column(children: [
+                  Expanded(
+                      child: ListView(children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    CarouselSlider(
+                        items: List.generate(
+                            placeProvider.placeInfo.photos.isNotEmpty
+                                ? placeProvider.placeInfo.photos.length
+                                : 1,
+                            (index) => ImageCarousel(
+                                  photo: placeProvider
+                                          .placeInfo.photos.isNotEmpty
+                                      ? placeProvider.placeInfo.photos[index]
+                                      : Photo(medium: placeholderImage),
+                                  onPress: () =>
+                                      openImageViewer(context, index),
+                                )),
+                        options: CarouselOptions(
+                          enableInfiniteScroll: false,
+                          aspectRatio: 1,
+                          autoPlay: true,
+                          enlargeCenterPage: true,
+                          pageViewKey:
+                              const PageStorageKey<String>('carousel_slider'),
+                        )),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: HORIZONTAL_PADDING),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  IconText(
+                                    size: 18,
+                                    label: placeProvider.placeInfo.name,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                  IconText(
+                                    size: 16,
+                                    icon: Icons.pin_drop_rounded,
+                                    label: placeProvider.placeInfo.address,
+                                    color: Colors.black54,
+                                  )
+                                ]),
+                            Container(
+                                decoration: BoxDecoration(
+                                    color: placeProvider.placeInfo.isLiked
+                                        ? Colors.red[100]
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(100)),
+                                child: IconButton(
+                                    onPressed: () {
+                                      if (userProvider.currentUser == null) {
+                                        showModalBottomSheet(
+                                            context: context,
+                                            isDismissible: false,
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            builder: (context) {
+                                              return StatefulBuilder(builder:
+                                                  (BuildContext newContext,
+                                                      StateSetter
+                                                          setModalState) {
+                                                return ActionModal(
+                                                  isLoading: true,
+                                                  title: "Account Required.",
+                                                  subTitle:
+                                                      "This action requires an account.",
+                                                  confirmAction:
+                                                      "Log In/SignUp",
+                                                  callback: (action) {
+                                                    if (action !=
+                                                        "Log In/SignUp") {
+                                                      return;
+                                                    }
+                                                    Navigator.pushNamed(
+                                                        context, "/auth");
+                                                  },
+                                                );
+                                              });
+                                            });
+                                        return;
+                                      }
+
+                                      placeProvider.likePlace(
+                                          mode: "single",
+                                          index: -1,
+                                          placeId: placeProvider.placeInfo.id,
+                                          callback: (code, message) {
+                                            launchSnackbar(
+                                                context: context,
+                                                mode: code == 200
+                                                    ? "SUCCESS"
+                                                    : "ERROR",
+                                                message: code == 200
+                                                    ? message
+                                                    : "Failed to submit like.");
+                                          });
+                                    },
+                                    icon: placeProvider.placeInfo.isLiked
+                                        ? const Icon(Icons.favorite_rounded)
+                                        : const Icon(Icons.favorite_border),
+                                    color: placeProvider.placeInfo.isLiked
+                                        ? Colors.red
+                                        : Colors.black))
+                          ]),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: HORIZONTAL_PADDING),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              FeatureBadge(
+                                  icon: Icons.star_rate_rounded,
+                                  accentColor: Colors.red,
+                                  label: "Rating",
+                                  value:
+                                      "${placeProvider.placeInfo.reviewsStat.average.toStringAsFixed(1)} (${NumberFormat.compact(locale: "en_US").format(placeProvider.placeInfo.reviewsStat.reviewerCount)})"),
+                              FeatureBadge(
+                                  icon: Icons.directions,
+                                  accentColor: Colors.blue,
+                                  label: "Distance",
+                                  value: "3000 km"),
+                              FeatureBadge(
+                                  icon: Icons.door_sliding_rounded,
+                                  accentColor: Colors.green,
+                                  label:
+                                      placeProvider.placeInfo.categoryId.name,
+                                  value: placeProvider.placeInfo.status
+                                      .titleCase())
+                            ])),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: HORIZONTAL_PADDING),
+                      child: Text(
+                        placeProvider.placeInfo.description,
+                        style: const TextStyle(height: 1.5),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    if (placeProvider.recentReview != null)
+                      Column(children: [
+                        const Divider(),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               IconText(
-                                size: 18,
-                                label: placeProvider.placeInfo.name,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                                icon: Icons.reviews_outlined,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: HORIZONTAL_PADDING),
+                                label: "Recent Review",
+                                color: Colors.black87,
                               ),
-                              IconText(
-                                size: 16,
-                                icon: Icons.pin_drop_rounded,
-                                label: placeProvider.placeInfo.address,
-                                color: Colors.black54,
-                              )
+                              Button(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 0),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: HORIZONTAL_PADDING),
+                                  borderColor: Colors.transparent,
+                                  textColor: Colors.blue[700],
+                                  fontSize: 13,
+                                  backgroundColor: Colors.transparent,
+                                  icon: Icons.reviews_rounded,
+                                  label: "All Reviews",
+                                  onPress: () {
+                                    Provider.of<LocationProvider>(context,
+                                            listen: false)
+                                        .setDestination(
+                                            placeProvider.placeInfo);
+                                    Navigator.pushNamed(
+                                        context, '/review/list');
+                                  }),
                             ]),
-                        Container(
-                            decoration: BoxDecoration(
-                                color: placeProvider.placeInfo.isLiked
-                                    ? Colors.red[100]
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(100)),
-                            child: IconButton(
-                                onPressed: () {
-                                  if (userProvider.currentUser == null) {
-                                    showModalBottomSheet(
-                                        context: context,
-                                        isDismissible: false,
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        builder: (context) {
-                                          return StatefulBuilder(builder:
-                                              (BuildContext newContext,
-                                                  StateSetter setModalState) {
-                                            return ActionModal(
-                                              isLoading: true,
-                                              title: "Account Required.",
-                                              subTitle:
-                                                  "This action requires an account.",
-                                              confirmAction: "Log In/SignUp",
-                                              callback: (action) {
-                                                if (action != "Log In/SignUp") {
-                                                  return;
-                                                }
-                                                Navigator.pushNamed(
-                                                    context, "/auth");
-                                              },
-                                            );
-                                          });
-                                        });
-                                    return;
-                                  }
-
-                                  placeProvider.likePlace(
-                                      mode: "single",
-                                      index: -1,
-                                      placeId: placeProvider.placeInfo.id,
-                                      callback: (code, message) {
-                                        launchSnackbar(
-                                            context: context,
-                                            mode: code == 200
-                                                ? "SUCCESS"
-                                                : "ERROR",
-                                            message: code == 200
-                                                ? message
-                                                : "Failed to submit like.");
-                                      });
-                                },
-                                icon: placeProvider.placeInfo.isLiked
-                                    ? const Icon(Icons.favorite_rounded)
-                                    : const Icon(Icons.favorite_border),
-                                color: placeProvider.placeInfo.isLiked
-                                    ? Colors.red
-                                    : Colors.black))
+                        ReviewItem(review: placeProvider.recentReview!),
                       ]),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: HORIZONTAL_PADDING),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          FeatureBadge(
-                              icon: Icons.star_rate_rounded,
-                              accentColor: Colors.red,
-                              label: "Rating",
-                              value: "4.8 (3.2k)"),
-                          FeatureBadge(
-                              icon: Icons.directions,
-                              accentColor: Colors.blue,
-                              label: "Distance",
-                              value: "3000 km"),
-                          FeatureBadge(
-                              icon: Icons.door_sliding_rounded,
-                              accentColor: Colors.green,
-                              label: placeProvider.placeInfo.categoryId.name,
-                              value: placeProvider.placeInfo.status.titleCase())
-                        ])),
-                const SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: HORIZONTAL_PADDING),
-                  child: Text(
-                    placeProvider.placeInfo.description,
-                    style: const TextStyle(height: 1.5),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-              ])),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(.5),
-                      offset: const Offset(0.0, .5), //(x,y)
-                      blurRadius: 10.0,
-                    ),
-                  ],
-                ),
-                padding: EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                    top: 10,
-                    bottom: MediaQuery.of(context).viewInsets.bottom + 10),
-                child: Row(
-                  children: [
-                    Button(
-                        borderColor: Colors.transparent,
-                        backgroundColor: Colors.blue[700],
-                        icon: Icons.reviews_rounded,
-                        label: "Add Review",
-                        onPress: () {
-                          if (userProvider.currentUser == null) {
-                            showModalBottomSheet(
-                                context: context,
-                                isDismissible: false,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (context) {
-                                  return StatefulBuilder(builder:
-                                      (BuildContext newContext,
-                                          StateSetter setModalState) {
-                                    return ActionModal(
-                                      isLoading: true,
-                                      title: "Account Required.",
-                                      subTitle:
-                                          "This action requires an account.",
-                                      confirmAction: "Log In/SignUp",
-                                      callback: (action) {
-                                        if (action != "Log In/SignUp") {
-                                          return;
-                                        }
-                                        Navigator.pushNamed(context, "/auth");
-                                      },
-                                    );
-                                  });
-                                });
-                            return;
-                          }
-
-                          Navigator.pushNamed(context, "/review/add");
-                        }),
                     const SizedBox(
-                      width: 10,
+                      height: 20,
                     ),
-                    Expanded(
-                      child: Button(
-                          borderColor: Colors.transparent,
-                          backgroundColor: Colors.red[700],
-                          icon: Icons.map_rounded,
-                          label: "Show on Map",
-                          onPress: () {
-                            Provider.of<LocationProvider>(context,
-                                    listen: false)
-                                .setDestination(placeProvider.placeInfo);
-                            Navigator.pushNamed(context, "/mapview");
-                          }),
+                  ])),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(.5),
+                          offset: const Offset(0.0, .5), //(x,y)
+                          blurRadius: 10.0,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ]),
+                    padding: EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        top: 10,
+                        bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+                    child: Row(
+                      children: [
+                        Button(
+                            borderColor: Colors.transparent,
+                            backgroundColor: Colors.blue[700],
+                            icon: Icons.reviews_rounded,
+                            label: "Add Review",
+                            onPress: () {
+                              if (userProvider.currentUser == null) {
+                                showModalBottomSheet(
+                                    context: context,
+                                    isDismissible: false,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) {
+                                      return StatefulBuilder(builder:
+                                          (BuildContext newContext,
+                                              StateSetter setModalState) {
+                                        return ActionModal(
+                                          isLoading: true,
+                                          title: "Account Required.",
+                                          subTitle:
+                                              "This action requires an account.",
+                                          confirmAction: "Log In/SignUp",
+                                          callback: (action) {
+                                            if (action != "Log In/SignUp") {
+                                              return;
+                                            }
+                                            Navigator.pushNamed(
+                                                context, "/auth");
+                                          },
+                                        );
+                                      });
+                                    });
+                                return;
+                              }
+
+                              Navigator.pushNamed(context, "/review/add");
+                            }),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Button(
+                              borderColor: Colors.transparent,
+                              backgroundColor: Colors.red[700],
+                              icon: Icons.map_rounded,
+                              label: "Show on Map",
+                              onPress: () {
+                                Provider.of<LocationProvider>(context,
+                                        listen: false)
+                                    .setDestination(placeProvider.placeInfo);
+                                Navigator.pushNamed(context, "/mapview");
+                              }),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+        ),
+      ),
     );
   }
 }

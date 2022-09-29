@@ -11,8 +11,8 @@ class ReviewProvider extends ChangeNotifier {
   List<String> _loading = [];
   List<String> get loading => _loading;
 
-  List<Review> _review = [];
-  List<Review> get review => _review;
+  List<Review> _reviewList = [];
+  List<Review> get reviewList => _reviewList;
 
   addLoading(String loading) {
     _loading.add(loading);
@@ -28,7 +28,7 @@ class ReviewProvider extends ChangeNotifier {
     addLoading("reviews-list");
     var response = await APIServices.get(endpoint: "/places/reviews/$placeId");
     if (response is Success) {
-      _review = List<Review>.from(
+      _reviewList = List<Review>.from(
           response.response["data"]["reviews"].map((x) => Review.fromJson(x)));
       removeLoading("reviews-list");
       callback(response.code, response.response["message"] ?? "Success.");

@@ -77,15 +77,16 @@ class _ManagePlacesState extends State<ManagePlaces> {
                               ? place.photos[0].small
                               : placeholderImage,
                           onPress: () {},
-                          topLeft: RatingBar.builder(
-                            initialRating: 3,
+                          upperLabelWidget: RatingBar.builder(
+                            initialRating: place.reviewsStat.average,
                             minRating: 1,
                             direction: Axis.horizontal,
                             allowHalfRating: true,
+                            unratedColor: Colors.white54,
                             itemCount: 5,
                             itemSize: 15,
                             itemPadding:
-                                const EdgeInsets.symmetric(horizontal: 2),
+                                const EdgeInsets.only(right: 2, bottom: 5),
                             itemBuilder: (context, _) => const Icon(
                               Icons.star,
                               color: Colors.amber,
@@ -98,6 +99,7 @@ class _ManagePlacesState extends State<ManagePlaces> {
               )
             else
               IconText(
+                mainAxisAlignment: MainAxisAlignment.center,
                 padding: const EdgeInsets.only(top: 50),
                 label: "No content",
                 color: Colors.black54,

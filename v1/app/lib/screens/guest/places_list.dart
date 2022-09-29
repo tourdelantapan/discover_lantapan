@@ -63,7 +63,7 @@ class _PlacesListState extends State<PlacesList> {
       bottom: true,
       child: Column(
         children: [
-          if (placeProvider.loading.isNotEmpty)
+          if (placeProvider.loading.contains(widget.arguments["mode"]))
             const PlaceCardShimmer()
           else if (!hasNoContent())
             Expanded(
@@ -104,21 +104,21 @@ class _PlacesListState extends State<PlacesList> {
                           Navigator.pushNamed(context, "/place/info",
                               arguments: {"placeId": place.id});
                         },
-                        topLeft: RatingBar.builder(
-                          initialRating: 3,
-                          minRating: 1,
-                          direction: Axis.horizontal,
-                          allowHalfRating: true,
-                          itemCount: 5,
-                          itemSize: 15,
-                          itemPadding:
-                              const EdgeInsets.symmetric(horizontal: 2),
-                          itemBuilder: (context, _) => const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          ),
-                          onRatingUpdate: (rating) {},
-                        ),
+                        // topLeft: RatingBar.builder(
+                        //   initialRating: place.reviewsStat.average,
+                        //   minRating: 1,
+                        //   direction: Axis.horizontal,
+                        //   allowHalfRating: true,
+                        //   itemCount: 5,
+                        //   itemSize: 15,
+                        //   itemPadding:
+                        //       const EdgeInsets.symmetric(horizontal: 2),
+                        //   itemBuilder: (context, _) => const Icon(
+                        //     Icons.star,
+                        //     color: Colors.amber,
+                        //   ),
+                        //   onRatingUpdate: (rating) {},
+                        // ),
                         // topRight: Container(
                         //   decoration: BoxDecoration(
                         //       borderRadius: BorderRadius.circular(100)),
@@ -186,12 +186,29 @@ class _PlacesListState extends State<PlacesList> {
                                       : Icons.favorite_rounded,
                                   color: Colors.red,
                                 ))),
+                        upperLabelWidget: RatingBar.builder(
+                          initialRating: place.reviewsStat.average,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          unratedColor: Colors.white54,
+                          itemCount: 5,
+                          itemSize: 15,
+                          itemPadding:
+                              const EdgeInsets.only(right: 2, bottom: 5),
+                          itemBuilder: (context, _) => const Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          onRatingUpdate: (rating) {},
+                        ),
                         label: place.name,
                         subLabel: place.address);
                   }),
             )
           else
             IconText(
+              mainAxisAlignment: MainAxisAlignment.center,
               padding: const EdgeInsets.only(top: 50),
               label: "No content",
               color: Colors.black54,
