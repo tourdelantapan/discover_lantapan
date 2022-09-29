@@ -17,12 +17,12 @@ launchSnackbar(
   }
 
   final snackBar = SnackBar(
-    duration: Duration(milliseconds: 3000),
+    duration: const Duration(milliseconds: 3000),
     content: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Icon(icon, color: Colors.white),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Text(message,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
       ],

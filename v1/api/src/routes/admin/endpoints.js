@@ -43,6 +43,14 @@ internals.endpoints = [
       auth: "token",
     },
   },
+  {
+    method: "POST",
+    path: "/visitor/form",
+    handler: Handlers.visitor_form,
+    config: {
+      auth: false,
+    },
+  },
 ];
 
 module.exports = internals;

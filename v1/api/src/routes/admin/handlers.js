@@ -3,6 +3,7 @@
 var internals = {};
 const Place = require("../../database/models/Place");
 const User = require("../../database/models/User");
+const Visitor = require("../../database/models/Visitor");
 const { getUrlsArray } = require("../../libraries/aws-s3-storage-upload");
 
 internals.add_place = async (req, reply) => {
@@ -142,21 +143,22 @@ internals.admin_dashboard_ratings = async (req, reply) => {
               },
             },
           ],
-          as: "reviews",
+          as: "reviewsStat",
         },
       },
       {
-        $unwind: "$reviews",
+        $unwind: "$reviewsStat",
       },
       {
         $project: {
           _id: "$_id",
           name: "$name",
           photos: "$photos",
-          reviews: "$reviews",
+          reviewsStat: "$reviewsStat",
         },
       },
     ]);
+
     return reply
       .response({
         data: {
@@ -165,6 +167,26 @@ internals.admin_dashboard_ratings = async (req, reply) => {
       })
       .code(200);
   } catch (e) {
+    return reply
+      .response({
+        message: "Server error",
+      })
+      .code(500);
+  }
+};
+
+internals.visitor_form = async (req, reply) => {
+  let payload = req.payload;
+
+  try {
+    await Visitor(payload).save();
+    return reply
+      .response({
+        message: "Information saved.",
+      })
+      .code(200);
+  } catch (e) {
+    console.log(e);
     return reply
       .response({
         message: "Server error",

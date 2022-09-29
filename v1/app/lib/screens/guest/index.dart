@@ -27,6 +27,7 @@ class _GuestState extends State<Guest> {
     IconTextModel(Icons.info_outline_rounded, "About Lantapan"),
     IconTextModel(Icons.contact_mail_rounded, "Contacts"),
     IconTextModel(Icons.developer_mode_rounded, "Developers"),
+    IconTextModel(Icons.qr_code_2_rounded, "Scan QR"),
   ];
 
   @override
@@ -138,14 +139,20 @@ class _GuestState extends State<Guest> {
                     onPress: () {
                       if (userProvider.currentUser != null && index == 5) {
                         userProvider.signOut();
-                        drawerItems[5] =
+                        drawerItems[6] =
                             IconTextModel(Icons.person, "Log In/Sign Up");
                         Navigator.pop(context);
                         return;
                       }
 
-                      if (index == 5) {
+                      if (index == 6) {
                         Navigator.pushNamed(context, '/auth');
+                        return;
+                      }
+
+                      if (index == 5) {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/visitor/form');
                         return;
                       }
 

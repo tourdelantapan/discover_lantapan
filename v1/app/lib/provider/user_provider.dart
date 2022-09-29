@@ -77,4 +77,20 @@ class UserProvider extends ChangeNotifier {
       callback(response.code, response.response["message"] ?? "Failed.");
     }
   }
+
+  submitVisitorForm(
+      {required Map<String, dynamic> payload,
+      required Function callback}) async {
+    setLoading("visitor-form");
+    var response =
+        await APIServices.post(endpoint: "/visitor/form", payload: payload);
+    if (response is Success) {
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Failed.");
+    }
+  }
 }

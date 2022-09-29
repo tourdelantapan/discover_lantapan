@@ -35,7 +35,7 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Opacity(
-      opacity: disabled == null ? 1 : 0.5,
+      opacity: [true].contains(disabled) ? 0.5 : 1,
       child: Container(
         margin: margin,
         decoration: BoxDecoration(
@@ -47,8 +47,7 @@ class Button extends StatelessWidget {
           child: InkWell(
             splashColor: Colors.white24,
             borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 5)),
-            onTap:
-                disabled != null || disabled == true ? null : () => onPress(),
+            onTap: [true].contains(disabled) ? null : () => onPress(),
             child: Padding(
               padding: padding ??
                   const EdgeInsets.only(
