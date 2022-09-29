@@ -1,4 +1,5 @@
 import 'package:app/provider/user_provider.dart';
+import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +23,19 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = context.watch<UserProvider>();
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
 
     return Form(
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: ListView(
+            padding: EdgeInsets.only(
+                top: height * .15,
+                bottom: 15,
+                right: isMobile(context) ? 0 : width * .3,
+                left: isMobile(context) ? 0 : width * .3),
             children: [
               if (userProvider.loading == "signup")
                 const LinearProgressIndicator(),
