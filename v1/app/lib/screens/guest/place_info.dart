@@ -4,6 +4,7 @@ import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/user_provider.dart';
 import 'package:app/screens/image-viewer.dart';
 import 'package:app/utilities/constants.dart';
+import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/action_modal.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
@@ -71,12 +72,14 @@ class _PlaceInfoState extends State<PlaceInfo> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-        title: const Text("Place Details"),
-      ),
+      appBar: isMobile(context)
+          ? AppBar(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              elevation: 0,
+              title: const Text("Place Details"),
+            )
+          : null,
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
         child: Container(

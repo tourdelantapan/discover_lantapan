@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:app/models/place_model.dart';
 import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/user_provider.dart';
+import 'package:app/screens/guest/place_info.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/grid_count.dart';
+import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/action_modal.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/place_card.dart';
@@ -15,8 +17,10 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 class PlacesList extends StatefulWidget {
+  Function onPlaceTap;
   Map<String, dynamic> arguments;
-  PlacesList({Key? key, required this.arguments}) : super(key: key);
+  PlacesList({Key? key, required this.arguments, required this.onPlaceTap})
+      : super(key: key);
 
   @override
   State<PlacesList> createState() => _PlacesListState();
@@ -60,164 +64,143 @@ class _PlacesListState extends State<PlacesList> {
     }
 
     return SafeArea(
-      bottom: true,
-      child: Column(
-        children: [
-          if (placeProvider.loading.contains(widget.arguments["mode"]))
-            const PlaceCardShimmer()
-          else if (!hasNoContent())
-            Expanded(
-              child: GridView.builder(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    crossAxisCount:
-                        getGridCount(MediaQuery.of(context).size.width),
-                  ),
-                  itemCount: widget.arguments["mode"] == "popular"
-                      ? placeProvider.popularPlaces.length
-                      : widget.arguments["mode"] == "new"
-                          ? placeProvider.newPlaces.length
-                          : widget.arguments["mode"] == "top_rated"
-                              ? placeProvider.topRatedPlaces.length
-                              : 0,
-                  itemBuilder: (BuildContext context, int index) {
-                    late Place place;
+        bottom: true,
+        child: Column(
+          children: [
+            if (placeProvider.loading.contains(widget.arguments["mode"]))
+              const PlaceCardShimmer()
+            else if (!hasNoContent())
+              Expanded(
+                child: GridView.builder(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      crossAxisCount:
+                          getGridCount(MediaQuery.of(context).size.width),
+                    ),
+                    itemCount: widget.arguments["mode"] == "popular"
+                        ? placeProvider.popularPlaces.length
+                        : widget.arguments["mode"] == "new"
+                            ? placeProvider.newPlaces.length
+                            : widget.arguments["mode"] == "top_rated"
+                                ? placeProvider.topRatedPlaces.length
+                                : 0,
+                    itemBuilder: (BuildContext context, int index) {
+                      late Place place;
 
-                    if (widget.arguments["mode"] == "popular") {
-                      place = placeProvider.popularPlaces[index];
-                    }
-                    if (widget.arguments["mode"] == "new") {
-                      place = placeProvider.newPlaces[index];
-                    }
-                    if (widget.arguments["mode"] == "top_rated") {
-                      place = placeProvider.topRatedPlaces[index];
-                    }
+                      if (widget.arguments["mode"] == "popular") {
+                        place = placeProvider.popularPlaces[index];
+                      }
+                      if (widget.arguments["mode"] == "new") {
+                        place = placeProvider.newPlaces[index];
+                      }
+                      if (widget.arguments["mode"] == "top_rated") {
+                        place = placeProvider.topRatedPlaces[index];
+                      }
 
-                    return PlaceCard(
-                        photoUrl: place.photos.isNotEmpty
-                            ? place.photos[0].small
-                            : placeholderImage,
-                        onPress: () {
-                          Navigator.pushNamed(context, "/place/info",
-                              arguments: {"placeId": place.id});
-                        },
-                        // topLeft: RatingBar.builder(
-                        //   initialRating: place.reviewsStat.average,
-                        //   minRating: 1,
-                        //   direction: Axis.horizontal,
-                        //   allowHalfRating: true,
-                        //   itemCount: 5,
-                        //   itemSize: 15,
-                        //   itemPadding:
-                        //       const EdgeInsets.symmetric(horizontal: 2),
-                        //   itemBuilder: (context, _) => const Icon(
-                        //     Icons.star,
-                        //     color: Colors.amber,
-                        //   ),
-                        //   onRatingUpdate: (rating) {},
-                        // ),
-                        // topRight: Container(
-                        //   decoration: BoxDecoration(
-                        //       borderRadius: BorderRadius.circular(100)),
-                        //   child: IconButton(
-                        //     icon: const Icon(
-                        //       Icons.ios_share_rounded,
-                        //       size: 19,
-                        //     ),
-                        //     onPressed: () {},
-                        //   ),
-                        // ),
-                        bottomRight: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(100)),
-                            child: IconButton(
-                                onPressed: () {
-                                  if (userProvider.currentUser == null) {
-                                    showModalBottomSheet(
-                                        context: context,
-                                        isDismissible: false,
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        builder: (context) {
-                                          return StatefulBuilder(builder:
-                                              (BuildContext newContext,
-                                                  StateSetter setModalState) {
-                                            return ActionModal(
-                                              isLoading: true,
-                                              title: "Account Required.",
-                                              subTitle:
-                                                  "This action requires an account.",
-                                              confirmAction: "Log In/SignUp",
-                                              callback: (action) {
-                                                if (action != "Log In/SignUp") {
-                                                  return;
-                                                }
-                                                Navigator.pushNamed(
-                                                    context, "/auth");
-                                              },
-                                            );
+                      return PlaceCard(
+                          photoUrl: place.photos.isNotEmpty
+                              ? place.photos[0].small
+                              : placeholderImage,
+                          onPress: () {
+                            if (!isMobile(context)) {
+                              widget.onPlaceTap(place.id);
+                              return;
+                            }
+
+                            Navigator.pushNamed(context, "/place/info",
+                                arguments: {"placeId": place.id});
+                          },
+                          bottomRight: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(100)),
+                              child: IconButton(
+                                  onPressed: () {
+                                    if (userProvider.currentUser == null) {
+                                      showModalBottomSheet(
+                                          context: context,
+                                          isDismissible: false,
+                                          isScrollControlled: true,
+                                          backgroundColor: Colors.transparent,
+                                          builder: (context) {
+                                            return StatefulBuilder(builder:
+                                                (BuildContext newContext,
+                                                    StateSetter setModalState) {
+                                              return ActionModal(
+                                                isLoading: true,
+                                                title: "Account Required.",
+                                                subTitle:
+                                                    "This action requires an account.",
+                                                confirmAction: "Log In/SignUp",
+                                                callback: (action) {
+                                                  if (action !=
+                                                      "Log In/SignUp") {
+                                                    return;
+                                                  }
+                                                  Navigator.pushNamed(
+                                                      context, "/auth");
+                                                },
+                                              );
+                                            });
                                           });
-                                        });
-                                    return;
-                                  }
+                                      return;
+                                    }
 
-                                  placeProvider.likePlace(
-                                      mode: widget.arguments["mode"],
-                                      index: index,
-                                      placeId: place.id,
-                                      callback: (code, message) {
-                                        launchSnackbar(
-                                            context: context,
-                                            mode: code == 200
-                                                ? "SUCCESS"
-                                                : "ERROR",
-                                            message: code == 200
-                                                ? message
-                                                : "Failed to submit like.");
-                                      });
-                                },
-                                icon: Icon(
-                                  !place.isLiked
-                                      ? Icons.favorite_border_outlined
-                                      : Icons.favorite_rounded,
-                                  color: Colors.red,
-                                ))),
-                        upperLabelWidget: RatingBar.builder(
-                          initialRating: place.reviewsStat.average,
-                          minRating: 1,
-                          direction: Axis.horizontal,
-                          allowHalfRating: true,
-                          unratedColor: Colors.white54,
-                          itemCount: 5,
-                          itemSize: 15,
-                          itemPadding:
-                              const EdgeInsets.only(right: 2, bottom: 5),
-                          itemBuilder: (context, _) => const Icon(
-                            Icons.star,
-                            color: Colors.amber,
+                                    placeProvider.likePlace(
+                                        mode: widget.arguments["mode"],
+                                        index: index,
+                                        placeId: place.id,
+                                        callback: (code, message) {
+                                          launchSnackbar(
+                                              context: context,
+                                              mode: code == 200
+                                                  ? "SUCCESS"
+                                                  : "ERROR",
+                                              message: code == 200
+                                                  ? message
+                                                  : "Failed to submit like.");
+                                        });
+                                  },
+                                  icon: Icon(
+                                    !place.isLiked
+                                        ? Icons.favorite_border_outlined
+                                        : Icons.favorite_rounded,
+                                    color: Colors.red,
+                                  ))),
+                          upperLabelWidget: RatingBar.builder(
+                            initialRating: place.reviewsStat.average,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            unratedColor: Colors.white54,
+                            itemCount: 5,
+                            itemSize: 15,
+                            itemPadding:
+                                const EdgeInsets.only(right: 2, bottom: 5),
+                            itemBuilder: (context, _) => const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            onRatingUpdate: (rating) {},
                           ),
-                          onRatingUpdate: (rating) {},
-                        ),
-                        label: place.name,
-                        subLabel: place.address);
-                  }),
-            )
-          else
-            IconText(
-              mainAxisAlignment: MainAxisAlignment.center,
-              padding: const EdgeInsets.only(top: 50),
-              label: "No content",
-              color: Colors.black54,
-              icon: Icons.air_rounded,
-              size: 20,
-              fontWeight: FontWeight.bold,
-            ),
-        ],
-      ),
-    );
+                          label: place.name,
+                          subLabel: place.address);
+                    }),
+              )
+            else
+              IconText(
+                mainAxisAlignment: MainAxisAlignment.center,
+                padding: const EdgeInsets.only(top: 50),
+                label: "No content",
+                color: Colors.black54,
+                icon: Icons.air_rounded,
+                size: 20,
+                fontWeight: FontWeight.bold,
+              ),
+          ],
+        ));
   }
 }

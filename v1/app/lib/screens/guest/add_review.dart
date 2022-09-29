@@ -4,6 +4,7 @@ import 'package:app/models/place_model.dart';
 import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/review_provider.dart';
 import 'package:app/utilities/constants.dart';
+import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/add_photo.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
@@ -52,12 +53,56 @@ class _AddReviewState extends State<AddReview> {
     PlaceProvider placeProvider = context.watch<PlaceProvider>();
     ReviewProvider reviewProvider = context.watch<ReviewProvider>();
 
+    Widget submitButton() {
+      return Button(
+          margin: EdgeInsets.symmetric(vertical: isMobile(context) ? 0 : 5),
+          borderColor: Colors.transparent,
+          backgroundColor: Colors.blue[700],
+          label: "Submit Review",
+          onPress: () {
+            bool res = validateForm();
+            if (res) {
+              reviewProvider.postReview(
+                  payload: payload,
+                  files: photos,
+                  callback: (code, message) {
+                    if (code == 200) {
+                      launchSnackbar(
+                          context: context,
+                          mode: "SUCCESS",
+                          message: message ?? "Success!");
+                      setState(() {
+                        photos = [];
+                        payload = _payload;
+                      });
+                      placeProvider.getPlace(
+                          placeId: placeProvider.placeInfo.id, callback: () {});
+                      Navigator.pop(context);
+                      return;
+                    }
+                    if (code != 200) {
+                      launchSnackbar(
+                          context: context,
+                          mode: code == 200 ? "SUCCESS" : "ERROR",
+                          message: message ?? "Error!");
+                    }
+                  });
+            }
+          });
+    }
+
     return Scaffold(
         appBar: AppBar(
           elevation: .5,
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
           title: const Text("Add Review"),
+          actions: [
+            if (!isMobile(context)) submitButton(),
+            const SizedBox(
+              width: 15,
+            )
+          ],
         ),
         body: SafeArea(
           bottom: true,
@@ -98,8 +143,10 @@ class _AddReviewState extends State<AddReview> {
               const LinearProgressIndicator(),
             Expanded(
               child: ListView(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: HORIZONTAL_PADDING),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: !isMobile(context)
+                          ? MediaQuery.of(context).size.width * .3
+                          : HORIZONTAL_PADDING),
                   children: [
                     const SizedBox(
                       height: 20,
@@ -155,49 +202,16 @@ class _AddReviewState extends State<AddReview> {
                     ),
                   ]),
             ),
-            Container(
-                color: Colors.white,
-                padding: const EdgeInsets.only(
-                    top: 15,
-                    left: 15,
-                    right: 15,
-                    // bottom: MediaQuery.of(context).viewInsets.bottom + 10),
-                    bottom: 15),
-                child: Button(
-                    borderColor: Colors.transparent,
-                    backgroundColor: Colors.blue[700],
-                    label: "Submit Review",
-                    onPress: () {
-                      bool res = validateForm();
-                      if (res) {
-                        reviewProvider.postReview(
-                            payload: payload,
-                            files: photos,
-                            callback: (code, message) {
-                              if (code == 200) {
-                                launchSnackbar(
-                                    context: context,
-                                    mode: "SUCCESS",
-                                    message: message ?? "Success!");
-                                setState(() {
-                                  photos = [];
-                                  payload = _payload;
-                                });
-                                placeProvider.getPlace(
-                                    placeId: placeProvider.placeInfo.id,
-                                    callback: () {});
-                                Navigator.pop(context);
-                                return;
-                              }
-                              if (code != 200) {
-                                launchSnackbar(
-                                    context: context,
-                                    mode: code == 200 ? "SUCCESS" : "ERROR",
-                                    message: message ?? "Error!");
-                              }
-                            });
-                      }
-                    }))
+            if (isMobile(context))
+              Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.only(
+                      top: 15,
+                      left: 15,
+                      right: 15,
+                      // bottom: MediaQuery.of(context).viewInsets.bottom + 10),
+                      bottom: 15),
+                  child: submitButton())
           ]),
         ));
   }

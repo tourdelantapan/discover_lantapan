@@ -1,3 +1,4 @@
+import 'package:app/provider/dashboard_provider.dart';
 import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/review_provider.dart';
 import 'package:app/provider/user_provider.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => PlaceProvider()),
           ChangeNotifierProvider(create: (_) => UserProvider()),
           ChangeNotifierProvider(create: (_) => ReviewProvider()),
+          ChangeNotifierProvider(create: (_) => DashboardProvider()),
         ],
         child: MaterialApp(
           title: 'Discover Lantapan',

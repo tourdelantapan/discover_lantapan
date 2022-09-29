@@ -1,3 +1,4 @@
+import 'package:app/screens/guest/place_info.dart';
 import 'package:app/screens/guest/places_list.dart';
 import 'package:flutter/material.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
@@ -10,11 +11,25 @@ class HomeFeed extends StatefulWidget {
 }
 
 class _HomeFeedState extends State<HomeFeed> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String placeId = '';
+
+  void _openEndDrawer(String placeId) {
+    setState(() {
+      this.placeId = placeId;
+    });
+    _scaffoldKey.currentState!.openEndDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+          key: _scaffoldKey,
+          endDrawer: Drawer(
+              width: MediaQuery.of(context).size.width * .30,
+              child: PlaceInfo(arguments: {"placeId": placeId})),
           appBar: AppBar(
               automaticallyImplyLeading: false,
               elevation: 0,
@@ -41,16 +56,19 @@ class _HomeFeedState extends State<HomeFeed> {
           body: TabBarView(
             children: [
               PlacesList(
+                onPlaceTap: (id) => _openEndDrawer(id),
                 arguments: const {
                   "mode": "popular",
                 },
               ),
               PlacesList(
+                onPlaceTap: (id) => _openEndDrawer(id),
                 arguments: const {
                   "mode": "new",
                 },
               ),
               PlacesList(
+                onPlaceTap: (id) => _openEndDrawer(id),
                 arguments: const {
                   "mode": "top_rated",
                 },

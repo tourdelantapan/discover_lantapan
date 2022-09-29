@@ -19,6 +19,30 @@ internals.endpoints = [
       },
     },
   },
+  {
+    method: "GET",
+    path: "/admin/dashboard/count",
+    handler: Handlers.admin_dashboard_count,
+    config: {
+      auth: "token",
+    },
+  },
+  {
+    method: "GET",
+    path: "/admin/dashboard/likes",
+    handler: Handlers.admin_dashboard_likes,
+    config: {
+      auth: "token",
+    },
+  },
+  {
+    method: "GET",
+    path: "/admin/dashboard/ratings",
+    handler: Handlers.admin_dashboard_ratings,
+    config: {
+      auth: "token",
+    },
+  },
 ];
 
 module.exports = internals;
