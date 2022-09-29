@@ -137,7 +137,7 @@ class _GuestState extends State<Guest> {
                     icon: drawerItems[index].icon,
                     label: drawerItems[index].text,
                     onPress: () {
-                      if (userProvider.currentUser != null && index == 5) {
+                      if (userProvider.currentUser != null && index == 6) {
                         userProvider.signOut();
                         drawerItems[6] =
                             IconTextModel(Icons.person, "Log In/Sign Up");
