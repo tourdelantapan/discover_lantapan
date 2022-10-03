@@ -99,6 +99,9 @@ internals.places = async (req, reply) => {
       query.push({
         $unwind: "$reviewsStat",
       });
+      query.push({
+        $sort: { "reviewsStat.average": -1 },
+      });
     }
 
     if (userId) {
@@ -129,7 +132,6 @@ internals.places = async (req, reply) => {
     }
 
     let places = await Place.aggregate(query);
-    console.log(places);
     return reply
       .response({
         message: "Places fetched successfully",

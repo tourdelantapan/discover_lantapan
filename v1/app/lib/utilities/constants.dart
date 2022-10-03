@@ -2,7 +2,7 @@
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-const bool IS_PODUCTION = false;
+const bool IS_PODUCTION = true;
 
 String BASE_URL = IS_PODUCTION
     ? dotenv.env['BASE_URL_PRODUCTION'] ?? ""
