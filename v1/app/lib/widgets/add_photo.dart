@@ -6,13 +6,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 class AddPhotos extends StatelessWidget {
-  List<Photo> uploadedPhotos;
   List<File> photos;
   Function onAddPhotos;
   Function onDeletePhoto;
   AddPhotos(
       {Key? key,
-      required this.uploadedPhotos,
       required this.photos,
       required this.onAddPhotos,
       required this.onDeletePhoto})
@@ -73,39 +71,7 @@ class AddPhotos extends StatelessWidget {
                         ),
                       ),
                     ])))),
-      if (uploadedPhotos.isNotEmpty)
-        SizedBox(
-            height: MediaQuery.of(context).size.height * .25,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: uploadedPhotos.length,
-                itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.only(right: 15, top: 15),
-                    child: Stack(clipBehavior: Clip.none, children: [
-                      ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(8)),
-                          child: Image.network(
-                            uploadedPhotos[index].small!,
-                            fit: BoxFit.cover,
-                            width: 200,
-                            height: MediaQuery.of(context).size.height,
-                          )),
-                      Positioned(
-                        right: -20,
-                        top: -10,
-                        child: Material(
-                          borderRadius: BorderRadius.circular(100),
-                          child: IconButton(
-                              onPressed: () => onDeletePhoto(index),
-                              icon: const Icon(
-                                Icons.remove_circle,
-                                color: Colors.red,
-                                size: 25,
-                              )),
-                        ),
-                      ),
-                    ])))),
+  
       const SizedBox(
         height: 15,
       ),

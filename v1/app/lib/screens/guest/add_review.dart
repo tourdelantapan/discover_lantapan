@@ -152,7 +152,6 @@ class _AddReviewState extends State<AddReview> {
                       height: 20,
                     ),
                     AddPhotos(
-                      uploadedPhotos: [],
                         photos: photos,
                         onDeletePhoto: (index) =>
                             setState(() => photos.removeAt(index)),

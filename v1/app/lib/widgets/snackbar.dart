@@ -3,28 +3,33 @@ import 'package:flutter/material.dart';
 launchSnackbar(
     {required BuildContext context,
     required String mode,
+    IconData? icon,
+    int? duration,
     required String message}) {
   Color? color;
-  IconData? icon;
+  IconData? _icon;
 
   if (mode == "SUCCESS") {
     color = Colors.green;
-    icon = Icons.check_box_outlined;
+    _icon = Icons.check_box_outlined;
   }
   if (mode == "ERROR") {
     color = Colors.red;
-    icon = Icons.warning_amber_rounded;
+    _icon = Icons.warning_amber_rounded;
   }
 
   final snackBar = SnackBar(
-    duration: const Duration(milliseconds: 3000),
+    duration: Duration(milliseconds: duration ?? 3000),
     content: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.white),
+        Icon(icon ?? _icon, color: Colors.white),
         const SizedBox(width: 10),
-        Text(message,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+        Expanded(
+          child: Text(message,
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold)),
+        )
       ],
     ),
     backgroundColor: color,

@@ -134,6 +134,22 @@ class PlaceProvider extends ChangeNotifier {
     }
   }
 
+  deletePhoto(
+      {required Map<String, dynamic> query, required Function callback}) async {
+    addLoading("place-edit");
+    var response =
+        await APIServices.get(endpoint: "/photo/delete", query: query);
+
+    if (response is Success) {
+      removeLoading("place-edit");
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      removeLoading("place-edit");
+      callback(response.code, response.response["message"] ?? "Failed.");
+    }
+  }
+
   likePlace(
       {required String mode,
       required int index,

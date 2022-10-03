@@ -4,9 +4,11 @@ import 'package:app/models/directions_model.dart';
 import 'package:app/models/place_model.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/directions_repository.dart';
+import 'package:app/widgets/snackbar.dart';
 import 'dart:math' show cos, sqrt, asin;
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationProvider extends ChangeNotifier {
@@ -66,6 +68,45 @@ class LocationProvider extends ChangeNotifier {
   resetMarkers() {
     markers = <MarkerId, Marker>{};
     notifyListeners();
+  }
+
+  determinePosition(BuildContext context, Function callback) async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      launchSnackbar(
+          context: context,
+          mode: "ERROR",
+          message: 'Location services are disabled.');
+      callback(null, false);
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        launchSnackbar(
+            context: context,
+            mode: "ERROR",
+            message: 'Location permissions are denied');
+        return;
+      }
+      callback(null, false);
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      launchSnackbar(
+          context: context,
+          mode: "ERROR",
+          message:
+              'Location permissions are permanently denied, we cannot request permissions.');
+      callback(null, false);
+    }
+    var res = await Geolocator.getCurrentPosition();
+    callback(res, true);
   }
 
   setMarker(String markerName, LatLng coordinates) {

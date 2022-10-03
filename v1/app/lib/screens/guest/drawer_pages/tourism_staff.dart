@@ -11,52 +11,37 @@ class TourismStaff extends StatefulWidget {
 
 class _TourismStaffState extends State<TourismStaff> {
   Staff president = Staff(
-      name: "John Doe",
-      designation: "President",
-      photo: const AssetImage('assets/images/history.jpeg'));
+      name: "Nonelita C. Butaya",
+      designation: "Staff",
+      photo: const AssetImage('assets/images/tourism_staff/butaya.jpg'));
 
   List<List> staff = [
     [
       Staff(
-          name: "Mike Wheeler",
+          name: "Gracel Joy. C Daanoy",
           designation: "Staff",
-          photo: const AssetImage('assets/images/history.jpeg')),
+          photo: const AssetImage('assets/images/tourism_staff/daanoy.jpg')),
       Staff(
-          name: "Mike Wheeler",
+          name: "Marilyn A. Apat",
           designation: "Staff",
-          photo: const AssetImage('assets/images/history.jpeg')),
-      Staff(
-          name: "Mike Wheeler",
-          designation: "Staff",
-          photo: const AssetImage('assets/images/history.jpeg'))
+          photo: const AssetImage('assets/images/tourism_staff/apat.jpg')),
     ],
     [
       Staff(
-          name: "Mike Wheeler",
+          name: "Patrocinia J. Eralino",
           designation: "Staff",
-          photo: const AssetImage('assets/images/history.jpeg')),
+          photo: const AssetImage('assets/images/tourism_staff/eralino.jpg')),
       Staff(
-          name: "Mike Wheeler",
+          name: "John Domenic C. Butaya",
           designation: "Staff",
-          photo: const AssetImage('assets/images/history.jpeg')),
-      Staff(
-          name: "Mike Wheeler",
-          designation: "Staff",
-          photo: const AssetImage('assets/images/history.jpeg'))
+          photo:
+              const AssetImage('assets/images/tourism_staff/john_butaya.jpg'))
     ],
     [
       Staff(
-          name: "Mike Wheeler",
+          name: "Angel Mae L. Husayan",
           designation: "Staff",
-          photo: const AssetImage('assets/images/history.jpeg')),
-      Staff(
-          name: "Mike Wheeler",
-          designation: "Staff",
-          photo: const AssetImage('assets/images/history.jpeg')),
-      Staff(
-          name: "Mike Wheeler",
-          designation: "Staff",
-          photo: const AssetImage('assets/images/history.jpeg'))
+          photo: const AssetImage('assets/images/tourism_staff/husayan.jpg'))
     ]
   ];
 
@@ -68,14 +53,16 @@ class _TourismStaffState extends State<TourismStaff> {
         child: ListView.builder(
             padding: EdgeInsets.symmetric(
                 horizontal: isMobile(context)
-                    ? 15
+                    ? 0
                     : MediaQuery.of(context).size.width * .30,
                 vertical: 15),
             itemCount: staff.length,
             itemBuilder: (context, i) => Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: List.generate(staff[i].length,
-                      (ind) => StaffBadge(staff: staff[i][ind])),
+                  children: List.generate(
+                      staff[i].length,
+                      (ind) =>
+                          Expanded(child: StaffBadge(staff: staff[i][ind]))),
                 )),
       )
     ]);
@@ -95,8 +82,8 @@ class StaffBadge extends StatelessWidget {
             borderRadius: BorderRadius.circular(100),
             child: Image(
               image: staff.photo,
-              height: 70,
-              width: 70,
+              height: 100,
+              width: 80,
               fit: BoxFit.cover,
             )),
         const SizedBox(

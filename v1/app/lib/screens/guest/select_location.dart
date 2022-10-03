@@ -1,3 +1,4 @@
+import 'package:app/provider/location_provider.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/reverse_geocode.dart';
 import 'package:app/widgets/button.dart';
@@ -8,6 +9,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
+
+import 'package:provider/provider.dart';
 
 class SelectLocation extends StatefulWidget {
   bool willDetectLocation;
@@ -38,48 +41,16 @@ class _SelectLocationState extends State<SelectLocation> {
 
   _determinePosition() async {
     setState(() => detectingLocation = true);
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      launchSnackbar(
-          context: context,
-          mode: "ERROR",
-          message: 'Location services are disabled.');
-      return;
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        launchSnackbar(
-            context: context,
-            mode: "ERROR",
-            message: 'Location permissions are denied');
-        return;
+    Provider.of<LocationProvider>(context, listen: false)
+        .determinePosition(context, (res, isSuccess) {
+      if (isSuccess) {
+        mapController?.animateCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(
+                target: LatLng(res.latitude, res.longitude), zoom: 17)));
+        setMarker(LatLng(res.latitude, res.longitude));
+        setState(() => detectingLocation = false);
       }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      launchSnackbar(
-          context: context,
-          mode: "ERROR",
-          message:
-              'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    var res = await Geolocator.getCurrentPosition();
-    // double tempLat = 8.042233792899466;
-    // double tempLong = 125.15568791362584;
-    // THIS IS JUST TEMPORARY
-    // mapController?.animateCamera(CameraUpdate.newCameraPosition(
-    //     CameraPosition(target: LatLng(tempLat, tempLong), zoom: mapZoom)));
-    // setMarker(LatLng(tempLat, tempLong));
-    mapController?.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(res.latitude, res.longitude), zoom: 17)));
-    setMarker(LatLng(res.latitude, res.longitude));
-    setState(() => detectingLocation = false);
+    });
   }
 
   @override

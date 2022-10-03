@@ -12,7 +12,7 @@ const mongoose = require("mongoose");
 
 internals.places = async (req, reply) => {
   let userId = req.auth.credentials?._id;
-  console.log("UPDATE SIGN!!!!!")
+  console.log("UPDATE SIGN!!!!!");
 
   try {
     let query = [
@@ -343,17 +343,18 @@ internals.delete_photo = async (req, reply) => {
   let { dataId, schema, link } = req.query;
   let SCHEMA;
 
+
   if (schema == "place") {
     SCHEMA = Place;
   }
 
   try {
-    let _link = link.replace(
-      "https://tourdelantapan.s3.ap-northeast-1.amazonaws.com/",
-      ""
-    );
-    let link_ = _link.slice(0, _link.lastIndexOf("/"));
-    await deleteFiles(link_);
+    // let _link = link.replace(
+    //   "https://tourdelantapan.s3.ap-northeast-1.amazonaws.com/",
+    //   ""
+    // );
+    // let link_ = _link.slice(0, _link.lastIndexOf("/"));
+    // await deleteFiles(link_);
 
     await SCHEMA.updateOne(
       { _id: dataId },
@@ -365,7 +366,7 @@ internals.delete_photo = async (req, reply) => {
 
     return reply
       .response({
-        message: "",
+        message: "Photo deleted.",
       })
       .code(200);
   } catch (e) {
@@ -380,7 +381,6 @@ internals.delete_photo = async (req, reply) => {
 
 internals.edit_place = async (req, reply) => {
   let payload = req.payload;
-
   var coordinates =
     payload?.latitude && payload?.longitude
       ? {
@@ -389,18 +389,24 @@ internals.edit_place = async (req, reply) => {
         }
       : null;
 
-  if (Array.isArray(payload?.photos) && payload.photos?.length != 0) {
-    var photoQuery = {};
-    var photosUrl = await getUrlsArray(payload.photos, payload._id, "place");
-    if (photosUrl?.length == 0 || photosUrl == null) {
+  var photoQuery = {};
+  if (!Array.isArray(payload.photos) && payload.photos)
+    payload.photos = [payload.photos];
+
+  if (Array.isArray(payload.photos) && payload.photos.length != 0) {
+    let photosUrl = await getUrlsArray(payload.photos, payload._id, "place");
+    if (photosUrl && photosUrl?.length != 0) {
       photoQuery = {
         $push: {
-          photos: photosUrl,
+          photos: { $each: photosUrl },
         },
       };
     }
-  } else {
-    delete payload?.photos;
+    delete payload.photos;
+  }
+
+  if (!payload?.photos) {
+    delete payload.photos;
   }
 
   try {

@@ -110,16 +110,16 @@ class _ManagePlacesState extends State<ManagePlaces> {
                                       borderRadius: BorderRadius.circular(100)),
                                   child: const Icon(Icons.more_horiz_rounded)),
                               itemBuilder: (context) => [
-                                    // PopupMenuItem<String>(
-                                    //     // ignore: sort_child_properties_last
-                                    //     child: IconText(
-                                    //         mainAxisAlignment:
-                                    //             MainAxisAlignment.start,
-                                    //         icon: Icons.edit_rounded,
-                                    //         color: Colors.black,
-                                    //         fontWeight: FontWeight.bold,
-                                    //         label: "Edit"),
-                                    //     value: '1'),
+                                    PopupMenuItem<String>(
+                                        // ignore: sort_child_properties_last
+                                        child: IconText(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            icon: Icons.edit_rounded,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            label: "Edit"),
+                                        value: '1'),
                                     PopupMenuItem<String>(
                                         // ignore: sort_child_properties_last
                                         child: IconText(

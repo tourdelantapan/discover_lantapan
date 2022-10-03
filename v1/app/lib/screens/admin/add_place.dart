@@ -54,7 +54,8 @@ class _AddPlaceState extends State<AddPlace> {
       payload = widget.arguments["payload"].toJson();
       addressController.text = payload["address"];
       payload["categoryId"] = payload["categoryId"].id;
-      payload.removeWhere((key, value) => ["photos"].contains(key));
+      payload
+          .removeWhere((key, value) => ["photos", "coordinates"].contains(key));
       uploadedPhotos = widget.arguments["payload"].photos;
     }
   }
@@ -146,139 +147,244 @@ class _AddPlaceState extends State<AddPlace> {
         ),
         body: Form(
             key: _formKey,
-            child: ListView(
-                padding: EdgeInsets.symmetric(
-                    horizontal: isMobile(context)
-                        ? 15
-                        : MediaQuery.of(context).size.width * .20,
-                    vertical: 15),
-                children: [
-                  if (placeProvider.loading.contains("place-add") ||
-                      placeProvider.loading.contains("place-edit"))
-                    const LinearProgressIndicator(),
-                  AddPhotos(
-                      uploadedPhotos: uploadedPhotos,
-                      photos: photos,
-                      onDeletePhoto: (index) =>
-                          setState(() => photos.removeAt(index)),
-                      onAddPhotos: (List<File> photos) {
-                        setState(() => this.photos = photos);
-                      }),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    initialValue: payload["name"],
-                    onChanged: (e) =>
-                        setState(() => payload["name"] = e.trim()),
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "This field is required";
-                      }
-                    },
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text("Name")),
-                  ),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    controller: addressController,
-                    onChanged: (e) =>
-                        setState(() => payload["address"] = e.trim()),
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "This field is required";
-                      }
-                    },
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        label: const Text("Address"),
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  isDismissible: false,
-                                  enableDrag: false,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  builder: (context) {
-                                    return StatefulBuilder(builder:
-                                        (BuildContext context,
-                                            StateSetter setModalState) {
-                                      return Modal(
-                                          title:
-                                              "Long press to pin your location",
-                                          heightInPercentage: .9,
-                                          content: SelectLocation(
-                                              willDetectLocation: false,
-                                              onSelectLocation:
-                                                  (coordinates, address) {
-                                                payload["latitude"] =
-                                                    coordinates.latitude;
-                                                payload["longitude"] =
-                                                    coordinates.longitude;
-                                                payload["address"] = address;
-                                                addressController.text =
-                                                    address;
-                                              }));
-                                    });
-                                  });
-                            },
-                            icon: const Icon(Icons.pin_drop_rounded))),
-                  ),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    initialValue: payload["description"],
-                    maxLines: null,
-                    onChanged: (e) =>
-                        setState(() => payload["description"] = e.trim()),
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "This field is required";
-                      }
-                    },
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        label: Text("Description")),
-                  ),
-                  const SizedBox(height: 15),
-                  IconText(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      label: "Select one category"),
-                  const SizedBox(height: 5),
-                  Row(
-                      children: List.generate(
-                          categories.length,
-                          (index) => Chippy(
-                              backgroundColor:
-                                  payload["categoryId"] == categories[index].id
-                                      ? Colors.black
-                                      : Colors.grey,
-                              margin: const EdgeInsets.only(right: 10),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 10),
-                              label: categories[index].name,
-                              onPress: () => setState(() =>
-                                  payload["categoryId"] =
-                                      categories[index].id)))),
-                  const SizedBox(height: 15),
-                  IconText(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      label: "Status"),
-                  const SizedBox(height: 5),
-                  Row(
-                      children: List.generate(
-                          status.length,
-                          (index) => Chippy(
-                              backgroundColor:
-                                  payload["status"] == status[index]
-                                      ? Colors.black
-                                      : Colors.grey,
-                              margin: const EdgeInsets.only(right: 10),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 10),
-                              label: status[index],
-                              onPress: () => setState(
-                                  () => payload["status"] = status[index]))))
-                ])));
+            child: Column(
+              children: [
+                if (placeProvider.loading.contains("place-add") ||
+                    placeProvider.loading.contains("place-edit"))
+                  const LinearProgressIndicator(),
+                Expanded(
+                  child: ListView(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: isMobile(context)
+                              ? 15
+                              : MediaQuery.of(context).size.width * .20,
+                          vertical: 15),
+                      children: [
+                        AddPhotos(
+                            photos: photos,
+                            onDeletePhoto: (index) =>
+                                setState(() => photos.removeAt(index)),
+                            onAddPhotos: (List<File> photos) {
+                              setState(() => this.photos = photos);
+                            }),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          initialValue: payload["name"],
+                          onChanged: (e) =>
+                              setState(() => payload["name"] = e.trim()),
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "This field is required";
+                            }
+                          },
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              label: Text("Name")),
+                        ),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          controller: addressController,
+                          onChanged: (e) =>
+                              setState(() => payload["address"] = e.trim()),
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "This field is required";
+                            }
+                          },
+                          decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              label: const Text("Address"),
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        isDismissible: false,
+                                        enableDrag: false,
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        builder: (context) {
+                                          return StatefulBuilder(builder:
+                                              (BuildContext context,
+                                                  StateSetter setModalState) {
+                                            return Modal(
+                                                title:
+                                                    "Long press to pin your location",
+                                                heightInPercentage: .9,
+                                                content: SelectLocation(
+                                                    willDetectLocation: false,
+                                                    onSelectLocation:
+                                                        (coordinates, address) {
+                                                      payload["latitude"] =
+                                                          coordinates.latitude;
+                                                      payload["longitude"] =
+                                                          coordinates.longitude;
+                                                      payload["address"] =
+                                                          address;
+                                                      addressController.text =
+                                                          address;
+                                                    }));
+                                          });
+                                        });
+                                  },
+                                  icon: const Icon(Icons.pin_drop_rounded))),
+                        ),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          initialValue: payload["description"],
+                          maxLines: null,
+                          onChanged: (e) =>
+                              setState(() => payload["description"] = e.trim()),
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "This field is required";
+                            }
+                          },
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              label: Text("Description")),
+                        ),
+                        if (uploadedPhotos.isNotEmpty)
+                          Column(children: [
+                            const SizedBox(height: 15),
+                            IconText(
+                              icon: Icons.photo,
+                              label: "Photos",
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .25,
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: uploadedPhotos.length,
+                                    itemBuilder: (context, index) => Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 15, top: 10),
+                                        child: Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              ClipRRect(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(8)),
+                                                  child: Image.network(
+                                                    uploadedPhotos[index]
+                                                        .small!,
+                                                    fit: BoxFit.cover,
+                                                    width: 200,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .height,
+                                                  )),
+                                              Positioned(
+                                                right: -20,
+                                                top: -10,
+                                                child: Material(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100),
+                                                  child: IconButton(
+                                                      onPressed: () {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              String input = "";
+
+                                                              return AlertDialog(
+                                                                title: const Text(
+                                                                    'Delete Photo?'),
+                                                                actions: [
+                                                                  TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                      child: const Text(
+                                                                          "Cancel")),
+                                                                  TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        placeProvider
+                                                                            .deletePhoto(
+                                                                                query: {
+                                                                              "dataId": payload["_id"],
+                                                                              "schema": "place",
+                                                                              "link": uploadedPhotos[index].large
+                                                                            },
+                                                                                callback: (code, message) {
+                                                                                  if (code != 200) {
+                                                                                    launchSnackbar(context: context, mode: code == 200 ? "SUCCESS" : "ERROR", message: message ?? "Error!");
+                                                                                    return;
+                                                                                  }
+                                                                                  setState(() {
+                                                                                    uploadedPhotos.removeAt(index);
+                                                                                  });
+                                                                                });
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                      child: const Text(
+                                                                          "Yes")),
+                                                                ],
+                                                              );
+                                                            });
+                                                      },
+                                                      icon: const Icon(
+                                                        Icons.remove_circle,
+                                                        color: Colors.red,
+                                                        size: 25,
+                                                      )),
+                                                ),
+                                              ),
+                                            ])))),
+                          ]),
+                        const SizedBox(height: 15),
+                        IconText(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            label: "Select one category"),
+                        const SizedBox(height: 5),
+                        Row(
+                            children: List.generate(
+                                categories.length,
+                                (index) => Chippy(
+                                    backgroundColor: payload["categoryId"] ==
+                                            categories[index].id
+                                        ? Colors.black
+                                        : Colors.grey,
+                                    margin: const EdgeInsets.only(right: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 10),
+                                    label: categories[index].name,
+                                    onPress: () => setState(() =>
+                                        payload["categoryId"] =
+                                            categories[index].id)))),
+                        const SizedBox(height: 15),
+                        IconText(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            label: "Status"),
+                        const SizedBox(height: 5),
+                        Row(
+                            children: List.generate(
+                                status.length,
+                                (index) => Chippy(
+                                    backgroundColor:
+                                        payload["status"] == status[index]
+                                            ? Colors.black
+                                            : Colors.grey,
+                                    margin: const EdgeInsets.only(right: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 10),
+                                    label: status[index],
+                                    onPress: () => setState(() =>
+                                        payload["status"] = status[index]))))
+                      ]),
+                ),
+              ],
+            )));
   }
 }

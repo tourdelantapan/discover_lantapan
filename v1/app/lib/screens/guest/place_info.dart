@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:app/models/photo_model.dart';
 import 'package:app/provider/location_provider.dart';
 import 'package:app/provider/place_provider.dart';
@@ -140,22 +142,26 @@ class _PlaceInfoState extends State<PlaceInfo> {
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  IconText(
-                                    size: 18,
-                                    label: placeProvider.placeInfo.name,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                  IconText(
-                                    size: 16,
-                                    icon: Icons.pin_drop_rounded,
-                                    label: placeProvider.placeInfo.address,
-                                    color: Colors.black54,
-                                  )
-                                ]),
+                            Expanded(
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    IconText(
+                                      size: 18,
+                                      label: placeProvider.placeInfo.name,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                    Text(
+                                      placeProvider.placeInfo.address,
+                                      style: const TextStyle(
+                                          color: Colors.black54),
+                                    ),
+                                  ]),
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
                             Container(
                                 decoration: BoxDecoration(
                                     color: placeProvider.placeInfo.isLiked

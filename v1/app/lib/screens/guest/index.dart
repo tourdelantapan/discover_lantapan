@@ -7,10 +7,14 @@ import 'package:app/screens/guest/drawer_pages/history.dart';
 import 'package:app/screens/guest/drawer_pages/home_feed.dart';
 import 'package:app/screens/guest/drawer_pages/tourism_staff.dart';
 import 'package:app/screens/guest/select_location.dart';
+import 'package:app/utilities/reverse_geocode.dart';
 import 'package:app/widgets/bottom_modal.dart';
 import 'package:app/widgets/button.dart';
+import 'package:app/widgets/icon_loaders.dart';
 import 'package:app/widgets/icon_text.dart';
+import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class Guest extends StatefulWidget {
@@ -23,6 +27,7 @@ class Guest extends StatefulWidget {
 class _GuestState extends State<Guest> {
   PageController page = PageController();
   int pageIndex = 0;
+  bool detectingLocation = true;
 
   List<IconTextModel> drawerItems = [
     IconTextModel(Icons.home, "Home"),
@@ -62,17 +67,41 @@ class _GuestState extends State<Guest> {
         });
   }
 
+  determinePosition() {
+    Provider.of<LocationProvider>(context, listen: false)
+        .determinePosition(context, (res, isSuccess) async {
+      if (isSuccess) {
+        String address = await AddressRepository.reverseGeocode(
+            coordinates: LatLng(res.latitude, res.longitude));
+        if (!mounted) return;
+        Provider.of<LocationProvider>(context, listen: false)
+            .setCoordinates(LatLng(res.latitude, res.longitude), address);
+
+        launchSnackbar(
+            context: context,
+            mode: "SUCCESS",
+            duration: 7000,
+            icon: Icons.pin_drop_rounded,
+            message:
+                "Location detected: $address. Virtually change location to your liking by pressing the pin button on the top bar.");
+      }
+
+      setState(() => detectingLocation = false);
+    });
+  }
+
   @override
   void initState() {
     () async {
       await Future.delayed(Duration.zero);
       if (!mounted) return;
-      if (Provider.of<LocationProvider>(context, listen: false)
-              .address
-              .isEmpty &&
-          mounted) {
-        setLocation();
-      }
+      determinePosition();
+      // if (Provider.of<LocationProvider>(context, listen: false)
+      //         .address
+      //         .isEmpty &&
+      //     mounted) {
+      //   setLocation();
+      // }
     }();
     super.initState();
   }
@@ -101,11 +130,14 @@ class _GuestState extends State<Guest> {
                   Navigator.pushNamed(context, '/admin');
                 },
                 icon: const Icon(Icons.switch_account_rounded)),
-          IconButton(
-              onPressed: () {
-                setLocation();
-              },
-              icon: const Icon(Icons.pin_drop_rounded)),
+          if (detectingLocation)
+            showDoubleBounce(size: 20)
+          else
+            IconButton(
+                onPressed: () {
+                  setLocation();
+                },
+                icon: const Icon(Icons.pin_drop_rounded)),
           IconButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/search/place');
