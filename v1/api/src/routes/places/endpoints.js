@@ -55,6 +55,32 @@ internals.endpoints = [
       auth: false,
     },
   },
+  {
+    method: ["GET"],
+    path: "/photo/delete",
+    handler: Handlers.delete_photo,
+    config: {
+      auth: {
+        strategy: "token",
+      },
+    },
+  },
+  {
+    method: "POST",
+    path: "/place/edit",
+    options: {
+      payload: {
+        output: "file",
+        parse: true,
+        multipart: true,
+        maxBytes: 100000000000,
+      },
+      handler: Handlers.edit_place,
+      auth: {
+        strategy: "token",
+      },
+    },
+  },
 ];
 
 module.exports = internals;

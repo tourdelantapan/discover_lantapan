@@ -4,7 +4,10 @@ var internals = {};
 const Place = require("../../database/models/Place");
 const Review = require("../../database/models/Review");
 const Favorite = require("../../database/models/Favorite");
-const { getUrlsArray } = require("../../libraries/aws-s3-storage-upload");
+const {
+  getUrlsArray,
+  deleteFiles,
+} = require("../../libraries/aws-s3-storage-upload");
 const mongoose = require("mongoose");
 
 internals.places = async (req, reply) => {
@@ -50,7 +53,7 @@ internals.places = async (req, reply) => {
     ];
     let filters = [];
 
-    let { searchKey } = req.query;
+    let { searchKey, mode } = req.query;
 
     if (searchKey) {
       var re = new RegExp(searchKey, "i");
@@ -60,6 +63,41 @@ internals.places = async (req, reply) => {
           { address: { $regex: re } },
           { "categoryId.name": { $regex: re } },
         ],
+      });
+    }
+
+    if (mode == "popular") {
+      query.push({
+        $lookup: {
+          from: "favorites",
+          localField: "_id",
+          foreignField: "placeId",
+          pipeline: [
+            {
+              $group: {
+                _id: 1,
+                count: { $sum: 1 },
+              },
+            },
+          ],
+          as: "favorites",
+        },
+      });
+      query.push({
+        $unwind: "$favorites",
+      });
+      query.push({
+        $sort: { "favorites.count": -1 },
+      });
+    }
+
+    if (mode == "new") {
+      query.push({ $sort: { createdAt: -1 } });
+    }
+
+    if (mode == "top_rated") {
+      query.push({
+        $unwind: "$reviewsStat",
       });
     }
 
@@ -91,6 +129,7 @@ internals.places = async (req, reply) => {
     }
 
     let places = await Place.aggregate(query);
+    console.log(places);
     return reply
       .response({
         message: "Places fetched successfully",
@@ -239,10 +278,15 @@ internals.place_review_add = async (req, reply) => {
     ...payload,
   });
 
+  if (!Array.isArray(payload.photos) && payload.photos)
+    payload.photos = [payload.photos];
+
   if (Array.isArray(payload.photos) && payload.photos.length != 0) {
     let photosUrl = await getUrlsArray(payload.photos, newReview._id, "review");
     newReview.photos = photosUrl;
-  } else {
+  }
+
+  if (!payload?.photos) {
     delete payload.photos;
   }
 
@@ -280,6 +324,96 @@ internals.places_reviews_list = async (req, reply) => {
         data: {
           reviews,
         },
+      })
+      .code(200);
+  } catch (e) {
+    console.log(e);
+    return reply
+      .response({
+        message: "Server error",
+      })
+      .code(500);
+  }
+};
+
+internals.delete_photo = async (req, reply) => {
+  let { dataId, schema, link } = req.query;
+  let SCHEMA;
+
+  if (schema == "place") {
+    SCHEMA = Place;
+  }
+
+  try {
+    let _link = link.replace(
+      "https://tourdelantapan.s3.ap-northeast-1.amazonaws.com/",
+      ""
+    );
+    let link_ = _link.slice(0, _link.lastIndexOf("/"));
+    await deleteFiles(link_);
+
+    await SCHEMA.updateOne(
+      { _id: dataId },
+      {
+        $pull: { photos: { large: link } },
+      },
+      { safe: true, upsert: true }
+    );
+
+    return reply
+      .response({
+        message: "",
+      })
+      .code(200);
+  } catch (e) {
+    console.log(e);
+    return reply
+      .response({
+        message: "Server error",
+      })
+      .code(500);
+  }
+};
+
+internals.edit_place = async (req, reply) => {
+  let payload = req.payload;
+
+  var coordinates =
+    payload?.latitude && payload?.longitude
+      ? {
+          latitude: parseFloat(payload.latitude),
+          longitude: parseFloat(payload.longitude),
+        }
+      : null;
+
+  if (Array.isArray(payload?.photos) && payload.photos?.length != 0) {
+    var photoQuery = {};
+    var photosUrl = await getUrlsArray(payload.photos, payload._id, "place");
+    if (photosUrl?.length == 0 || photosUrl == null) {
+      photoQuery = {
+        $push: {
+          photos: photosUrl,
+        },
+      };
+    }
+  } else {
+    delete payload?.photos;
+  }
+
+  try {
+    await Place.updateOne(
+      {
+        _id: payload._id,
+      },
+      {
+        ...payload,
+        coordinates: coordinates ?? payload.coordinates,
+        ...photoQuery,
+      }
+    );
+    return reply
+      .response({
+        message: "Place updated",
       })
       .code(200);
   } catch (e) {

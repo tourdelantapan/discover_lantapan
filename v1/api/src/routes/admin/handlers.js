@@ -17,10 +17,15 @@ internals.add_place = async (req, reply) => {
     ...payload,
   });
 
+  if (!Array.isArray(payload.photos) && payload.photos)
+    payload.photos = [payload.photos];
+
   if (Array.isArray(payload.photos) && payload.photos.length != 0) {
-    let photosUrl = await getUrlsArray(payload.photos, newPlace._id, "place");
-    newPlace.photos = photosUrl;
-  } else {
+    let photosUrl = await getUrlsArray(payload.photos, newReview._id, "place");
+    newReview.photos = photosUrl;
+  }
+
+  if (!payload?.photos) {
     delete payload.photos;
   }
 
