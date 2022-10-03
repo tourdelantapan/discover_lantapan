@@ -1,6 +1,8 @@
 import 'package:app/models/visitor_model.dart';
 import 'package:app/provider/user_provider.dart';
 import 'package:app/utilities/constants.dart';
+import 'package:app/utilities/generate_pdf.dart';
+import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -39,13 +41,27 @@ class _VisitorTableState extends State<VisitorTable> {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
         color: Colors.white,
-        child: Row(children: [
-          IconText(
-            label: "Total Visitors: ${userProvider.visitorCount}",
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            size: 18,
-          )
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            IconText(
+              label: "Total Visitors",
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              size: 18,
+            ),
+            IconText(
+              label: userProvider.visitorCount.toString(),
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              size: 18,
+            ),
+          ]),
+          Button(
+              label: "Generate PDF",
+              onPress: () {
+                generatePDF(context, visitors: userProvider.visitorList, totalCount: userProvider.visitorCount.toString());
+              })
         ]),
       ),
       const SizedBox(
