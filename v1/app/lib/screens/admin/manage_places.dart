@@ -27,22 +27,27 @@ class _ManagePlacesState extends State<ManagePlaces> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String placeId = '';
 
+  fetchPlaces() {
+    Provider.of<PlaceProvider>(context, listen: false).getPlaces(
+        query: {"mode": widget.arguments["mode"]},
+        callback: (code, message) {
+          if (code != 200) {
+            launchSnackbar(
+                context: context,
+                mode: code == 200 ? "SUCCESS" : "ERROR",
+                message: message ?? "Success!");
+          }
+        });
+  }
+
   @override
   void initState() {
     () async {
       await Future.delayed(Duration.zero);
-      Provider.of<PlaceProvider>(context, listen: false).getPlaces(
-          query: {"mode": widget.arguments["mode"]},
-          callback: (code, message) {
-            if (code != 200) {
-              launchSnackbar(
-                  context: context,
-                  mode: code == 200 ? "SUCCESS" : "ERROR",
-                  message: message ?? "Success!");
-            }
-          });
+      if (!mounted) return;
+      fetchPlaces();
+      super.initState();
     }();
-    super.initState();
   }
 
   @override
@@ -64,7 +69,10 @@ class _ManagePlacesState extends State<ManagePlaces> {
           child: PlaceInfo(arguments: {"placeId": placeId})),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, "/place/add");
+          Navigator.pushNamed(context, "/place/add", arguments: {"mode": "ADD"})
+              .then((_) {
+            fetchPlaces();
+          });
         },
         isExtended: true,
         child: const Icon(Icons.add),
@@ -102,16 +110,16 @@ class _ManagePlacesState extends State<ManagePlaces> {
                                       borderRadius: BorderRadius.circular(100)),
                                   child: const Icon(Icons.more_horiz_rounded)),
                               itemBuilder: (context) => [
-                                    PopupMenuItem<String>(
-                                        // ignore: sort_child_properties_last
-                                        child: IconText(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            icon: Icons.edit_rounded,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            label: "Edit"),
-                                        value: '1'),
+                                    // PopupMenuItem<String>(
+                                    //     // ignore: sort_child_properties_last
+                                    //     child: IconText(
+                                    //         mainAxisAlignment:
+                                    //             MainAxisAlignment.start,
+                                    //         icon: Icons.edit_rounded,
+                                    //         color: Colors.black,
+                                    //         fontWeight: FontWeight.bold,
+                                    //         label: "Edit"),
+                                    //     value: '1'),
                                     PopupMenuItem<String>(
                                         // ignore: sort_child_properties_last
                                         child: IconText(
@@ -134,6 +142,16 @@ class _ManagePlacesState extends State<ManagePlaces> {
                                         value: '3'),
                                   ],
                               onSelected: (itemSelected) {
+                                if (itemSelected == "1") {
+                                  Navigator.pushNamed(context, '/place/add',
+                                      arguments: {
+                                        "mode": "EDIT",
+                                        "payload": place
+                                      }).then((_) {
+                                    fetchPlaces();
+                                  });
+                                }
+
                                 if (itemSelected == "2") {
                                   showModalBottomSheet(
                                       context: context,

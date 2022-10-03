@@ -94,6 +94,25 @@ class PlaceProvider extends ChangeNotifier {
     }
   }
 
+  editPlace(
+      {required Map<String, dynamic> payload,
+      required List<File> files,
+      required Function callback}) async {
+    addLoading("place-edit");
+    await Future.delayed(const Duration(seconds: 1));
+    var response = await APIServices.post(
+        endpoint: "/place/edit", payload: payload, files: files);
+    if (response is Success) {
+      removeLoading("place-edit");
+      notifyListeners();
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      callback(response.code, response.response["message"] ?? "Failed.");
+      removeLoading("place-edit");
+    }
+  }
+
   getPlace({required String placeId, required Function callback}) async {
     addLoading("place-info");
     await Future.delayed(const Duration(seconds: 1));

@@ -1,4 +1,5 @@
 import 'package:app/provider/location_provider.dart';
+import 'package:app/screens/guest/select_location.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/bottom_modal.dart';
 import 'package:app/widgets/button.dart';
@@ -26,12 +27,20 @@ class _MapViewState extends State<MapView> {
   void initState() {
     () async {
       await Future.delayed(Duration.zero);
+      if (!mounted) return;
       Provider.of<LocationProvider>(context, listen: false).resetMarkers();
       Provider.of<LocationProvider>(context, listen: false).setMarker(
           "destination",
           Provider.of<LocationProvider>(context, listen: false)
               .destination
               .coordinates);
+
+      if (Provider.of<LocationProvider>(context, listen: false)
+          .address
+          .isNotEmpty) {
+        await Provider.of<LocationProvider>(context, listen: false)
+            .getPolyline();
+      }
     }();
     super.initState();
   }
@@ -61,11 +70,14 @@ class _MapViewState extends State<MapView> {
                               title: "Long press to pin your location",
                               heightInPercentage: .9,
                               content: SelectLocation(
+                                  value: locationProvider.coordinates,
+                                  willDetectLocation:
+                                      locationProvider.address.isEmpty,
                                   onSelectLocation: (coordinates, address) {
-                                Provider.of<LocationProvider>(context,
-                                        listen: false)
-                                    .setCoordinates(coordinates, address);
-                              }));
+                                    Provider.of<LocationProvider>(context,
+                                            listen: false)
+                                        .setCoordinates(coordinates, address);
+                                  }));
                         });
                       });
                 },
@@ -200,8 +212,51 @@ class _MapViewState extends State<MapView> {
                 Details(
                   label: "Gas Fuel Price",
                   value: "₱${locationProvider.fuelPrice.toStringAsFixed(2)}",
-                  measurement: "₱74.20 per Liter",
+                  measurement:
+                      "₱${locationProvider.averageGasPrice.toStringAsFixed(2)} per Liter",
                   iconAsset: 'assets/images/price.png',
+                  action: Material(
+                    color: Colors.transparent,
+                    child: IconButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                String input = "";
+
+                                return AlertDialog(
+                                  title: const Text('Edit Gas Price'),
+                                  content: TextField(
+                                    onChanged: (value) {
+                                      input = value;
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                        hintText: "Gas price in ₱"),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Close")),
+                                    TextButton(
+                                        onPressed: () {
+                                          locationProvider.setAverageGasPrice(
+                                              double.parse(input));
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Save")),
+                                  ],
+                                );
+                              });
+                        },
+                        icon: const Icon(
+                          Icons.edit_rounded,
+                          size: 15,
+                          color: Colors.blue,
+                        )),
+                  ),
                 ),
                 const SizedBox(
                   height: 25,
@@ -218,11 +273,13 @@ class Details extends StatelessWidget {
   String value;
   String measurement;
   String iconAsset;
+  Widget? action;
   Details(
       {Key? key,
       required this.label,
       required this.value,
       required this.measurement,
+      this.action,
       required this.iconAsset})
       : super(key: key);
 
@@ -249,173 +306,20 @@ class Details extends StatelessWidget {
         ]),
       ),
       Expanded(
-        child: IconText(
-          mainAxisAlignment: MainAxisAlignment.start,
-          label: measurement,
-          color: Colors.black,
-        ),
+        child: Row(children: [
+          IconText(
+            mainAxisAlignment: MainAxisAlignment.start,
+            label: measurement,
+            color: Colors.black,
+          ),
+          if (action != null) action!
+        ]),
       )
     ]);
   }
 }
 
-class SelectLocation extends StatefulWidget {
-  Function onSelectLocation;
-  SelectLocation({Key? key, required this.onSelectLocation}) : super(key: key);
 
-  @override
-  State<SelectLocation> createState() => _SelectLocationState();
-}
-
-class _SelectLocationState extends State<SelectLocation> {
-  String address = "";
-  Completer<GoogleMapController> _controller = Completer();
-  GoogleMapController? mapController;
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(8.143548493162127, 125.13147031688014),
-    zoom: mapZoom,
-  );
-  bool detectingLocation = false;
-  LatLng? coordinates;
-
-  _determinePosition() async {
-    setState(() => detectingLocation = true);
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      launchSnackbar(
-          context: context,
-          mode: "ERROR",
-          message: 'Location services are disabled.');
-      return;
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        launchSnackbar(
-            context: context,
-            mode: "ERROR",
-            message: 'Location permissions are denied');
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      launchSnackbar(
-          context: context,
-          mode: "ERROR",
-          message:
-              'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    var res = await Geolocator.getCurrentPosition();
-    // double tempLat = 8.042233792899466;
-    // double tempLong = 125.15568791362584;
-    // THIS IS JUST TEMPORARY
-    // mapController?.animateCamera(CameraUpdate.newCameraPosition(
-    //     CameraPosition(target: LatLng(tempLat, tempLong), zoom: mapZoom)));
-    // setMarker(LatLng(tempLat, tempLong));
-    mapController?.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(res.latitude, res.latitude), zoom: 17)));
-    setMarker(LatLng(res.latitude, res.latitude));
-    setState(() => detectingLocation = false);
-  }
-
-  @override
-  void initState() {
-    () async {
-      await Future.delayed(Duration.zero);
-      _determinePosition();
-    }();
-    super.initState();
-  }
-
-  setMarker(LatLng pos) async {
-    // var markerIdVal = DateTime.now().millisecondsSinceEpoch.toString();
-    var markerIdVal = "no_id";
-    final MarkerId markerId = MarkerId(markerIdVal);
-    final Marker marker = Marker(
-      markerId: markerId,
-      position: pos,
-      infoWindow: InfoWindow(title: markerIdVal, snippet: '*'),
-      onTap: () {},
-    );
-
-    setState(() {
-      markers[markerId] = marker;
-      coordinates = pos;
-    });
-
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(pos.latitude, pos.longitude);
-    setState(() => address =
-        "${placemarks[0].street}${placemarks[0].street!.isEmpty ? "" : ","} ${placemarks[0].subLocality}${placemarks[0].subLocality!.isEmpty ? "" : ","}${placemarks[0].locality}, ${placemarks[0].administrativeArea}");
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      if (detectingLocation) const LinearProgressIndicator(),
-      const SizedBox(
-        height: 15,
-      ),
-      IconText(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          mainAxisAlignment: MainAxisAlignment.start,
-          color: Colors.black,
-          fontWeight: FontWeight.normal,
-          label: "Your Location"),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Text(
-            address.isNotEmpty
-                ? address.trim()
-                : detectingLocation
-                    ? "Detecting location..."
-                    : "Select Location",
-            style: const TextStyle(fontWeight: FontWeight.bold)),
-      ),
-      const SizedBox(
-        height: 15,
-      ),
-      Button(
-          backgroundColor: Colors.black87,
-          borderColor: Colors.transparent,
-          margin: const EdgeInsets.symmetric(horizontal: 15),
-          label: "Select Location",
-          onPress: () {
-            if (coordinates == null) {
-              launchSnackbar(
-                  context: context, mode: "ERROR", message: "No location yet.");
-              return;
-            }
-
-            widget.onSelectLocation(coordinates, address);
-            Navigator.pop(context);
-          }),
-      const SizedBox(
-        height: 15,
-      ),
-      Expanded(
-          child: GoogleMap(
-        key: const Key("Yuh"),
-        onLongPress: (pos) => setMarker(pos),
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        markers: Set<Marker>.of(markers.values),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-          mapController = controller;
-        },
-      )),
-    ]);
-  }
-}
 
 
 // https://pub.dev/packages/google_directions_api

@@ -1,4 +1,5 @@
 import 'package:app/provider/user_provider.dart';
+import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_loaders.dart';
 import 'package:app/widgets/icon_text.dart';
@@ -47,7 +48,11 @@ class _InitializeScreenState extends State<InitializeScreen> {
           body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Image(image: AssetImage('assets/images/logo.png')),
+          Image(
+              image: const AssetImage('assets/images/logo.png'),
+              height: MediaQuery.of(context).size.height * .30,
+              width: MediaQuery.of(context).size.width *
+                  (isMobile(context) ? .80 : .30)),
           const SizedBox(
             height: 15,
           ),
@@ -84,6 +89,7 @@ class _InitializeScreenState extends State<InitializeScreen> {
             height: 10,
           ),
           IconText(
+            mainAxisAlignment: MainAxisAlignment.center,
             label: "Failed to initialize app.",
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -112,6 +118,7 @@ class _InitializeScreenState extends State<InitializeScreen> {
           ),
           Expanded(child: Container()),
           IconText(
+            mainAxisAlignment: MainAxisAlignment.center,
             label: "Discover Lantapan",
             fontWeight: FontWeight.bold,
             color: Colors.grey,

@@ -31,6 +31,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
   void initState() {
     () async {
       await Future.delayed(Duration.zero);
+      if (!mounted) return;
       Provider.of<PlaceProvider>(context, listen: false).getPlace(
           placeId: widget.arguments["placeId"],
           callback: (code, message) {
@@ -39,6 +40,17 @@ class _PlaceInfoState extends State<PlaceInfo> {
                   context: context,
                   mode: code == 200 ? "SUCCESS" : "ERROR",
                   message: message ?? "Success!");
+              return;
+            }
+            if (Provider.of<LocationProvider>(context, listen: false)
+                .address
+                .isNotEmpty) {
+              Provider.of<LocationProvider>(context, listen: false)
+                  .setDestination(
+                      Provider.of<PlaceProvider>(context, listen: false)
+                          .placeInfo);
+              Provider.of<LocationProvider>(context, listen: false)
+                  .getPolyline();
             }
           });
     }();
@@ -50,6 +62,8 @@ class _PlaceInfoState extends State<PlaceInfo> {
     int index = -1;
     PlaceProvider placeProvider = context.watch<PlaceProvider>();
     UserProvider userProvider = context.watch<UserProvider>();
+    LocationProvider locationProvider = context.watch<LocationProvider>();
+    int _currentIndex = 0;
 
     void openImageViewer(BuildContext context, final int index) {
       if (placeProvider.placeInfo.photos.isEmpty) {
@@ -110,6 +124,10 @@ class _PlaceInfoState extends State<PlaceInfo> {
                           aspectRatio: 1,
                           autoPlay: true,
                           enlargeCenterPage: true,
+                          onPageChanged: (index, reason) {
+                            _currentIndex = index;
+                            setState(() {});
+                          },
                           pageViewKey:
                               const PageStorageKey<String>('carousel_slider'),
                         )),
@@ -220,7 +238,8 @@ class _PlaceInfoState extends State<PlaceInfo> {
                                   icon: Icons.directions,
                                   accentColor: Colors.blue,
                                   label: "Distance",
-                                  value: "3000 km"),
+                                  value:
+                                      "${locationProvider.distance.toStringAsFixed(2)}km"),
                               FeatureBadge(
                                   icon: Icons.door_sliding_rounded,
                                   accentColor: Colors.green,

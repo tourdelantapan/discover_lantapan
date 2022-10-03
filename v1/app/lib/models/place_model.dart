@@ -2,6 +2,7 @@
 //
 //     final place = placeFromJson(jsonString);
 
+import 'package:app/models/dashboard/dashboard_like.dart';
 import 'package:app/models/photo_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
@@ -25,6 +26,7 @@ class Place {
     required this.isLiked,
     required this.status,
     required this.reviewsStat,
+    required this.favorites,
   });
 
   String id;
@@ -39,8 +41,10 @@ class Place {
   bool isLiked;
   String status;
   ReviewsStat reviewsStat;
+  Favorites favorites;
 
-  factory Place.fromJson(Map<String, dynamic> json) => Place(
+  factory Place.fromJson(Map<String, dynamic> json) {
+    return Place(
       id: json["_id"],
       name: json["name"],
       address: json["address"],
@@ -65,8 +69,15 @@ class Place {
           ? DateTime.parse(json["updatedAt"])
           : DateTime.now(),
       reviewsStat: !["[]", "null"].contains(json["reviewsStat"].toString())
-          ? ReviewsStat.fromJson(json["reviewsStat"][0])
-          : ReviewsStat(average: 0, reviewerCount: 0));
+          ? json["reviewsStat"].runtimeType == List
+              ? ReviewsStat.fromJson(json["reviewsStat"][0])
+              : ReviewsStat.fromJson(json["reviewsStat"])
+          : ReviewsStat(average: 0, reviewerCount: 0),
+      favorites: json["favorites"] != null
+          ? Favorites.fromJson(json["favorites"])
+          : Favorites(id: 0, count: 0),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "_id": id,
@@ -160,4 +171,5 @@ Place placeNoData = Place(
     status: "OPEN",
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
-    reviewsStat: ReviewsStat(average: 0, reviewerCount: 0));
+    reviewsStat: ReviewsStat(average: 0, reviewerCount: 0),
+    favorites: Favorites(id: 0, count: 0));

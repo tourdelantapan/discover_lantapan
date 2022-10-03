@@ -34,7 +34,8 @@ class RouteGenerator {
       case '/auth':
         return CupertinoPageRoute(builder: (_) => Auth());
       case '/place/add':
-        return CupertinoPageRoute(builder: (_) => AddPlace());
+        return CupertinoPageRoute(
+            builder: (_) => AddPlace(arguments: args as Map<String, dynamic>));
       case '/review/add':
         return CupertinoPageRoute(builder: (_) => AddReview());
       case '/review/list':

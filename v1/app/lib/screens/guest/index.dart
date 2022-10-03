@@ -1,10 +1,13 @@
-import 'package:app/models/user_modal.dart';
+import 'package:app/provider/location_provider.dart';
 import 'package:app/provider/user_provider.dart';
 import 'package:app/screens/guest/drawer_pages/about_lantapan.dart';
 import 'package:app/screens/guest/drawer_pages/contacts.dart';
 import 'package:app/screens/guest/drawer_pages/developers.dart';
+import 'package:app/screens/guest/drawer_pages/history.dart';
 import 'package:app/screens/guest/drawer_pages/home_feed.dart';
 import 'package:app/screens/guest/drawer_pages/tourism_staff.dart';
+import 'package:app/screens/guest/select_location.dart';
+import 'package:app/widgets/bottom_modal.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +26,7 @@ class _GuestState extends State<Guest> {
 
   List<IconTextModel> drawerItems = [
     IconTextModel(Icons.home, "Home"),
+    IconTextModel(Icons.history_edu_rounded, "History"),
     IconTextModel(Icons.people_alt_rounded, "Tourism Staff"),
     IconTextModel(Icons.info_outline_rounded, "About Lantapan"),
     IconTextModel(Icons.contact_mail_rounded, "Contacts"),
@@ -30,15 +34,44 @@ class _GuestState extends State<Guest> {
     IconTextModel(Icons.qr_code_2_rounded, "Scan QR"),
   ];
 
+  void setLocation() {
+    showModalBottomSheet(
+        context: context,
+        isDismissible: false,
+        enableDrag: false,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+            return Modal(
+                title: "Long press to pin your location",
+                heightInPercentage: .9,
+                content: SelectLocation(
+                    value: Provider.of<LocationProvider>(context, listen: false)
+                        .coordinates,
+                    willDetectLocation:
+                        Provider.of<LocationProvider>(context, listen: false)
+                            .address
+                            .isEmpty,
+                    onSelectLocation: (coordinates, address) {
+                      Provider.of<LocationProvider>(context, listen: false)
+                          .setCoordinates(coordinates, address);
+                    }));
+          });
+        });
+  }
+
   @override
   void initState() {
-    () {
-      Future.delayed(Duration.zero);
-      if (Provider.of<UserProvider>(context, listen: false).currentUser ==
-          null) {
-        drawerItems.add(IconTextModel(Icons.person, "Log In/Sign Up"));
-      } else {
-        drawerItems.add(IconTextModel(Icons.logout_rounded, "Log Out"));
+    () async {
+      await Future.delayed(Duration.zero);
+      if (!mounted) return;
+      if (Provider.of<LocationProvider>(context, listen: false)
+              .address
+              .isEmpty &&
+          mounted) {
+        setLocation();
       }
     }();
     super.initState();
@@ -49,6 +82,13 @@ class _GuestState extends State<Guest> {
     UserProvider userProvider = context.watch<UserProvider>();
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          onPressed: () {
+            Navigator.pushNamed(context, '/search/place');
+          },
+          child: const Icon(Icons.search)),
       appBar: AppBar(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
@@ -64,9 +104,9 @@ class _GuestState extends State<Guest> {
                 icon: const Icon(Icons.switch_account_rounded)),
           IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/search/place');
+                setLocation();
               },
-              icon: const Icon(Icons.search_rounded))
+              icon: const Icon(Icons.pin_drop_rounded))
         ],
       ),
       body: PageView(
@@ -74,6 +114,7 @@ class _GuestState extends State<Guest> {
         controller: page,
         children: [
           HomeFeed(),
+          History(),
           TourismStaff(),
           AboutLantapan(),
           Contacts(),
@@ -82,9 +123,9 @@ class _GuestState extends State<Guest> {
       ),
       drawer: Drawer(
         backgroundColor: Colors.white,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
+        child: Column(children: [
+          Expanded(
+              child: ListView(padding: EdgeInsets.zero, children: [
             DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
@@ -137,19 +178,6 @@ class _GuestState extends State<Guest> {
                     icon: drawerItems[index].icon,
                     label: drawerItems[index].text,
                     onPress: () {
-                      if (userProvider.currentUser != null && index == 6) {
-                        userProvider.signOut();
-                        drawerItems[6] =
-                            IconTextModel(Icons.person, "Log In/Sign Up");
-                        Navigator.pop(context);
-                        return;
-                      }
-
-                      if (index == 6) {
-                        Navigator.pushNamed(context, '/auth');
-                        return;
-                      }
-
                       if (index == 5) {
                         Navigator.pop(context);
                         Navigator.pushNamed(context, '/scan/qr');
@@ -161,8 +189,31 @@ class _GuestState extends State<Guest> {
                       page.jumpToPage(index);
                       Navigator.pop(context);
                     }))
-          ],
-        ),
+          ])),
+          Button(
+              icon: userProvider.currentUser == null
+                  ? Icons.person
+                  : Icons.logout_rounded,
+              label: userProvider.currentUser == null
+                  ? "Log In/Sign Up"
+                  : "Log Out",
+              borderColor: Colors.transparent,
+              backgroundColor: Colors.transparent,
+              textColor: Colors.grey,
+              mainAxisAlignment: MainAxisAlignment.start,
+              onPress: () {
+                Navigator.pop(context);
+                if (userProvider.currentUser != null) {
+                  userProvider.signOut();
+                  drawerItems[6] =
+                      IconTextModel(Icons.person, "Log In/Sign Up");
+                  return;
+                }
+
+                Navigator.pushNamed(context, '/auth');
+                return;
+              })
+        ]),
       ),
     );
   }

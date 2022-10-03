@@ -27,20 +27,25 @@ class PlacesList extends StatefulWidget {
 }
 
 class _PlacesListState extends State<PlacesList> {
+  fetchPlaces() {
+    Provider.of<PlaceProvider>(context, listen: false).getPlaces(
+        query: {"mode": widget.arguments["mode"]},
+        callback: (code, message) {
+          if (code != 200) {
+            launchSnackbar(
+                context: context,
+                mode: code == 200 ? "SUCCESS" : "ERROR",
+                message: message ?? "Success!");
+          }
+        });
+  }
+
   @override
   void initState() {
     () async {
       await Future.delayed(Duration.zero);
-      Provider.of<PlaceProvider>(context, listen: false).getPlaces(
-          query: {"mode": widget.arguments["mode"]},
-          callback: (code, message) {
-            if (code != 200) {
-              launchSnackbar(
-                  context: context,
-                  mode: code == 200 ? "SUCCESS" : "ERROR",
-                  message: message ?? "Success!");
-            }
-          });
+      if (!mounted) return;
+      fetchPlaces();
     }();
     super.initState();
   }
@@ -100,6 +105,33 @@ class _PlacesListState extends State<PlacesList> {
                         place = placeProvider.topRatedPlaces[index];
                       }
 
+                      Widget getTopLeft() {
+                        if (widget.arguments["mode"] == "top_rated") {
+                          return IconText(
+                              icon: Icons.star,
+                              backgroundColor: Colors.white,
+                              color: Colors.black,
+                              size: 12,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 8),
+                              borderRadius: 5,
+                              label:
+                                  "${place.reviewsStat.average} / ${place.reviewsStat.reviewerCount} review${place.reviewsStat.reviewerCount > 1 ? "s" : ""}");
+                        }
+                        if (widget.arguments["mode"] == "popular") {
+                          return IconText(
+                              icon: Icons.favorite,
+                              backgroundColor: Colors.white,
+                              color: Colors.black,
+                              padding: const EdgeInsets.all(10),
+                              borderRadius: 100,
+                              label: "${place.favorites.count}");
+                        }
+                        return Container();
+                      }
+
+                      ;
+
                       return PlaceCard(
                           photoUrl: place.photos.isNotEmpty
                               ? place.photos[0].small
@@ -111,8 +143,10 @@ class _PlacesListState extends State<PlacesList> {
                             }
 
                             Navigator.pushNamed(context, "/place/info",
-                                arguments: {"placeId": place.id});
+                                    arguments: {"placeId": place.id})
+                                .then((value) => fetchPlaces());
                           },
+                          topLeft: getTopLeft(),
                           bottomRight: Container(
                               decoration: BoxDecoration(
                                   color: Colors.white,

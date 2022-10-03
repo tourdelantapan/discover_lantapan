@@ -39,6 +39,15 @@ class LocationProvider extends ChangeNotifier {
   double _fuelPrice = 0;
   double get fuelPrice => _fuelPrice;
 
+  double _averageGasPrice = 74.20;
+  double get averageGasPrice => _averageGasPrice;
+
+  setAverageGasPrice(double input) {
+    _averageGasPrice = input;
+    calculateGasFuelPrice(distanceByMeters: _distance * 1000);
+    notifyListeners();
+  }
+
   setDestination(Place place) {
     _destination = place;
     _initialCameraPosition = CameraPosition(
@@ -51,7 +60,7 @@ class LocationProvider extends ChangeNotifier {
   calculateGasFuelPrice({required double distanceByMeters}) {
     _distance = distanceByMeters / 1000;
     _liters = _distance / 12.5;
-    _fuelPrice = _liters * 74.20;
+    _fuelPrice = _liters * _averageGasPrice;
   }
 
   resetMarkers() {
@@ -86,12 +95,14 @@ class LocationProvider extends ChangeNotifier {
     );
     markers[locationMarkerId] = locationMarker;
     notifyListeners();
-    _getPolyline();
+    getPolyline();
   }
 
-  _getPolyline() async {
+  getPolyline() async {
     LatLng origin = _coordinates;
     LatLng dest = _destination.coordinates;
+    print(origin);
+    print(dest);
     Directions? direction = await DirectionsRepository.getDirections(
         location: origin, destination: dest);
     if (direction != null) {
@@ -102,7 +113,6 @@ class LocationProvider extends ChangeNotifier {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       });
       notifyListeners();
-
       _addPolyLine();
     }
   }
@@ -115,12 +125,6 @@ class LocationProvider extends ChangeNotifier {
         color: Colors.red,
         points: polylineCoordinates);
     polylines.add(polyline);
-
-    stepsInstructions = [];
-    // for (int i = 0; i <= info.totalSteps.length; i++) {
-    //   stepsInstructions.add(removeAllHtmlTags(
-    //       info.totalSteps[i]['html_instructions'].toString()));
-    // }
   }
 
   String removeAllHtmlTags(String htmlText) {
