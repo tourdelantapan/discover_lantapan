@@ -12,6 +12,7 @@ const mongoose = require("mongoose");
 
 internals.places = async (req, reply) => {
   let userId = req.auth.credentials?._id;
+  console.log("UPDATE SIGN!!!!!")
 
   try {
     let query = [
