@@ -13,50 +13,50 @@ class _TourismStaffState extends State<TourismStaff> {
   Staff president = Staff(
       name: "John Doe",
       designation: "President",
-      photo: const AssetImage('assets/images/staff.jpeg'));
+      photo: const AssetImage('assets/images/history.jpeg'));
 
   List<List> staff = [
     [
       Staff(
           name: "Mike Wheeler",
           designation: "Staff",
-          photo: const AssetImage('assets/images/staff.jpeg')),
+          photo: const AssetImage('assets/images/history.jpeg')),
       Staff(
           name: "Mike Wheeler",
           designation: "Staff",
-          photo: const AssetImage('assets/images/staff.jpeg')),
+          photo: const AssetImage('assets/images/history.jpeg')),
       Staff(
           name: "Mike Wheeler",
           designation: "Staff",
-          photo: const AssetImage('assets/images/staff.jpeg'))
+          photo: const AssetImage('assets/images/history.jpeg'))
     ],
     [
       Staff(
           name: "Mike Wheeler",
           designation: "Staff",
-          photo: const AssetImage('assets/images/staff.jpeg')),
+          photo: const AssetImage('assets/images/history.jpeg')),
       Staff(
           name: "Mike Wheeler",
           designation: "Staff",
-          photo: const AssetImage('assets/images/staff.jpeg')),
+          photo: const AssetImage('assets/images/history.jpeg')),
       Staff(
           name: "Mike Wheeler",
           designation: "Staff",
-          photo: const AssetImage('assets/images/staff.jpeg'))
+          photo: const AssetImage('assets/images/history.jpeg'))
     ],
     [
       Staff(
           name: "Mike Wheeler",
           designation: "Staff",
-          photo: const AssetImage('assets/images/staff.jpeg')),
+          photo: const AssetImage('assets/images/history.jpeg')),
       Staff(
           name: "Mike Wheeler",
           designation: "Staff",
-          photo: const AssetImage('assets/images/staff.jpeg')),
+          photo: const AssetImage('assets/images/history.jpeg')),
       Staff(
           name: "Mike Wheeler",
           designation: "Staff",
-          photo: const AssetImage('assets/images/staff.jpeg'))
+          photo: const AssetImage('assets/images/history.jpeg'))
     ]
   ];
 
@@ -89,7 +89,7 @@ class StaffBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
       child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         ClipRRect(
             borderRadius: BorderRadius.circular(100),
