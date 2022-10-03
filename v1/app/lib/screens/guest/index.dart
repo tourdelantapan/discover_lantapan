@@ -82,13 +82,12 @@ class _GuestState extends State<Guest> {
     UserProvider userProvider = context.watch<UserProvider>();
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          onPressed: () {
-            Navigator.pushNamed(context, '/search/place');
-          },
-          child: const Icon(Icons.search)),
+      // floatingActionButton: FloatingActionButton(
+      //     backgroundColor: Colors.white,
+      //     foregroundColor: Colors.black,
+      //     onPressed: () {
+      //     },
+      //     child: const Icon(Icons.search)),
       appBar: AppBar(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
@@ -106,7 +105,12 @@ class _GuestState extends State<Guest> {
               onPressed: () {
                 setLocation();
               },
-              icon: const Icon(Icons.pin_drop_rounded))
+              icon: const Icon(Icons.pin_drop_rounded)),
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/search/place');
+              },
+              icon: const Icon(Icons.search))
         ],
       ),
       body: PageView(
@@ -178,10 +182,9 @@ class _GuestState extends State<Guest> {
                     icon: drawerItems[index].icon,
                     label: drawerItems[index].text,
                     onPress: () {
-                      if (index == 5) {
+                      if (index == 6) {
                         Navigator.pop(context);
                         Navigator.pushNamed(context, '/scan/qr');
-                        // Navigator.pushNamed(context, '/visitor/form');
                         return;
                       }
 
@@ -199,7 +202,7 @@ class _GuestState extends State<Guest> {
                   : "Log Out",
               borderColor: Colors.transparent,
               backgroundColor: Colors.transparent,
-              textColor: Colors.grey,
+              textColor: Colors.black,
               mainAxisAlignment: MainAxisAlignment.start,
               onPress: () {
                 Navigator.pop(context);

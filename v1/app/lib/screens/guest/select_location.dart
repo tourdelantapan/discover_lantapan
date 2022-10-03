@@ -77,8 +77,8 @@ class _SelectLocationState extends State<SelectLocation> {
     //     CameraPosition(target: LatLng(tempLat, tempLong), zoom: mapZoom)));
     // setMarker(LatLng(tempLat, tempLong));
     mapController?.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(res.latitude, res.latitude), zoom: 17)));
-    setMarker(LatLng(res.latitude, res.latitude));
+        CameraPosition(target: LatLng(res.latitude, res.longitude), zoom: 17)));
+    setMarker(LatLng(res.latitude, res.longitude));
     setState(() => detectingLocation = false);
   }
 
