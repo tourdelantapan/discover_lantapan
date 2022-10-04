@@ -96,12 +96,6 @@ class _GuestState extends State<Guest> {
       await Future.delayed(Duration.zero);
       if (!mounted) return;
       determinePosition();
-      // if (Provider.of<LocationProvider>(context, listen: false)
-      //         .address
-      //         .isEmpty &&
-      //     mounted) {
-      //   setLocation();
-      // }
     }();
     super.initState();
   }
@@ -111,12 +105,6 @@ class _GuestState extends State<Guest> {
     UserProvider userProvider = context.watch<UserProvider>();
 
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //     backgroundColor: Colors.white,
-      //     foregroundColor: Colors.black,
-      //     onPressed: () {
-      //     },
-      //     child: const Icon(Icons.search)),
       appBar: AppBar(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,

@@ -15,8 +15,7 @@ class LocationProvider extends ChangeNotifier {
   LatLng _coordinates = const LatLng(8.143548493162127, 125.13147031688014);
   LatLng get coordinates => _coordinates;
 
-  Place _destination =
-      placeNoData; //Cafe sa Bukid, Must be changed depending on user selection
+  Place _destination = placeNoData;
   Place get destination => _destination;
   CameraPosition _initialCameraPosition = CameraPosition(
     target: const LatLng(8.143548493162127, 125.13147031688014),
@@ -44,8 +43,17 @@ class LocationProvider extends ChangeNotifier {
   double _averageGasPrice = 74.20;
   double get averageGasPrice => _averageGasPrice;
 
+  double _kilometerPerLiter = 12.5;
+  double get kilometerPerLiter => _kilometerPerLiter;
+
   setAverageGasPrice(double input) {
     _averageGasPrice = input;
+    calculateGasFuelPrice(distanceByMeters: _distance * 1000);
+    notifyListeners();
+  }
+
+  setKilometerPerLiter(double input) {
+    _kilometerPerLiter = input;
     calculateGasFuelPrice(distanceByMeters: _distance * 1000);
     notifyListeners();
   }
@@ -61,7 +69,7 @@ class LocationProvider extends ChangeNotifier {
 
   calculateGasFuelPrice({required double distanceByMeters}) {
     _distance = distanceByMeters / 1000;
-    _liters = _distance / 12.5;
+    _liters = _distance / _kilometerPerLiter;
     _fuelPrice = _liters * _averageGasPrice;
   }
 
@@ -142,8 +150,6 @@ class LocationProvider extends ChangeNotifier {
   getPolyline() async {
     LatLng origin = _coordinates;
     LatLng dest = _destination.coordinates;
-    print(origin);
-    print(dest);
     Directions? direction = await DirectionsRepository.getDirections(
         location: origin, destination: dest);
     if (direction != null) {

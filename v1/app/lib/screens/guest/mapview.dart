@@ -2,12 +2,8 @@ import 'package:app/provider/location_provider.dart';
 import 'package:app/screens/guest/select_location.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/bottom_modal.dart';
-import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
-import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 
@@ -197,17 +193,61 @@ class _MapViewState extends State<MapView> {
                   iconAsset: 'assets/images/distance.png',
                 ),
                 const SizedBox(
-                  height: 25,
+                  height: 20,
                 ),
                 Details(
                   label: "Fuel Efficiency",
                   value: "${locationProvider.liters.toStringAsFixed(2)} liter",
                   // measurement: "Liters per 100km(L/100km)",
-                  measurement: "1L per 12.5km",
+                  measurement:
+                      "${locationProvider.kilometerPerLiter.toStringAsFixed(2)} per 1L",
                   iconAsset: 'assets/images/fuel.png',
+                  action: Material(
+                    color: Colors.transparent,
+                    child: IconButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                String input = "";
+
+                                return AlertDialog(
+                                  title:
+                                      const Text('Edit Kilometers per Liter'),
+                                  content: TextField(
+                                    onChanged: (value) {
+                                      input = value;
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                        hintText: "Kilometers per Liter"),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Close")),
+                                    TextButton(
+                                        onPressed: () {
+                                          locationProvider.setKilometerPerLiter(
+                                              double.parse(input));
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Save")),
+                                  ],
+                                );
+                              });
+                        },
+                        icon: const Icon(
+                          Icons.edit_rounded,
+                          size: 15,
+                          color: Colors.blue,
+                        )),
+                  ),
                 ),
                 const SizedBox(
-                  height: 25,
+                  height: 20,
                 ),
                 Details(
                   label: "Gas Fuel Price",

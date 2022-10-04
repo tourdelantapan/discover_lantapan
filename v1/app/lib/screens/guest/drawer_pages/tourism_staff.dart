@@ -12,7 +12,7 @@ class TourismStaff extends StatefulWidget {
 class _TourismStaffState extends State<TourismStaff> {
   Staff president = Staff(
       name: "Nonelita C. Butaya",
-      designation: "Staff",
+      designation: "Head",
       photo: const AssetImage('assets/images/tourism_staff/butaya.jpg'));
 
   List<List> staff = [
