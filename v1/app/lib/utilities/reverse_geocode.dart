@@ -13,20 +13,19 @@ class AddressRepository {
     String accessToken =
         "access_token=${dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? ""}";
     String limit = "&limit=1";
-
     String reverse_geocode_url = "${base_url}${query}${accessToken}${limit}";
 
     var url = Uri.parse(reverse_geocode_url);
-
-    print(reverse_geocode_url);
-
     var response = await http.get(url, headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     });
 
     if (response.statusCode == 200) {
       try {
-        return jsonDecode(response.body)?["features"]?[0]?['place_name'];
+        List context =
+            jsonDecode(response.body)?["features"]?[0]?['context'] as List;
+        return context.map((e) => e["text"] ?? "").join(', ');
+        // return jsonDecode(response.body)?["features"]?[0]?['place_name'];
       } catch (e) {
         return "No Address";
       }
