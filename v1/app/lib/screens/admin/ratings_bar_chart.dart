@@ -47,7 +47,7 @@ class MostRatedState extends State<MostRated> {
                 DashboardRating dashboardLikes =
                     widget.ratings[args.pointIndex!.toInt()];
 
-                args.header = "Reviews";
+                args.header = "${dashboardLikes.name} Reviews";
 
                 args.text =
                     "Based on ${dashboardLikes.reviewsStat.reviewerCount.toString()} review/s.";

@@ -2,6 +2,7 @@ import 'package:app/provider/user_provider.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/snackbar.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -59,6 +60,9 @@ class _SignUpState extends State<SignUp> {
                 validator: (val) {
                   if (val!.isEmpty) {
                     return "This field is required";
+                  }
+                  if (!EmailValidator.validate(val)) {
+                    return "Email invalid";
                   }
                 },
                 decoration: const InputDecoration(

@@ -4,6 +4,7 @@ import 'package:app/utilities/shared_preferences.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +46,10 @@ class _LoginState extends State<Login> {
                 validator: (val) {
                   if (val!.isEmpty) {
                     return "This field is required";
+                  }
+
+                  if (!EmailValidator.validate(val)) {
+                    return "Email Invalid.";
                   }
                 },
                 decoration: const InputDecoration(

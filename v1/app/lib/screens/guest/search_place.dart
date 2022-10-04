@@ -21,6 +21,7 @@ class SearchPlace extends StatelessWidget {
     final _debouncer = Debouncer(milliseconds: 1000);
     PlaceProvider placeProvider = context.watch<PlaceProvider>();
     UserProvider userProvider = context.watch<UserProvider>();
+    String searchKey = "";
 
     return Scaffold(
       appBar: AppBar(
@@ -41,24 +42,28 @@ class SearchPlace extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: HORIZONTAL_PADDING),
-            child: SearchBar(onChanged: (val) {
-              if (val.isEmpty) {
-                return;
-              }
+            child: SearchBar(
+                searchKey: searchKey,
+                onChanged: (val) {
+                  if (val.isEmpty) {
+                    return;
+                  }
 
-              _debouncer.run(() {
-                placeProvider.getPlaces(
-                    query: {"mode": "search", "searchKey": val},
-                    callback: (code, message) {
-                      if (code != 200) {
-                        launchSnackbar(
-                            context: context,
-                            mode: code == 200 ? "SUCCESS" : "ERROR",
-                            message: message ?? "Error!");
-                      }
-                    });
-              });
-            }),
+                  searchKey = val;
+
+                  _debouncer.run(() {
+                    placeProvider.getPlaces(
+                        query: {"mode": "search", "searchKey": val},
+                        callback: (code, message) {
+                          if (code != 200) {
+                            launchSnackbar(
+                                context: context,
+                                mode: code == 200 ? "SUCCESS" : "ERROR",
+                                message: message ?? "Error!");
+                          }
+                        });
+                  });
+                }),
           ),
           const SizedBox(
             height: 15,

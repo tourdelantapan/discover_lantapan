@@ -46,7 +46,7 @@ class MostPopularState extends State<MostPopular> {
                 DashboardLikes dashboardLikes =
                     widget.likes[args.pointIndex!.toInt()];
 
-                args.header = "Likes";
+                args.header = "${dashboardLikes.name} Likes";
 
                 args.text = dashboardLikes.favorites.count.toString();
               },
