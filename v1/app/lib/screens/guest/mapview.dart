@@ -200,7 +200,7 @@ class _MapViewState extends State<MapView> {
                   value: "${locationProvider.liters.toStringAsFixed(2)} liter",
                   // measurement: "Liters per 100km(L/100km)",
                   measurement:
-                      "${locationProvider.kilometerPerLiter.toStringAsFixed(2)} per 1L",
+                      "${locationProvider.kilometerPerLiter.toStringAsFixed(2)}km per 1L",
                   iconAsset: 'assets/images/fuel.png',
                   action: Material(
                     color: Colors.transparent,
