@@ -150,6 +150,21 @@ class PlaceProvider extends ChangeNotifier {
     }
   }
 
+  deletePlace({required String placeId, required Function callback}) async {
+    addLoading("place-delete");
+    var response =
+        await APIServices.get(endpoint: "/place/delete/$placeId");
+
+    if (response is Success) {
+      removeLoading("place-delete");
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      removeLoading("place-delete");
+      callback(response.code, response.response["message"] ?? "Failed.");
+    }
+  }
+
   likePlace(
       {required String mode,
       required int index,

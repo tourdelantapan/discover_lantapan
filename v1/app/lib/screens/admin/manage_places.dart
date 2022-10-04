@@ -5,6 +5,7 @@ import 'package:app/screens/guest/place_info.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/grid_count.dart';
 import 'package:app/utilities/responsive_screen.dart';
+import 'package:app/widgets/action_modal.dart';
 import 'package:app/widgets/bottom_modal.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/place_card.dart';
@@ -37,6 +38,21 @@ class _ManagePlacesState extends State<ManagePlaces> {
                 mode: code == 200 ? "SUCCESS" : "ERROR",
                 message: message ?? "Success!");
           }
+        });
+  }
+
+  deletePlace(String placeId) {
+    Provider.of<PlaceProvider>(context, listen: false).deletePlace(
+        placeId: placeId,
+        callback: (code, message) {
+          if (code != 200) {
+            launchSnackbar(
+                context: context,
+                mode: code == 200 ? "SUCCESS" : "ERROR",
+                message: message ?? "Success!");
+          }
+          Navigator.pop(context);
+          fetchPlaces();
         });
   }
 
@@ -81,6 +97,8 @@ class _ManagePlacesState extends State<ManagePlaces> {
         bottom: true,
         child: Column(
           children: [
+            if (placeProvider.loading.contains("place-delete"))
+              const LinearProgressIndicator(),
             if (placeProvider.loading.contains("admin"))
               const PlaceCardShimmer()
             else if (placeProvider.adminPlaces.isNotEmpty)
@@ -140,6 +158,17 @@ class _ManagePlacesState extends State<ManagePlaces> {
                                             fontWeight: FontWeight.bold,
                                             label: "See Details"),
                                         value: '3'),
+                                    PopupMenuItem<String>(
+                                        // ignore: sort_child_properties_last
+                                        child: IconText(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            icon: Icons
+                                                .remove_circle_outline_rounded,
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold,
+                                            label: "Delete Place"),
+                                        value: '4'),
                                   ],
                               onSelected: (itemSelected) {
                                 if (itemSelected == "1") {
@@ -185,6 +214,34 @@ class _ManagePlacesState extends State<ManagePlaces> {
 
                                   Navigator.pushNamed(context, "/place/info",
                                       arguments: {"placeId": place.id});
+                                }
+
+                                if (itemSelected == "4") {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      isDismissible: false,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      builder: (context) {
+                                        return StatefulBuilder(builder:
+                                            (BuildContext newContext,
+                                                StateSetter setModalState) {
+                                          return ActionModal(
+                                            isLoading: true,
+                                            title: "Confirm Delete?",
+                                            subTitle:
+                                                "This action requires an account.",
+                                            callback: (action) {
+                                              if (action != "CONFIRM") {
+                                                Navigator.pop(context);
+                                                return;
+                                              }
+                                              deletePlace(place.id);
+                                            },
+                                          );
+                                        });
+                                      });
+                                  return;
                                 }
                               }),
                           upperLabelWidget: RatingBar.builder(

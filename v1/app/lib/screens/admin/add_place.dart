@@ -123,8 +123,9 @@ class _AddPlaceState extends State<AddPlace> {
                               photos = [];
                               payload = _payload;
                             });
-                            addressController.clear();
-                            _formKey.currentState!.reset();
+                            Navigator.pop(context);
+                            // addressController.clear();
+                            // _formKey.currentState!.reset();
                             return;
                           }
                           if (code != 200) {

@@ -81,6 +81,16 @@ internals.endpoints = [
       },
     },
   },
+  {
+    method: ["GET"],
+    path: "/place/delete/{id}",
+    handler: Handlers.delete_place,
+    config: {
+      auth: {
+        strategy: "token",
+      },
+    },
+  },
 ];
 
 module.exports = internals;

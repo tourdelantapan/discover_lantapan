@@ -343,7 +343,6 @@ internals.delete_photo = async (req, reply) => {
   let { dataId, schema, link } = req.query;
   let SCHEMA;
 
-
   if (schema == "place") {
     SCHEMA = Place;
   }
@@ -423,6 +422,26 @@ internals.edit_place = async (req, reply) => {
     return reply
       .response({
         message: "Place updated",
+      })
+      .code(200);
+  } catch (e) {
+    console.log(e);
+    return reply
+      .response({
+        message: "Server error",
+      })
+      .code(500);
+  }
+};
+
+internals.delete_place = async (req, reply) => {
+  let placeId = req.params.id;
+
+  try {
+    await Place.deleteOne({ _id: placeId });
+    return reply
+      .response({
+        message: "Place deleted",
       })
       .code(200);
   } catch (e) {
