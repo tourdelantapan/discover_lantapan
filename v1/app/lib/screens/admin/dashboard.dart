@@ -111,7 +111,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 return Container(
                   padding: const EdgeInsets.all(15),
                   margin: const EdgeInsets.only(right: 15, top: 15),
-                  width: 150,
+                  // width: 150,
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.black12),
                       borderRadius: BorderRadius.circular(5)),
@@ -125,6 +125,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                               color: Colors.black,
                               size: 19,
                               fontWeight: FontWeight.bold),
+                        const SizedBox(height: 5),
                         IconText(
                             label: totalPlacesByCategory.count.toString(),
                             color: Colors.black,
