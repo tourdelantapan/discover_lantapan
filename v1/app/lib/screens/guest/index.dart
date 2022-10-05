@@ -228,8 +228,6 @@ class _GuestState extends State<Guest> {
                 Navigator.pop(context);
                 if (userProvider.currentUser != null) {
                   userProvider.signOut();
-                  drawerItems[6] =
-                      IconTextModel(Icons.person, "Log In/Sign Up");
                   return;
                 }
 

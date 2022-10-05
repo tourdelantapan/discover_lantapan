@@ -21,8 +21,8 @@ internals.add_place = async (req, reply) => {
     payload.photos = [payload.photos];
 
   if (Array.isArray(payload.photos) && payload.photos.length != 0) {
-    let photosUrl = await getUrlsArray(payload.photos, newReview._id, "place");
-    newReview.photos = photosUrl;
+    let photosUrl = await getUrlsArray(payload.photos, newPlace._id, "place");
+    newPlace.photos = photosUrl;
   }
 
   if (!payload?.photos) {
