@@ -1,3 +1,4 @@
+import 'package:app/models/user_model.dart';
 import 'package:app/provider/location_provider.dart';
 import 'package:app/provider/user_provider.dart';
 import 'package:app/screens/guest/drawer_pages/about_lantapan.dart';
@@ -67,7 +68,7 @@ class _GuestState extends State<Guest> {
         });
   }
 
-  determinePosition() {
+  void determinePosition() {
     Provider.of<LocationProvider>(context, listen: false)
         .determinePosition(context, (res, isSuccess) async {
       if (isSuccess) {
@@ -88,6 +89,15 @@ class _GuestState extends State<Guest> {
 
       setState(() => detectingLocation = false);
     });
+  }
+
+  bool checkIfVerified(List<EmailVerification> emailVerification) {
+    for (int i = 0; i < emailVerification.length; i++) {
+      if (emailVerification[i].isConfirmed) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override
@@ -133,16 +143,64 @@ class _GuestState extends State<Guest> {
               icon: const Icon(Icons.search))
         ],
       ),
-      body: PageView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: page,
+      body: Column(
         children: [
-          HomeFeed(),
-          History(),
-          TourismStaff(),
-          AboutLantapan(),
-          Contacts(),
-          Developers()
+          Expanded(
+            child: PageView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: page,
+                children: [
+                  HomeFeed(),
+                  History(),
+                  TourismStaff(),
+                  AboutLantapan(),
+                  Contacts(),
+                  Developers()
+                ]),
+          ),
+          if (userProvider.currentUser != null &&
+              !checkIfVerified(userProvider.currentUser!.emailVerification))
+            Container(
+                color: Colors.red,
+                padding: const EdgeInsets.all(15),
+                child: Column(children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconText(
+                          label: "Email not verified!",
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        Button(
+                          isLoading: userProvider.loading == "generate-otp",
+                          label: "Verify Now",
+                          onPress: () {
+                            userProvider.generatePin(
+                                query: {
+                                  "email": userProvider.currentUser!.email,
+                                  "recipient_name":
+                                      userProvider.currentUser!.fullName
+                                },
+                                callback: (code, message) {
+                                  if (code == 200) {
+                                    Navigator.pushNamed(context, '/verify/otp');
+                                    return;
+                                  }
+
+                                  launchSnackbar(
+                                      context: context,
+                                      mode: "ERROR",
+                                      message: message);
+                                });
+                          },
+                          backgroundColor: Colors.white,
+                          borderColor: Colors.transparent,
+                          textColor: Colors.black,
+                          borderRadius: 100,
+                        )
+                      ]),
+                ]))
         ],
       ),
       drawer: Drawer(

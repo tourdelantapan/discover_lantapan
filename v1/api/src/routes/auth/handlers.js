@@ -6,10 +6,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const Config = require("../../config");
-
+const moment = require("moment");
+const { sendOTP } = require("../../libraries/email-helper");
 const ObjectId = mongoose.Types.ObjectId;
-
-// SEPARATE THIS handlers because naga sagol2 nani diri hahahah
 
 internals.profile = async (req, reply) => {
   try {
@@ -148,6 +147,128 @@ internals.signup = async (req, res) => {
       }
     }
   );
+};
+
+internals.generate_otp = async (req, reply) => {
+  let { email, recipient_name } = req.query;
+  const OTP = Math.floor(100000 + Math.random() * 900000);
+
+  try {
+    await User.updateOne(
+      { email },
+      {
+        $push: {
+          emailVerification: {
+            isConfirmed: false,
+            email,
+            pin: OTP,
+          },
+        },
+      },
+      { new: true }
+    );
+    sendOTP(email, {
+      recipient_name,
+      OTP,
+    });
+    return reply
+      .response({
+        message: "OTP has been sent.",
+      })
+      .code(200);
+  } catch (err) {
+    console.log(err);
+    return reply
+      .response({
+        message: "Server error.",
+      })
+      .code(500);
+  }
+};
+
+internals.confirm_pin = async (req, reply) => {
+  let pin = req.params.pin;
+  let { email } = req.query;
+
+  try {
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      return reply
+        .response({
+          message: "User not found.",
+        })
+        .code(404);
+    }
+
+    if (user?.emailVerification?.length === 0) {
+      return reply
+        .response({
+          message: "No confirm pin yet.",
+        })
+        .code(404);
+    }
+
+    var currentPin;
+    let pins = user.emailVerification;
+    for (let i = 0; i < pins.length; i++) {
+      if (i < pins.length - 1) {
+        if (pins?.[i]?.pin === pin) {
+          return reply
+            .response({
+              message: "Pin expired.",
+            })
+            .code(404);
+        }
+      } else {
+        currentPin = pins[i];
+      }
+    }
+
+    if (moment().diff(currentPin?.createdAt, "minutes") > 30) {
+      return reply
+        .response({
+          message: "Pin expires after 30 minutes. Request a new one.",
+        })
+        .code(404);
+    }
+
+    if (currentPin?.pin === pin) {
+      user.emailVerification[
+        user.emailVerification.length - 1
+      ].isConfirmed = true;
+
+      await user.save();
+
+      let profile = JSON.parse(JSON.stringify(user));
+      delete profile.password;
+      delete profile?.__v;
+      delete profile?.createdAt;
+      delete profile?.updatedAt;
+
+      return reply
+        .response({
+          message: "Pin is correct. Your email is now verified.",
+          data: {
+            profile,
+          },
+        })
+        .code(200);
+    } else {
+      return reply
+        .response({
+          message: "Pin incorrect.",
+        })
+        .code(404);
+    }
+  } catch (error) {
+    console.log("err", error);
+    return reply
+      .response({
+        message: "An error occurred.",
+      })
+      .code(500);
+  }
 };
 
 module.exports = internals;

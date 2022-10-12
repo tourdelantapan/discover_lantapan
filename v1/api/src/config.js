@@ -17,6 +17,9 @@ module.exports = {
     password: env.MONGODB_PASSWORD,
     clusterUrl: env.MONGODB_STAGING_CLUSTER_URL,
   },
+  mailgun: {
+    api_key: env.MAILGUN_API_KEY,
+  },
   aws_credentials: {
     region: env.AWS_REGION,
     accessKeyId:

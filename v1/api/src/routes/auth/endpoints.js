@@ -29,6 +29,22 @@ internals.endpoints = [
       auth: false,
     },
   },
+  {
+    method: ["GET"],
+    path: "/generate-otp",
+    handler: Handlers.generate_otp,
+    config: {
+      auth: false,
+    },
+  },
+  {
+    method: ["GET"],
+    path: "/confirm-otp/{pin}",
+    handler: Handlers.confirm_pin,
+    config: {
+      auth: false,
+    },
+  },
 ];
 
 module.exports = internals;

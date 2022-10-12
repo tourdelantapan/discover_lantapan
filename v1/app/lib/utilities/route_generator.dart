@@ -1,6 +1,7 @@
 import 'package:app/screens/admin/add_place.dart';
 import 'package:app/screens/admin/index.dart';
 import 'package:app/screens/auth/index.dart';
+import 'package:app/screens/auth/otp.dart';
 import 'package:app/screens/guest/add_review.dart';
 import 'package:app/screens/guest/index.dart';
 import 'package:app/screens/guest/mapview.dart';
@@ -44,6 +45,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => QRScanner());
       case '/visitor/form':
         return CupertinoPageRoute(builder: (_) => VisitorForm());
+      case '/verify/otp':
+        return CupertinoPageRoute(builder: (_) => OneTimePin());
       default:
         return _errorRoute();
     }

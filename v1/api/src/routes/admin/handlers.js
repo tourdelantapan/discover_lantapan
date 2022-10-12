@@ -61,6 +61,7 @@ internals.admin_dashboard_count = async (req, reply) => {
     ]);
     return reply
       .response({
+        message: "",
         data: {
           totalUsers,
           totalPlaces,

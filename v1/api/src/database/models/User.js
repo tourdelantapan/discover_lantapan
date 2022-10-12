@@ -1,5 +1,23 @@
 const mongoose = require("mongoose");
 
+var EmailVerificationSchema = new mongoose.Schema(
+  {
+    isConfirmed: {
+      type: Boolean,
+      default: false,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    pin: {
+      type: String,
+      required: true,
+    },
+  },
+  { _id: false, timestamps: true }
+);
+
 const Schema = new mongoose.Schema(
   {
     fullName: {
@@ -13,6 +31,9 @@ const Schema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+    },
+    emailVerification: {
+      type: [EmailVerificationSchema],
     },
     scope: {
       type: Array,

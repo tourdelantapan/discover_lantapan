@@ -4,7 +4,7 @@
 
 import 'package:app/models/photo_model.dart';
 import 'package:app/models/place_model.dart';
-import 'package:app/models/user_modal.dart';
+import 'package:app/models/user_model.dart';
 import 'package:meta/meta.dart';
 import 'dart:convert';
 

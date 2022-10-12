@@ -116,7 +116,7 @@ class _PlacesListState extends State<PlacesList> {
                                   horizontal: 10, vertical: 8),
                               borderRadius: 5,
                               label:
-                                  "${place.reviewsStat.average} / ${place.reviewsStat.reviewerCount} review${place.reviewsStat.reviewerCount > 1 ? "s" : ""}");
+                                  "${place.reviewsStat.average.toStringAsFixed(1)} / ${place.reviewsStat.reviewerCount} review${place.reviewsStat.reviewerCount > 1 ? "s" : ""}");
                         }
                         if (widget.arguments["mode"] == "popular") {
                           return IconText(
@@ -129,8 +129,6 @@ class _PlacesListState extends State<PlacesList> {
                         }
                         return Container();
                       }
-
-                      ;
 
                       return PlaceCard(
                           photoUrl: place.photos.isNotEmpty

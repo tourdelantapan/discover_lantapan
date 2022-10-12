@@ -1,4 +1,4 @@
-import 'package:app/models/user_modal.dart';
+import 'package:app/models/user_model.dart';
 import 'package:app/models/visitor_model.dart';
 import 'package:app/services/api_services.dart';
 import 'package:app/services/api_status.dart';
@@ -115,6 +115,37 @@ class UserProvider extends ChangeNotifier {
     if (response is Failure) {
       callback(response.code, response.response["message"] ?? "Failed.");
       setLoading("stop");
+    }
+  }
+
+  generatePin(
+      {required Map<String, dynamic> query, required Function callback}) async {
+    setLoading("generate-otp");
+    var response =
+        await APIServices.get(endpoint: "/generate-otp", query: query);
+    if (response is Success) {
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      callback(response.code, response.response["message"] ?? "Failed.");
+      setLoading("stop");
+    }
+  }
+
+  confirmPin(
+      {required Map<String, dynamic> query, required Function callback}) async {
+    setLoading("confirm-otp");
+    var response = await APIServices.get(
+        endpoint: "/confirm-otp/${query['pin']}", query: query);
+    if (response is Success) {
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Success.",
+          User.fromJson(response.response["data"]['profile']));
+    }
+    if (response is Failure) {
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Failed.", null);
     }
   }
 }
