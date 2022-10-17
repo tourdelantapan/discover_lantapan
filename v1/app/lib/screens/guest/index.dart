@@ -1,4 +1,5 @@
 import 'package:app/models/user_model.dart';
+import 'package:app/provider/app_provider.dart';
 import 'package:app/provider/location_provider.dart';
 import 'package:app/provider/user_provider.dart';
 import 'package:app/screens/guest/drawer_pages/about_lantapan.dart';
@@ -17,6 +18,7 @@ import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:latlong2/latlong.dart' as coords;
 
 class Guest extends StatefulWidget {
   Guest({Key? key}) : super(key: key);
@@ -73,10 +75,10 @@ class _GuestState extends State<Guest> {
         .determinePosition(context, (res, isSuccess) async {
       if (isSuccess) {
         String address = await AddressRepository.reverseGeocode(
-            coordinates: LatLng(res.latitude, res.longitude));
+            coordinates: coords.LatLng(res.latitude, res.longitude));
         if (!mounted) return;
-        Provider.of<LocationProvider>(context, listen: false)
-            .setCoordinates(LatLng(res.latitude, res.longitude), address);
+        Provider.of<LocationProvider>(context, listen: false).setCoordinates(
+            coords.LatLng(res.latitude, res.longitude), address);
 
         launchSnackbar(
             context: context,
@@ -106,6 +108,7 @@ class _GuestState extends State<Guest> {
       await Future.delayed(Duration.zero);
       if (!mounted) return;
       determinePosition();
+      Provider.of<AppProvider>(context, listen: false).getPhilippines();
     }();
     super.initState();
   }
@@ -113,6 +116,7 @@ class _GuestState extends State<Guest> {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = context.watch<UserProvider>();
+    AppProvider appProvider = context.watch<AppProvider>();
 
     return Scaffold(
       appBar: AppBar(

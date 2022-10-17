@@ -4,9 +4,10 @@
 
 import 'package:app/models/dashboard/dashboard_like.dart';
 import 'package:app/models/photo_model.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'dart:convert';
+import 'package:latlong2/latlong.dart' as coords;
+
 
 Place placeFromJson(String str) => Place.fromJson(json.decode(str));
 
@@ -33,7 +34,7 @@ class Place {
   String name;
   String address;
   String description;
-  LatLng coordinates;
+  coords.LatLng coordinates;
   Category categoryId;
   List<Photo> photos;
   DateTime createdAt;
@@ -48,7 +49,7 @@ class Place {
       id: json["_id"],
       name: json["name"],
       address: json["address"],
-      coordinates: LatLng(
+      coordinates: coords.LatLng(
           double.parse(json["coordinates"]["latitude"].toString()),
           double.parse(json["coordinates"]["longitude"].toString())),
       categoryId: Category.fromJson(json["categoryId"]),
@@ -164,7 +165,7 @@ Place placeNoData = Place(
     name: "No data",
     address: "No data",
     description: "No data",
-    coordinates: const LatLng(10.3, 12.3),
+    coordinates: coords.LatLng(10.3, 12.3),
     categoryId: Category(id: "48", name: "No data"),
     photos: [],
     isLiked: false,

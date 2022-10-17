@@ -6,11 +6,12 @@ import 'package:app/services/api_status.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart' as coords;
 
 class DirectionsRepository {
   static Future<Directions?> getDirections({
-    required LatLng location,
-    required LatLng destination,
+    required coords.LatLng location,
+    required coords.LatLng destination,
   }) async {
     String base_url = "https://api.mapbox.com/directions/v5/mapbox";
     String routing_profile = "driving";

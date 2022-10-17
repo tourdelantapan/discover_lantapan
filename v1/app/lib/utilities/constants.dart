@@ -12,4 +12,6 @@ const double HORIZONTAL_PADDING = 15.0;
 const String placeholderImage =
     "https://dpointernational.com/wp-content/uploads/2015/12/placeholder-image.jpg";
 
+  
+
 double mapZoom = 15;

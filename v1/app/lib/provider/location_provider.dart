@@ -10,10 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart' as coords;
 
 class LocationProvider extends ChangeNotifier {
-  LatLng _coordinates = const LatLng(8.143548493162127, 125.13147031688014);
-  LatLng get coordinates => _coordinates;
+  coords.LatLng _coordinates =
+      coords.LatLng(8.143548493162127, 125.13147031688014);
+  coords.LatLng get coordinates => _coordinates;
 
   Place _destination = placeNoData;
   Place get destination => _destination;
@@ -60,10 +62,10 @@ class LocationProvider extends ChangeNotifier {
 
   setDestination(Place place) {
     _destination = place;
-    _initialCameraPosition = CameraPosition(
-      target: place.coordinates,
-      zoom: mapZoom,
-    );
+    // _initialCameraPosition = CameraPosition(
+    //   target: place.coordinates,
+    //   zoom: mapZoom,
+    // );
     notifyListeners();
   }
 
@@ -113,7 +115,9 @@ class LocationProvider extends ChangeNotifier {
               'Location permissions are permanently denied, we cannot request permissions.');
       callback(null, false);
     }
-    var res = await Geolocator.getCurrentPosition();
+    var res = await Geolocator.getCurrentPosition(
+        forceAndroidLocationManager: true,
+        desiredAccuracy: LocationAccuracy.best);
     callback(res, true);
   }
 
@@ -130,26 +134,26 @@ class LocationProvider extends ChangeNotifier {
   }
 
   // Current location of user
-  setCoordinates(LatLng coordinates, String address) {
+  setCoordinates(coords.LatLng coordinates, String address) {
     _coordinates = coordinates;
     _address = address;
 
     MarkerId locationMarkerId = const MarkerId("location");
-    Marker locationMarker = Marker(
-      icon: BitmapDescriptor.defaultMarkerWithHue(.5),
-      markerId: locationMarkerId,
-      position: coordinates,
-      infoWindow: const InfoWindow(title: "location", snippet: '*'),
-      onTap: () {},
-    );
-    markers[locationMarkerId] = locationMarker;
+    // Marker locationMarker = Marker(
+    //   icon: BitmapDescriptor.defaultMarkerWithHue(.5),
+    //   markerId: locationMarkerId,
+    //   position: coordinates,
+    //   infoWindow: const InfoWindow(title: "location", snippet: '*'),
+    //   onTap: () {},
+    // );
+    // markers[locationMarkerId] = locationMarker;
     notifyListeners();
     getPolyline();
   }
 
   getPolyline() async {
-    LatLng origin = _coordinates;
-    LatLng dest = _destination.coordinates;
+    coords.LatLng origin = _coordinates;
+    coords.LatLng dest = _destination.coordinates;
     Directions? direction = await DirectionsRepository.getDirections(
         location: origin, destination: dest);
     if (direction != null) {

@@ -25,11 +25,11 @@ class _MapViewState extends State<MapView> {
       await Future.delayed(Duration.zero);
       if (!mounted) return;
       Provider.of<LocationProvider>(context, listen: false).resetMarkers();
-      Provider.of<LocationProvider>(context, listen: false).setMarker(
-          "destination",
-          Provider.of<LocationProvider>(context, listen: false)
-              .destination
-              .coordinates);
+      // Provider.of<LocationProvider>(context, listen: false).setMarker(
+      //     "destination",
+      //     Provider.of<LocationProvider>(context, listen: false)
+      //         .destination
+      //         .coordinates);
 
       if (Provider.of<LocationProvider>(context, listen: false)
           .address
@@ -91,13 +91,13 @@ class _MapViewState extends State<MapView> {
               polylines: locationProvider.polylines,
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
-                controller.animateCamera(CameraUpdate.newCameraPosition(
-                    CameraPosition(
-                        target: Provider.of<LocationProvider>(context,
-                                listen: false)
-                            .destination
-                            .coordinates,
-                        zoom: mapZoom)));
+                // controller.animateCamera(CameraUpdate.newCameraPosition(
+                //     CameraPosition(
+                //         target: Provider.of<LocationProvider>(context,
+                //                 listen: false)
+                //             .destination
+                //             .coordinates,
+                //         zoom: mapZoom)));
               },
             )),
             Container(

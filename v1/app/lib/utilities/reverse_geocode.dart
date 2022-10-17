@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:app/models/directions_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart';
 
 class AddressRepository {
   static Future<String> reverseGeocode({
@@ -24,7 +24,10 @@ class AddressRepository {
       try {
         List context =
             jsonDecode(response.body)?["features"]?[0]?['context'] as List;
-        return context.map((e) => e["text"] ?? "").join(', ');
+        return context
+            .map((e) => e["id"].contains('locality') ? "" : e["text"] ?? "")
+            .join(', ')
+            .replaceFirst(r', ', '');
         // return jsonDecode(response.body)?["features"]?[0]?['place_name'];
       } catch (e) {
         return "No Address";

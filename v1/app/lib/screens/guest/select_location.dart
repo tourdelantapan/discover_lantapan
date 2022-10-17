@@ -1,15 +1,13 @@
 import 'package:app/provider/location_provider.dart';
-import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/reverse_geocode.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'dart:async';
-
 import 'package:provider/provider.dart';
 
 class SelectLocation extends StatefulWidget {
@@ -29,13 +27,6 @@ class SelectLocation extends StatefulWidget {
 
 class _SelectLocationState extends State<SelectLocation> {
   String address = "";
-  Completer<GoogleMapController> _controller = Completer();
-  GoogleMapController? mapController;
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  CameraPosition _kGooglePlex = CameraPosition(
-    target: const LatLng(8.143548493162127, 125.13147031688014),
-    zoom: mapZoom,
-  );
   bool detectingLocation = false;
   LatLng? coordinates;
 
@@ -44,9 +35,6 @@ class _SelectLocationState extends State<SelectLocation> {
     Provider.of<LocationProvider>(context, listen: false)
         .determinePosition(context, (res, isSuccess) {
       if (isSuccess) {
-        mapController?.animateCamera(CameraUpdate.newCameraPosition(
-            CameraPosition(
-                target: LatLng(res.latitude, res.longitude), zoom: 17)));
         setMarker(LatLng(res.latitude, res.longitude));
         setState(() => detectingLocation = false);
       }
@@ -70,26 +58,10 @@ class _SelectLocationState extends State<SelectLocation> {
 
   setMarker(LatLng pos) async {
     var markerIdVal = "no_id";
-    final MarkerId markerId = MarkerId(markerIdVal);
-    final Marker marker = Marker(
-      markerId: markerId,
-      position: pos,
-      infoWindow: InfoWindow(title: markerIdVal, snippet: '*'),
-      onTap: () {},
-    );
-
     address = await AddressRepository.reverseGeocode(coordinates: pos);
-
     setState(() {
-      markers[markerId] = marker;
       coordinates = pos;
     });
-
-    // List<Placemark> placemarks =
-    //     await placemarkFromCoordinates(pos.latitude, pos.longitude);
-    // int lastInd = placemarks.length - 1;
-    // setState(() => address =
-    //     "${placemarks[lastInd].street}${placemarks[lastInd].street!.isEmpty ? "" : ","} ${placemarks[lastInd].subLocality}${placemarks[lastInd].subLocality!.isEmpty ? "" : ","}${placemarks[lastInd].locality}, ${placemarks[lastInd].administrativeArea}");
   }
 
   @override
@@ -137,20 +109,44 @@ class _SelectLocationState extends State<SelectLocation> {
         height: 15,
       ),
       Expanded(
-          child: GoogleMap(
-        key: const Key("map"),
-        onLongPress: (pos) => setMarker(pos),
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        markers: Set<Marker>.of(markers.values),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-          if (widget.value != null && !widget.willDetectLocation) {
-            controller.animateCamera(CameraUpdate.newCameraPosition(
-                CameraPosition(target: widget.value!, zoom: 30)));
-          }
-          mapController = controller;
-        },
+          child: FlutterMap(
+        options: MapOptions(
+            minZoom: 5,
+            maxZoom: 18,
+            zoom: 13,
+            center: widget.value,
+            onLongPress: (pos, latlng) {
+              setMarker(latlng);
+            }),
+        layers: [
+          TileLayerOptions(
+            urlTemplate:
+                "https://api.mapbox.com/styles/v1/tourdelantapan/cl95ltry3000j14ocq601prir/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoidG91cmRlbGFudGFwYW4iLCJhIjoiY2w4ZzJxc25uMGIyZzNvcHJuaWZ4Yzh0dyJ9.pLM4COThCSDADIYCDrfGFg",
+            additionalOptions: {
+              'mapStyleId': dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? "",
+              'accessToken': dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? "",
+            },
+          ),
+          MarkerLayerOptions(
+            markers: [
+              Marker(
+                height: 40,
+                width: 40,
+                point: coordinates ?? widget.value!,
+                builder: (_) {
+                  return GestureDetector(
+                    onTap: () {},
+                    child: const Icon(
+                      Icons.location_on_rounded,
+                      size: 40,
+                      color: Colors.red,
+                    ),
+                  );
+                },
+              )
+            ],
+          ),
+        ],
       )),
     ]);
   }
