@@ -59,4 +59,17 @@ class ReviewProvider extends ChangeNotifier {
       removeLoading("post-review");
     }
   }
+
+  deleteReview({required String reviewId, required Function callback}) async {
+    addLoading("review-delete");
+    var response = await APIServices.get(endpoint: "/review/delete/$reviewId");
+    if (response is Success) {
+      removeLoading("review-delete");
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      callback(response.code, response.response["message"] ?? "Failed.");
+      removeLoading("review-delete");
+    }
+  }
 }

@@ -4,6 +4,7 @@ var internals = {};
 const Place = require("../../database/models/Place");
 const User = require("../../database/models/User");
 const Visitor = require("../../database/models/Visitor");
+const Review = require("../../database/models/Review");
 const { getUrlsArray } = require("../../libraries/aws-s3-storage-upload");
 
 internals.add_place = async (req, reply) => {
@@ -225,6 +226,26 @@ internals.visitor_list = async (req, reply) => {
       })
       .code(200);
   } catch (e) {
+    return reply
+      .response({
+        message: "Server error",
+      })
+      .code(500);
+  }
+};
+
+internals.review_delete = async (req, reply) => {
+  let reviewId = req.params.reviewId;
+
+  try {
+    await Review.deleteOne({ _id: reviewId });
+    return reply
+      .response({
+        message: "Review/Comment successfully deleted.",
+      })
+      .code(200);
+  } catch (e) {
+    console.log(e);
     return reply
       .response({
         message: "Server error",

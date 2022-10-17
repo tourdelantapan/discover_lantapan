@@ -59,6 +59,14 @@ internals.endpoints = [
       auth: "token",
     },
   },
+  {
+    method: "GET",
+    path: "/review/delete/{reviewId}",
+    handler: Handlers.review_delete,
+    config: {
+      auth: "token",
+    },
+  },
 ];
 
 module.exports = internals;

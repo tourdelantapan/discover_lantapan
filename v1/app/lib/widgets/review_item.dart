@@ -8,7 +8,8 @@ import 'package:intl/intl.dart';
 
 class ReviewItem extends StatelessWidget {
   Review review;
-  ReviewItem({Key? key, required this.review}) : super(key: key);
+  Function? onDelete;
+  ReviewItem({Key? key, required this.review, this.onDelete}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -96,11 +97,22 @@ class ReviewItem extends StatelessWidget {
                         ),
                       ))),
         const SizedBox(height: 10),
-        IconText(
-          label: DateFormat("MMM dd, yyyy").format(review.createdAt),
-          color: Colors.black45,
-          size: 12,
-        ),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          IconText(
+            label: DateFormat("MMM dd, yyyy").format(review.createdAt),
+            color: Colors.black45,
+            size: 12,
+          ),
+          if (onDelete != null)
+            InkWell(
+                onTap: () => onDelete!(),
+                child: IconText(
+                  label: "Delete Review",
+                  icon: Icons.remove_circle_rounded,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                ))
+        ])
         // const Divider(),
       ]),
     );

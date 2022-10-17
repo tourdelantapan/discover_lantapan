@@ -314,6 +314,7 @@ internals.places_reviews_list = async (req, reply) => {
 
   try {
     let reviews = await Review.find({ placeId })
+      .sort({ createdAt: -1 })
       .populate({
         path: "placeId",
         populate: {

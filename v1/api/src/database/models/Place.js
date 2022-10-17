@@ -26,6 +26,9 @@ const Schema = new mongoose.Schema(
     },
     status: {
       type: String,
+    },
+    timeTable: {
+      type: Array,
       required: true,
     },
     description: {
