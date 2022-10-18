@@ -24,11 +24,12 @@ const Schema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    status: {
-      type: String,
-    },
+    // status: {
+    //   type: String,
+    // },
     timeTable: {
       type: Array,
+      default: [],
       required: true,
     },
     description: {

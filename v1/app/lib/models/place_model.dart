@@ -24,8 +24,9 @@ class Place {
     required this.createdAt,
     required this.updatedAt,
     required this.isLiked,
-    required this.status,
+    // required this.status,
     required this.reviewsStat,
+    required this.timeTable,
     required this.favorites,
   });
 
@@ -36,10 +37,11 @@ class Place {
   LatLng coordinates;
   Category categoryId;
   List<Photo> photos;
+  List<TimeTable> timeTable;
   DateTime createdAt;
   DateTime updatedAt;
   bool isLiked;
-  String status;
+  // String status;
   ReviewsStat reviewsStat;
   Favorites favorites;
 
@@ -53,7 +55,7 @@ class Place {
           double.parse(json["coordinates"]["longitude"].toString())),
       categoryId: Category.fromJson(json["categoryId"]),
       description: json["description"],
-      status: json["status"],
+      // status: json["status"],
       isLiked: json["isLiked"] == null ||
               json["isLiked"] == false ||
               json["isLiked"].toString() == "[]"
@@ -61,6 +63,10 @@ class Place {
           : true,
       photos: json["photos"] != null
           ? List<Photo>.from(json["photos"].map((x) => Photo.fromJson(x)))
+          : [],
+      timeTable: json["timeTable"] != null
+          ? List<TimeTable>.from(
+              json["timeTable"].map((x) => TimeTable.fromJson(x)))
           : [],
       createdAt: json["createdAt"] != null
           ? DateTime.parse(json["createdAt"])
@@ -87,7 +93,8 @@ class Place {
         "isLiked": isLiked,
         "coordinates": coordinates.toJson(),
         "categoryId": categoryId,
-        "status": status,
+        // "status": status,
+        "timeTable": List<dynamic>.from(timeTable.map((x) => x.toJson())),
         "photos": List<dynamic>.from(photos.map((x) => x.toJson())),
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
@@ -159,6 +166,41 @@ class ReviewsStat {
       };
 }
 
+class TimeTable {
+  TimeTable(
+      {required this.day,
+      required this.timeFromHour,
+      required this.timeFromMinute,
+      required this.timeToHour,
+      required this.timeToMinute,
+      required this.other});
+
+  String day;
+  int timeFromHour;
+  int timeFromMinute;
+  int timeToHour;
+  int timeToMinute;
+  String other;
+
+  factory TimeTable.fromJson(Map<String, dynamic> json) => TimeTable(
+        day: json["day"],
+        timeFromHour: json["timeFromHour"],
+        timeFromMinute: json["timeFromMinute"],
+        timeToHour: json["timeToHour"],
+        timeToMinute: json["timeToMinute"],
+        other: json["other"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "day": day,
+        "timeFromHour": timeFromHour,
+        "timeFromMinute": timeFromMinute,
+        "timeToHour": timeToHour,
+        "timeToMinute": timeToMinute,
+        "other": other
+      };
+}
+
 Place placeNoData = Place(
     id: "1",
     name: "No data",
@@ -168,7 +210,8 @@ Place placeNoData = Place(
     categoryId: Category(id: "48", name: "No data"),
     photos: [],
     isLiked: false,
-    status: "OPEN",
+    // status: "OPEN",
+    timeTable: [],
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
     reviewsStat: ReviewsStat(average: 0, reviewerCount: 0),

@@ -416,6 +416,7 @@ internals.edit_place = async (req, reply) => {
       },
       {
         ...payload,
+        timeTable: JSON.parse(payload.timeTable),
         coordinates: coordinates ?? payload.coordinates,
         ...photoQuery,
       }

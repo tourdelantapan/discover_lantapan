@@ -7,9 +7,9 @@ class Button extends StatelessWidget {
   Color? backgroundColor;
   Color? textColor;
   Color? borderColor;
-  Function onPress;
+  Function? onPress;
   EdgeInsets? padding;
-  bool? disabled;
+  // bool? disabled;
   double? borderRadius;
   EdgeInsets? margin;
   double? fontSize;
@@ -24,7 +24,7 @@ class Button extends StatelessWidget {
       this.backgroundColor,
       this.borderColor,
       this.padding,
-      this.disabled,
+      // this.disabled,
       this.borderRadius,
       this.margin,
       this.fontSize,
@@ -35,7 +35,7 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Opacity(
-      opacity: [true].contains(disabled) ? 0.5 : 1,
+      opacity: onPress == null ? 0.5 : 1,
       child: Container(
         margin: margin,
         decoration: BoxDecoration(
@@ -47,7 +47,7 @@ class Button extends StatelessWidget {
           child: InkWell(
             splashColor: Colors.white24,
             borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 5)),
-            onTap: [true].contains(disabled) ? null : () => onPress(),
+            onTap: onPress == null ? null : () => onPress!(),
             child: Padding(
               padding: padding ??
                   const EdgeInsets.only(

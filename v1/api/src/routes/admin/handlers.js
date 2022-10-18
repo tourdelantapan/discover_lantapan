@@ -16,6 +16,7 @@ internals.add_place = async (req, reply) => {
       longitude: parseFloat(payload.longitude),
     },
     ...payload,
+    timeTable: JSON.parse(payload.timeTable),
   });
 
   if (!Array.isArray(payload.photos) && payload.photos)
@@ -219,6 +220,7 @@ internals.visitor_list = async (req, reply) => {
 
     return reply
       .response({
+        message: "",
         data: {
           visitorList,
           visitorCount: visitorCount?.[0]?.count || 0,

@@ -63,6 +63,7 @@ dependencies:
   permission_handler: ^10.0.2
   external_path: ^1.0.3
   email_validator: ^2.1.17
+  time_range_picker: ^2.2.0
 
 dev_dependencies:
   flutter_test:

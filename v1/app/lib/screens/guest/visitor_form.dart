@@ -152,28 +152,31 @@ class _VisitorFormState extends State<VisitorForm> {
                       ),
                       const SizedBox(height: 40),
                       Button(
-                          disabled: userProvider.loading == "visitor-form",
                           label: "Submit",
-                          onPress: () {
-                            if (_formKey.currentState!.validate()) {
-                              userProvider.submitVisitorForm(
-                                  payload: {
-                                    ...payload,
-                                    "placeId": placeProvider.placeInfo.id,
-                                    "dateOfVisit":
-                                        payload["dateOfVisit"].toIso8601String()
-                                  },
-                                  callback: (code, message) {
-                                    launchSnackbar(
-                                        context: context,
-                                        mode: code == 200 ? "SUCCESS" : "ERROR",
-                                        message: message);
-                                    if (code == 200) {
-                                      Navigator.pop(context);
-                                    }
-                                  });
-                            }
-                          },
+                          onPress: userProvider.loading == "visitor-form"
+                              ? null
+                              : () {
+                                  if (_formKey.currentState!.validate()) {
+                                    userProvider.submitVisitorForm(
+                                        payload: {
+                                          ...payload,
+                                          "placeId": placeProvider.placeInfo.id,
+                                          "dateOfVisit": payload["dateOfVisit"]
+                                              .toIso8601String()
+                                        },
+                                        callback: (code, message) {
+                                          launchSnackbar(
+                                              context: context,
+                                              mode: code == 200
+                                                  ? "SUCCESS"
+                                                  : "ERROR",
+                                              message: message);
+                                          if (code == 200) {
+                                            Navigator.pop(context);
+                                          }
+                                        });
+                                  }
+                                },
                           padding: const EdgeInsets.symmetric(vertical: 15)),
                       const SizedBox(height: 15),
                     ]),
