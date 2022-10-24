@@ -89,7 +89,8 @@ flutter:
     - dotenv
     - assets/images/
     - assets/images/tourism_staff/
-
+    - assets/json/
+    
   fonts:
     - family: Varela
       fonts:

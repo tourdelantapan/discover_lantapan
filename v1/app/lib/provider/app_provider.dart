@@ -1,47 +1,25 @@
-// ignore_for_file: non_constant_identifier_names
-
+import 'dart:convert';
+import 'package:app/models/philippines_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class AppProvider extends ChangeNotifier {
   String _sample = "Hello World";
   String get sample => _sample;
+  List<Philippines> philippines = [];
 
   setSample(String sample) {
     _sample = sample;
     notifyListeners();
   }
 
-  // login(
-  //     {required Map<String, dynamic> credentials,
-  //     required Function callback}) async {
-  //   setLoading("login");
-  //   var response =di
-  //       await APIServices.post(endpoint: "/login", payload: credentials);
-  //   if (response is Success) {
-  //     setLoading("stop");
-  //     setToken(response.response["data"]["accessToken"]);
-  //     setCurrentUser(User.fromJson(response.response["data"]));
-  //     callback(response.code, response.response["message"] ?? "Success.");
-  //   }
-  //   if (response is Failure) {
-  //     setLoading("stop");
-  //     callback(response.code, response.response["message"] ?? "Failed.");
-  //   }
-  // }
+  Future<String> getPhilippinesJson() {
+    return rootBundle.loadString('assets/json/philippines.json');
+  }
 
-  // signup(
-  //     {required Map<String, dynamic> credentials,
-  //     required Function callback}) async {
-  //   setLoading("signup");
-  //   var response =
-  //       await APIServices.post(endpoint: "/signup", payload: credentials);
-  //   if (response is Success) {
-  //     setLoading("stop");
-  //     callback(response.code, response.response["message"] ?? "Success.");
-  //   }
-  //   if (response is Failure) {
-  //     setLoading("stop");
-  //     callback(response.code, response.response["message"] ?? "Failed.");
-  //   }
-  // }
+  getPhilippines() async {
+    var _philippines = json.decode(await getPhilippinesJson());
+    philippines = List<Philippines>.from(
+        _philippines.map((x) => Philippines.fromJson(x)));
+  }
 }
