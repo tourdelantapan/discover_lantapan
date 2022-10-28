@@ -9,7 +9,7 @@ const sendOTP = (to, { recipient_name, OTP }) => {
   const template = Handlebars.compile(source);
 
   let emailData = {
-    from: "Tour De Lantapan <tourdelantapan@tourdelantapan.com>",
+    from: "Tour De Lantapan <tourdelantapan@gmail.com>",
     to,
     subject: "OTP: Tour de Lantapan",
     html: template({ recipient_name, OTP }),
@@ -22,6 +22,29 @@ const sendOTP = (to, { recipient_name, OTP }) => {
   });
 };
 
+const sendResetLink = (to, resetUrl) => {
+  const filterPath = Path.join(
+    __dirname,
+    `../assets/email-templates/reset-password.html`
+  );
+  const source = fs.readFileSync(filterPath, "utf-8");
+  const template = Handlebars.compile(source);
+
+  let emailData = {
+    from: "Tour De Lantapan <tourdelantapan@gmail.com>",
+    to,
+    subject: "Password Reset Request: Tour de Lantapan",
+    html: template({ resetUrl }),
+  };
+
+  Mailgun.send(emailData, (res) => {
+    if (res) {
+      console.log("success", res);
+    }
+  });
+};
+
 module.exports = {
   sendOTP,
+  sendResetLink,
 };

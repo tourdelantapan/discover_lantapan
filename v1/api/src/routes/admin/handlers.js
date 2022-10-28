@@ -187,6 +187,18 @@ internals.visitor_form = async (req, reply) => {
   let payload = req.payload;
 
   try {
+    payload.address = JSON.parse(payload?.address);
+  } catch (e) {
+    return reply
+      .response({
+        message: "Error parsing address.",
+      })
+      .code(500);
+  }
+
+  console.log(payload);
+
+  try {
     await Visitor(payload).save();
     return reply
       .response({
@@ -218,12 +230,25 @@ internals.visitor_list = async (req, reply) => {
       { $group: { _id: 0, count: { $sum: "$numberOfVisitors" } } },
     ]);
 
+    let visitorCountInBukidnon = await Visitor.aggregate([
+      { $match: { "address.provinceId": "614c2580dd90f126474a5e26" } },
+      { $group: { _id: 0, count: { $sum: "$numberOfVisitors" } } },
+    ]);
+
+    let visitorCountOutsideBukidnon = await Visitor.aggregate([
+      { $match: { "address.provinceId": { $ne: "614c2580dd90f126474a5e26" } } },
+      { $group: { _id: 0, count: { $sum: "$numberOfVisitors" } } },
+    ]);
+
     return reply
       .response({
         message: "",
         data: {
           visitorList,
           visitorCount: visitorCount?.[0]?.count || 0,
+          visitorCountInBukidnon: visitorCountInBukidnon?.[0]?.count || 0,
+          visitorCountOutsideBukidnon:
+            visitorCountOutsideBukidnon?.[0]?.count || 0,
         },
       })
       .code(200);

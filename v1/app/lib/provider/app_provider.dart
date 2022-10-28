@@ -6,6 +6,7 @@ import 'package:flutter/services.dart' show rootBundle;
 class AppProvider extends ChangeNotifier {
   String _sample = "Hello World";
   String get sample => _sample;
+
   List<Philippines> philippines = [];
 
   setSample(String sample) {
@@ -21,5 +22,6 @@ class AppProvider extends ChangeNotifier {
     var _philippines = json.decode(await getPhilippinesJson());
     philippines = List<Philippines>.from(
         _philippines.map((x) => Philippines.fromJson(x)));
+    notifyListeners();
   }
 }

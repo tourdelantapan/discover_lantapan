@@ -14,8 +14,8 @@ const Schema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    homeAddress: {
-      type: String,
+    address: {
+      type: Object,
       required: true,
     },
     numberOfVisitors: {

@@ -44,7 +44,7 @@ class DayOfWeek extends StatelessWidget {
               IconText(
                 label: timeOfDay.day,
                 color: Colors.black,
-                fontWeight: FontWeight.bold,
+                // fontWeight: FontWeight.bold,
               ),
               if (timeOfDay.other == "CLOSED")
                 IconText(

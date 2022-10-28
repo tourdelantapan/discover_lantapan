@@ -2,6 +2,7 @@ import 'package:app/screens/admin/add_place.dart';
 import 'package:app/screens/admin/index.dart';
 import 'package:app/screens/auth/index.dart';
 import 'package:app/screens/auth/otp.dart';
+import 'package:app/screens/forgot-password.dart';
 import 'package:app/screens/guest/add_review.dart';
 import 'package:app/screens/guest/index.dart';
 import 'package:app/screens/guest/mapview.dart';
@@ -34,6 +35,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => MapView());
       case '/auth':
         return CupertinoPageRoute(builder: (_) => Auth());
+      case '/auth/password/reset':
+        return CupertinoPageRoute(builder: (_) => ForgotPassword());
       case '/place/add':
         return CupertinoPageRoute(
             builder: (_) => AddPlace(arguments: args as Map<String, dynamic>));

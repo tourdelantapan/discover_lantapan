@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/user_provider.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
+import 'package:app/widgets/StructuredAddress.dart';
+import 'package:app/widgets/bottom_modal.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/form/number_picker.dart';
 import 'package:app/widgets/snackbar.dart';
@@ -18,12 +22,14 @@ class VisitorForm extends StatefulWidget {
 
 class _VisitorFormState extends State<VisitorForm> {
   final _formKey = GlobalKey<FormState>();
+  var addressController = TextEditingController();
   Map<String, dynamic> payload = {
     "fullName": "",
     "contactNumber": "",
     "dateOfVisit": "",
     "homeAddress": "",
-    "numberOfVisitors": 1
+    "numberOfVisitors": 1,
+    "address": {}
   };
 
   @override
@@ -118,6 +124,8 @@ class _VisitorFormState extends State<VisitorForm> {
                       ),
                       const SizedBox(height: 15),
                       TextFormField(
+                        controller: addressController,
+                        readOnly: true,
                         onChanged: (e) =>
                             setState(() => payload["homeAddress"] = e.trim()),
                         validator: (val) {
@@ -125,8 +133,39 @@ class _VisitorFormState extends State<VisitorForm> {
                             return "This field is required";
                           }
                         },
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      isDismissible: false,
+                                      enableDrag: false,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      builder: (context) {
+                                        return StatefulBuilder(builder:
+                                            (BuildContext context,
+                                                StateSetter setModalState) {
+                                          return Modal(
+                                              title: "Your home address",
+                                              heightInPercentage: .9,
+                                              content: StructuredAddress(
+                                                  onSave: (address) {
+                                                setState(() =>
+                                                    payload["address"] =
+                                                        address);
+                                                addressController.text =
+                                                    "${address['cityMunicipality']}${address['cityMunicipality']?.isNotEmpty ? ", " : ""}${address['province']}${address['province']?.isNotEmpty ? ", " : ""}${address['region']}";
+                                                Navigator.pop(context);
+                                              }));
+                                        });
+                                      });
+                                },
+                                icon: const Icon(
+                                  Icons.list_alt_rounded,
+                                  color: Colors.red,
+                                )),
+                            border: const OutlineInputBorder(),
                             labelText: "Home Address"),
                       ),
                       const SizedBox(height: 15),
@@ -160,6 +199,8 @@ class _VisitorFormState extends State<VisitorForm> {
                                     userProvider.submitVisitorForm(
                                         payload: {
                                           ...payload,
+                                          "address":
+                                              jsonEncode(payload["address"]),
                                           "placeId": placeProvider.placeInfo.id,
                                           "dateOfVisit": payload["dateOfVisit"]
                                               .toIso8601String()

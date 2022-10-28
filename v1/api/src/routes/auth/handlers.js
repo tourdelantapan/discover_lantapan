@@ -4,11 +4,12 @@ var internals = {};
 const User = require("../../database/models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
+const Crypto = require("../../libraries/Crypto");
 const Config = require("../../config");
 const moment = require("moment");
-const { sendOTP } = require("../../libraries/email-helper");
-const ObjectId = mongoose.Types.ObjectId;
+const { sendOTP, sendResetLink } = require("../../libraries/email-helper");
+
+const baseUrl = "http://Geralds-MacBook-Air.local:9000";
 
 internals.profile = async (req, reply) => {
   try {
@@ -266,6 +267,87 @@ internals.confirm_pin = async (req, reply) => {
     return reply
       .response({
         message: "An error occurred.",
+      })
+      .code(500);
+  }
+};
+
+internals.email_reset_password = async (req, reply) => {
+  console.log(req.query);
+  try {
+    let userData = await User.findOne({ email: req.query.email });
+    if (userData) {
+      let token = Crypto.encrypt(
+        JSON.stringify({ userId: userData._id, createdAt: moment().valueOf() })
+      );
+      sendResetLink(
+        req.query.email,
+        `${baseUrl}/user/reset-password-form/${token}`
+      );
+      return reply
+        .response({
+          message: `Email has been sent to ${req.query.email}.`,
+        })
+        .code(200);
+    } else {
+      return reply
+        .response({
+          message: "There is no registered user with this email.",
+        })
+        .code(404);
+    }
+  } catch (error) {
+    console.log(error);
+    return reply
+      .response({
+        message: "Server error.",
+      })
+      .code(500);
+  }
+};
+
+internals.reset_password_form = async (req, reply) => {
+  let data = JSON.parse(Crypto.decrypt(req.params.token));
+  if (moment(data.createdAt).isAfter(moment().subtract(1, "hours"))) {
+    return reply
+      .view("auth/reset-password-form.html", {
+        userId: data.userId,
+        tokenHasExpired: false,
+      })
+      .code(200);
+  } else {
+    return reply
+      .view("auth/reset-password-form.html", {
+        tokenHasExpired: true,
+      })
+      .code(200);
+  }
+};
+
+internals.initiate_password_reset = async (req, reply) => {
+  try {
+    let userData = await User.findOne({ _id: req.params.userId });
+    if (userData) {
+      userData.password = await bcrypt.hash(req.payload.password, 10);
+      await userData.save();
+
+      return reply
+        .response({
+          success: true,
+          message: "Your password reset has been successful.",
+        })
+        .code(200);
+    } else {
+      return reply
+        .response({
+          message: "User not found.",
+        })
+        .code(404);
+    }
+  } catch (error) {
+    return reply
+      .response({
+        message: "Server error.",
       })
       .code(500);
   }

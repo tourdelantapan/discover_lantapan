@@ -47,7 +47,7 @@ class Button extends StatelessWidget {
           child: InkWell(
             splashColor: Colors.white24,
             borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 5)),
-            onTap: onPress == null ? null : () => onPress!(),
+            onTap: (onPress == null || isLoading!) ? null : () => onPress!(),
             child: Padding(
               padding: padding ??
                   const EdgeInsets.only(

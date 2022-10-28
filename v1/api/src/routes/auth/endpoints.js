@@ -45,6 +45,30 @@ internals.endpoints = [
       auth: false,
     },
   },
+  {
+    method: "GET",
+    path: "/user/email-reset-password",
+    handler: Handlers.email_reset_password,
+    config: {
+      auth: false,
+    },
+  },
+  {
+    method: ["GET"],
+    path: "/user/reset-password-form/{token}",
+    handler: Handlers.reset_password_form,
+    config: {
+      auth: false,
+    },
+  },
+  {
+    method: ["POST"],
+    path: "/user/initiate-password-reset/{userId}",
+    handler: Handlers.initiate_password_reset,
+    config: {
+      auth: false,
+    },
+  },
 ];
 
 module.exports = internals;

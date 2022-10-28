@@ -41,7 +41,8 @@ generatePDF(BuildContext context,
     PdfGridRow row = grid.rows.add();
     row.cells[0].value = visitors[index].placeId.name;
     row.cells[1].value = visitors[index].fullName;
-    row.cells[2].value = visitors[index].homeAddress;
+    row.cells[2].value =
+        "${visitors[index].address.cityMunicipality}, ${visitors[index].address.province}, ${visitors[index].address.region}";
 
     row.cells[3].value =
         DateFormat("MMM dd, yyyy").format(visitors[index].dateOfVisit);

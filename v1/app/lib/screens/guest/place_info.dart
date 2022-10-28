@@ -67,7 +67,6 @@ class _PlaceInfoState extends State<PlaceInfo> {
     UserProvider userProvider = context.watch<UserProvider>();
     LocationProvider locationProvider = context.watch<LocationProvider>();
     int _currentIndex = 0;
-    int weekday = DateTime.now().weekday;
 
     void openImageViewer(BuildContext context, final int index) {
       if (placeProvider.placeInfo.photos.isEmpty) {
@@ -90,8 +89,18 @@ class _PlaceInfoState extends State<PlaceInfo> {
     }
 
     String getIsOpenClose() {
+      int weekday = DateTime.now().weekday;
+
       if (placeProvider.placeInfo.timeTable.isEmpty) {
         return "--";
+      }
+
+      if (placeProvider.placeInfo.timeTable[weekday].other == "247") {
+        return "Open";
+      }
+
+      if (placeProvider.placeInfo.timeTable[weekday].other == "CLOSED") {
+        return "Closed";
       }
 
       TimeOfDay from = TimeOfDay(
@@ -102,9 +111,17 @@ class _PlaceInfoState extends State<PlaceInfo> {
           minute: placeProvider.placeInfo.timeTable[weekday].timeToMinute);
       TimeOfDay now = TimeOfDay.now();
 
-      print(from.toString());
-      print(to.toString());
-      print(now.toString());
+      int _from = int.parse("${from.hour}${from.minute}");
+      int _to = int.parse("${to.hour}${to.minute}");
+      int _now = int.parse("${now.hour}${now.minute}");
+
+      if (_now > _to || _now < _from) {
+        return "Closed";
+      }
+
+      if (_now < _to && _now > _from) {
+        return "Open";
+      }
 
       return "--";
     }
@@ -254,7 +271,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: HORIZONTAL_PADDING),
                         child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               FeatureBadge(
                                   icon: Icons.star_rate_rounded,
@@ -446,7 +463,7 @@ class FeatureBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
         Container(
           padding: const EdgeInsets.all(10),
@@ -469,7 +486,7 @@ class FeatureBadge extends StatelessWidget {
           ),
         ),
         const SizedBox(
-          width: 10,
+          height: 10,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

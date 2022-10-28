@@ -60,8 +60,31 @@ class _VisitorTableState extends State<VisitorTable> {
           Button(
               label: "Generate PDF",
               onPress: () {
-                generatePDF(context, visitors: userProvider.visitorList, totalCount: userProvider.visitorCount.toString());
+                generatePDF(context,
+                    visitors: userProvider.visitorList,
+                    totalCount: userProvider.visitorCount.toString());
               })
+        ]),
+      ),
+      const SizedBox(
+        height: 15,
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Row(children: [
+          IconText(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+              label:
+                  "Visitors inside Bukidnon: ${userProvider.visitorCountInBukidnon}"),
+          const SizedBox(
+            width: 20,
+          ),
+          IconText(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+              label:
+                  "Visitors outside Bukidnon: ${userProvider.visitorCountOutsideBukidnon}"),
         ]),
       ),
       const SizedBox(
@@ -165,7 +188,8 @@ class TableData extends DataTableSource {
           Text(dataList[index].fullName),
         ),
         DataCell(
-          Text(dataList[index].homeAddress),
+          Text(
+              "${dataList[index].address.cityMunicipality}, ${dataList[index].address.province}, ${dataList[index].address.region}"),
         ),
         DataCell(
           Text(DateFormat("MMM dd, yyyy").format(dataList[index].dateOfVisit)),
