@@ -89,7 +89,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
     }
 
     String getIsOpenClose() {
-      int weekday = DateTime.now().weekday;
+      int weekday = DateTime.now().weekday - 1;
 
       if (placeProvider.placeInfo.timeTable.isEmpty) {
         return "--";
@@ -111,9 +111,12 @@ class _PlaceInfoState extends State<PlaceInfo> {
           minute: placeProvider.placeInfo.timeTable[weekday].timeToMinute);
       TimeOfDay now = TimeOfDay.now();
 
-      int _from = int.parse("${from.hour}${from.minute}");
-      int _to = int.parse("${to.hour}${to.minute}");
-      int _now = int.parse("${now.hour}${now.minute}");
+      int _from =
+          int.parse("${from.hour}${from.minute < 10 ? "0" : ""}${from.minute}");
+      int _to = int.parse("${to.hour}${to.minute < 10 ? "0" : ""}${to.minute}");
+      int _now =
+          int.parse("${now.hour}${now.minute < 10 ? "0" : ""}${now.minute}");
+
 
       if (_now > _to || _now < _from) {
         return "Closed";

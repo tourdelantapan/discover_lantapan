@@ -231,53 +231,56 @@ class _TimeDayPickerState extends State<TimeDayPicker> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TimeRangePicker(
-            hideButtons: true,
-            rotateLabels: false,
-            paintingStyle: PaintingStyle.fill,
-            use24HourFormat: false,
-            backgroundColor: Colors.grey.withOpacity(0.2),
-            labels: [
-              "12 am",
-              "3 am",
-              "6 am",
-              "9 am",
-              "12 pm",
-              "3 pm",
-              "6 pm",
-              "9 pm"
-            ].asMap().entries.map((e) {
-              return ClockLabel.fromIndex(idx: e.key, length: 8, text: e.value);
-            }).toList(),
-            start: _startTime,
-            end: _endTime,
-            ticks: 8,
-            strokeColor: Theme.of(context).primaryColor.withOpacity(0.5),
-            ticksColor: Theme.of(context).primaryColor,
-            labelOffset: 15,
-            padding: 60,
-            onStartChange: (start) {
-              setState(() {
-                _startTime = start;
-              });
+        Expanded(
+          child: TimeRangePicker(
+              hideButtons: true,
+              rotateLabels: false,
+              paintingStyle: PaintingStyle.fill,
+              use24HourFormat: false,
+              backgroundColor: Colors.grey.withOpacity(0.2),
+              labels: [
+                "12 am",
+                "3 am",
+                "6 am",
+                "9 am",
+                "12 pm",
+                "3 pm",
+                "6 pm",
+                "9 pm"
+              ].asMap().entries.map((e) {
+                return ClockLabel.fromIndex(
+                    idx: e.key, length: 8, text: e.value);
+              }).toList(),
+              start: _startTime,
+              end: _endTime,
+              ticks: 8,
+              strokeColor: Theme.of(context).primaryColor.withOpacity(0.5),
+              ticksColor: Theme.of(context).primaryColor,
+              labelOffset: 15,
+              padding: 60,
+              onStartChange: (start) {
+                setState(() {
+                  _startTime = start;
+                });
 
-              widget.value.timeFromHour = start.hour;
-              widget.value.timeFromMinute = start.minute;
-              widget.value.timeToHour = _endTime.hour;
-              widget.value.timeToMinute = _endTime.minute;
-              widget.onChange(widget.value);
-            },
-            onEndChange: (end) {
-              setState(() {
-                _endTime = end;
-              });
+                widget.value.timeFromHour = start.hour;
+                widget.value.timeFromMinute = start.minute;
+                widget.value.timeToHour = _endTime.hour;
+                widget.value.timeToMinute = _endTime.minute;
+                widget.onChange(widget.value);
+              },
+              onEndChange: (end) {
+                setState(() {
+                  _endTime = end;
+                });
 
-              widget.value.timeFromHour = _startTime.hour;
-              widget.value.timeFromMinute = _startTime.minute;
-              widget.value.timeToHour = end.hour;
-              widget.value.timeToMinute = end.minute;
-              widget.onChange(widget.value);
-            }),
+                widget.value.timeFromHour = _startTime.hour;
+                widget.value.timeFromMinute = _startTime.minute;
+                widget.value.timeToHour = end.hour;
+                widget.value.timeToMinute = end.minute;
+                widget.onChange(widget.value);
+              }),
+        ),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Chippy(
               backgroundColor:
@@ -299,8 +302,11 @@ class _TimeDayPickerState extends State<TimeDayPicker> {
               onPress: () {
                 widget.value.other = widget.value.other == "247" ? "" : "247";
                 widget.onChange(widget.value);
-              })
-        ])
+              }),
+        ]),
+        const SizedBox(
+          height: 15,
+        ),
       ],
     );
   }
