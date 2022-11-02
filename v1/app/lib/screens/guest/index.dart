@@ -38,6 +38,7 @@ class _GuestState extends State<Guest> {
     IconTextModel(Icons.contact_mail_rounded, "Contacts"),
     IconTextModel(Icons.developer_mode_rounded, "Developers"),
     IconTextModel(Icons.qr_code_2_rounded, "Scan QR"),
+    IconTextModel(Icons.local_gas_station_rounded, "Nearby Gas Stations"),
   ];
 
   void setLocation() {
@@ -263,6 +264,12 @@ class _GuestState extends State<Guest> {
                       if (index == 6) {
                         Navigator.pop(context);
                         Navigator.pushNamed(context, '/scan/qr');
+                        return;
+                      }
+
+                      if (index == 7) {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/nearby/gas-stations');
                         return;
                       }
 

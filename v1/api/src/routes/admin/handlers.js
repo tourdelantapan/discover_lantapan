@@ -5,7 +5,9 @@ const Place = require("../../database/models/Place");
 const User = require("../../database/models/User");
 const Visitor = require("../../database/models/Visitor");
 const Review = require("../../database/models/Review");
+const GasStation = require("../../database/models/GasStation");
 const { getUrlsArray } = require("../../libraries/aws-s3-storage-upload");
+require("../../database/models/GasStation")();
 
 internals.add_place = async (req, reply) => {
   let payload = req.payload;
@@ -280,5 +282,195 @@ internals.review_delete = async (req, reply) => {
       .code(500);
   }
 };
+
+internals.nearby_gas_stations = async (req, reply) => {
+  let { userLocation } = req.query;
+  let query = {};
+
+  try {
+    userLocation = userLocation && JSON.parse(userLocation);
+    console.log(userLocation);
+    const distance = 25;
+    const unitValue = 1000;
+    if (userLocation?.longitude && userLocation?.latitude) {
+      query = {
+        ...query,
+        coordinates: {
+          $near: {
+            $maxDistance: distance * unitValue,
+            $geometry: {
+              type: "Point",
+              coordinates: [userLocation?.longitude, userLocation?.latitude],
+            },
+          },
+        },
+      };
+    }
+
+    var gasStations = await GasStation.find(query);
+
+    return reply
+      .response({
+        data: {
+          gasStations,
+        },
+      })
+      .code(200);
+  } catch (e) {
+    console.log(e);
+    return reply
+      .response({
+        message: "Server error",
+      })
+      .code(500);
+  }
+};
+
+const stations = [
+  /* 1 */
+  {
+    name: "AGT Petroleum",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.05521525710373, 125.134475232513],
+    },
+  } /* 2 */,
+
+  {
+    name: "Caltex",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.05563752034916, 125.13424456254],
+    },
+  } /* 3 */,
+
+  {
+    name: "JACC Fuel",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.05183142953978, 125.131066879656],
+    },
+  } /* 4 */,
+
+  {
+    name: "Petron",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.05567735647946, 125.134673715972],
+    },
+  } /* 5 */,
+
+  {
+    name: "RM C Petrol",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.04965369465056, 125.126550039743],
+    },
+  } /* 6 */,
+
+  {
+    name: "JC Petron",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.05388234092127, 125.138769679707],
+    },
+  } /* 7 */,
+
+  {
+    name: "Phoenix Aglayan",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.0535666328871, 125.136385951785],
+    },
+  } /* 8 */,
+
+  {
+    name: "AIIJI Gasoline Station",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [7.99984310401245, 125.02408862699],
+    },
+  } /* 9 */,
+
+  {
+    name: "PLC Fuel",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [7.99878655610082, 125.021624828727],
+    },
+  } /* 10 */,
+
+  {
+    name: "M & Y Gasoline Station",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [7.99888973362361, 125.027093281981],
+    },
+  } /* 11 */,
+
+  {
+    name: "Gas Station",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [7.99748854905563, 125.029272723886],
+    },
+  } /* 12 */,
+
+  {
+    name: "Phoenix Gasoline Station",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.00289358643431, 125.010119681997],
+    },
+  } /* 13 */,
+
+  {
+    name: "NIPA GASOLINE STATION",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.02581809234537, 124.989592194115],
+    },
+  } /* 14 */,
+
+  {
+    name: "Aiji Fuel",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.04965552878343, 124.896842687902],
+    },
+  } /* 15 */,
+
+  {
+    name: "RC Fuel",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.047666711539, 124.893371212762],
+    },
+  } /* 16 */,
+
+  {
+    name: "UELZONE",
+    photos: [],
+    coordinates: {
+      type: "Point",
+      coordinates: [8.04957239698852, 124.891225645977],
+    },
+  },
+];
 
 module.exports = internals;

@@ -12,7 +12,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationProvider extends ChangeNotifier {
-  LatLng _coordinates = const LatLng(8.143548493162127, 125.13147031688014);
+  LatLng _coordinates =
+      const LatLng(8.143548493162127, 125.13147031688014); //user location
   LatLng get coordinates => _coordinates;
 
   Place _destination = placeNoData;

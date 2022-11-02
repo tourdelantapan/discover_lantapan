@@ -6,6 +6,7 @@ import 'package:app/screens/forgot-password.dart';
 import 'package:app/screens/guest/add_review.dart';
 import 'package:app/screens/guest/index.dart';
 import 'package:app/screens/guest/mapview.dart';
+import 'package:app/screens/guest/nearby_gas_stations.dart';
 import 'package:app/screens/guest/place_info.dart';
 import 'package:app/screens/guest/review_list.dart';
 import 'package:app/screens/guest/scan_qr.dart';
@@ -50,6 +51,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => VisitorForm());
       case '/verify/otp':
         return CupertinoPageRoute(builder: (_) => OneTimePin());
+      case '/nearby/gas-stations':
+        return CupertinoPageRoute(builder: (_) => NearbyGasStations());
       default:
         return _errorRoute();
     }

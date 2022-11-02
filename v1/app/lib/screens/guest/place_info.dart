@@ -117,7 +117,6 @@ class _PlaceInfoState extends State<PlaceInfo> {
       int _now =
           int.parse("${now.hour}${now.minute < 10 ? "0" : ""}${now.minute}");
 
-
       if (_now > _to || _now < _from) {
         return "Closed";
       }

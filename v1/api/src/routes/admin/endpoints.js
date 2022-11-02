@@ -67,6 +67,14 @@ internals.endpoints = [
       auth: "token",
     },
   },
+  {
+    method: "GET",
+    path: "/nearby/gas-stations",
+    handler: Handlers.nearby_gas_stations,
+    config: {
+      auth: false,
+    },
+  },
 ];
 
 module.exports = internals;

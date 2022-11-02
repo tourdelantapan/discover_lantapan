@@ -9,7 +9,7 @@ const Config = require("../../config");
 const moment = require("moment");
 const { sendOTP, sendResetLink } = require("../../libraries/email-helper");
 
-const baseUrl = "http://Geralds-MacBook-Air.local:9000";
+const baseUrl = "http://127.0.0.1:9000";
 
 internals.profile = async (req, reply) => {
   try {

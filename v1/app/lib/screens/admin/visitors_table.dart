@@ -3,6 +3,7 @@ import 'package:app/provider/user_provider.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/generate_pdf.dart';
 import 'package:app/widgets/button.dart';
+import 'package:app/widgets/date_filter.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -17,15 +18,26 @@ class VisitorTable extends StatefulWidget {
 }
 
 class _VisitorTableState extends State<VisitorTable> {
+  String startDate = "2022-07-01";
+  String endDate = "2022-07-30";
+
   @override
   void initState() {
     () async {
       await Future.delayed(Duration.zero);
+      if (!mounted) return;
       Provider.of<UserProvider>(context, listen: false).getVisitors(
           callback: (code, message) {
         if (code != 200) {
           launchSnackbar(context: context, mode: "ERROR", message: message);
         }
+      });
+      DateTime now = DateTime.now();
+      setState(() {
+        startDate =
+            DateFormat("yyyy-MM-dd").format(DateTime(now.year, now.month, 1));
+        endDate = DateFormat("yyyy-MM-dd")
+            .format(DateTime(now.year, now.month + 1, 0));
       });
     }();
     super.initState();
@@ -66,6 +78,15 @@ class _VisitorTableState extends State<VisitorTable> {
               })
         ]),
       ),
+      DateFilter(
+          onApplyFilter: (startDate, endDate) {
+            // setState(() {
+            //   this.startDate = DateFormat("yyyy-MM-dd").format(startDate);
+            //   this.endDate = DateFormat("yyyy-MM-dd").format(endDate);
+            // });
+          },
+          startDate: startDate,
+          endDate: endDate),
       const SizedBox(
         height: 15,
       ),
