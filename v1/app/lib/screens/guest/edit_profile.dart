@@ -169,7 +169,10 @@ class _EditProfileState extends State<EditProfile> {
                 const SizedBox(height: 15),
                 const Divider(),
                 TextButton(
-                    onPressed: () async {},
+                    onPressed: () async {
+                      Navigator.pushNamed(
+                          context, '/user/profile/change-password');
+                    },
                     child: IconText(
                       label: "Change Password",
                       color: Colors.red,
