@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const Crypto = require("../../libraries/Crypto");
 const Config = require("../../config");
 const moment = require("moment");
+const { getUrls } = require("../../libraries/aws-s3-storage-upload");
 const { sendOTP, sendResetLink } = require("../../libraries/email-helper");
 
 const baseUrl = "http://127.0.0.1:9000";
@@ -27,6 +28,44 @@ internals.profile = async (req, reply) => {
     });
 
     let profile = JSON.parse(JSON.stringify(_profile));
+    delete profile.password;
+    delete profile.__v;
+    delete profile.createdAt;
+    delete profile.updatedAt;
+
+    return reply
+      .response({
+        message: "Success.",
+        data: {
+          profile,
+        },
+      })
+      .code(200);
+  } catch (e) {
+    return reply
+      .response({
+        errorMessage: e,
+      })
+      .code(500);
+  }
+};
+
+internals.profile_edit = async (req, reply) => {
+  let payload = req.payload;
+  delete payload?.email;
+
+  if (!payload?.photos) {
+    delete payload?.photos;
+  } else {
+    let photoUrl = await getUrls(payload.photos, payload._id, "user");
+    payload.photo = photoUrl;
+    delete payload?.photos;
+  }
+
+  try {
+    await User.updateOne({ _id: payload._id }, payload);
+    let user = await User.findOne({ _id: payload._id });
+    let profile = JSON.parse(JSON.stringify(user));
     delete profile.password;
     delete profile.__v;
     delete profile.createdAt;

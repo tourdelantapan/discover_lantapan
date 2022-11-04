@@ -64,6 +64,7 @@ dependencies:
   external_path: ^1.0.3
   email_validator: ^2.1.17
   time_range_picker: ^2.2.0
+  image_cropper: ^3.0.1
 
 dev_dependencies:
   flutter_test:

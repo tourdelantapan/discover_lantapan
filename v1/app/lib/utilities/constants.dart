@@ -10,6 +10,6 @@ String BASE_URL = IS_PODUCTION
 
 const double HORIZONTAL_PADDING = 15.0;
 const String placeholderImage =
-    "https://dpointernational.com/wp-content/uploads/2015/12/placeholder-image.jpg";
+    "https://tourdelantapan.s3.ap-northeast-1.amazonaws.com/app_assets/SM-placeholder.png";
 
 double mapZoom = 15;

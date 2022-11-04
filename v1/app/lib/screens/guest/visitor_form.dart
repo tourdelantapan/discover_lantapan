@@ -8,6 +8,7 @@ import 'package:app/widgets/StructuredAddress.dart';
 import 'package:app/widgets/bottom_modal.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/form/number_picker.dart';
+import 'package:app/widgets/privacy_policy.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/form/date_picker.dart';
@@ -21,6 +22,7 @@ class VisitorForm extends StatefulWidget {
 }
 
 class _VisitorFormState extends State<VisitorForm> {
+  bool policyAgreed = false;
   final _formKey = GlobalKey<FormState>();
   var addressController = TextEditingController();
   Map<String, dynamic> payload = {
@@ -177,6 +179,39 @@ class _VisitorFormState extends State<VisitorForm> {
                           value: payload["numberOfVisitors"],
                           onChange: (e) =>
                               setState(() => payload["numberOfVisitors"] = e)),
+                      const SizedBox(height: 10),
+                      Row(children: [
+                        Checkbox(
+                            value: policyAgreed,
+                            onChanged: (val) {
+                              setState(() => policyAgreed = val!);
+                            }),
+                        const Text("I have read the "),
+                        Button(
+                            label: "Privacy Policy",
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            backgroundColor: Colors.transparent,
+                            borderColor: Colors.transparent,
+                            textColor: Colors.red,
+                            onPress: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  isDismissible: false,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) {
+                                    return StatefulBuilder(builder:
+                                        (BuildContext context,
+                                            StateSetter setModalState) {
+                                      return Modal(
+                                          heightInPercentage: .7,
+                                          title:
+                                              "Tour de Lantapan Privacy Policy",
+                                          content: const PrivacyPolicy());
+                                    });
+                                  });
+                            })
+                      ]),
                       const SizedBox(height: 40),
                       const Text(
                         "This form is intended for the tourism office in monitoring visitor and for further research. Your privacy is safe.",
@@ -196,6 +231,15 @@ class _VisitorFormState extends State<VisitorForm> {
                               ? null
                               : () {
                                   if (_formKey.currentState!.validate()) {
+                                    if (!policyAgreed) {
+                                      launchSnackbar(
+                                          context: context,
+                                          mode: "ERROR",
+                                          message:
+                                              "Please read the privacy policy first.");
+                                      return;
+                                    }
+
                                     userProvider.submitVisitorForm(
                                         payload: {
                                           ...payload,

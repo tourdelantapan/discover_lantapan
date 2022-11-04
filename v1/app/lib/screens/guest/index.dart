@@ -225,14 +225,32 @@ class _GuestState extends State<Guest> {
                   const SizedBox(
                     height: 15,
                   ),
-                  IconText(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    label: "Welcome,",
-                    icon: Icons.favorite,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    size: 17,
-                  ),
+                  Row(children: [
+                    if (userProvider.currentUser?.photo != null)
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: userProvider.currentUser?.photo != null
+                              ? Image.network(
+                                  "${userProvider.currentUser!.photo!.small!}?${DateTime.now().toString()}",
+                                  width: 20,
+                                  height: 20,
+                                  fit: BoxFit.cover,
+                                )
+                              : null),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    IconText(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      label: "Welcome,",
+                      icon: userProvider.currentUser?.photo == null
+                          ? Icons.favorite
+                          : null,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      size: 17,
+                    ),
+                  ]),
                   const SizedBox(
                     height: 5,
                   ),
@@ -241,7 +259,7 @@ class _GuestState extends State<Guest> {
                     label: userProvider.currentUser?.fullName ?? "Guest",
                     color: Colors.black,
                     size: 17,
-                  ),
+                  )
                 ])),
             ListView.builder(
                 shrinkWrap: true,
@@ -278,27 +296,52 @@ class _GuestState extends State<Guest> {
                       Navigator.pop(context);
                     }))
           ])),
-          Button(
-              icon: userProvider.currentUser == null
-                  ? Icons.person
-                  : Icons.logout_rounded,
-              label: userProvider.currentUser == null
-                  ? "Log In/Sign Up"
-                  : "Log Out",
-              borderColor: Colors.transparent,
-              backgroundColor: Colors.transparent,
-              textColor: Colors.black,
-              mainAxisAlignment: MainAxisAlignment.start,
-              onPress: () {
-                Navigator.pop(context);
-                if (userProvider.currentUser != null) {
-                  userProvider.signOut();
-                  return;
-                }
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Button(
+                      icon: userProvider.currentUser == null
+                          ? Icons.person
+                          : Icons.logout_rounded,
+                      label: userProvider.currentUser == null
+                          ? "Log In/Sign Up"
+                          : "Log Out",
+                      borderColor: Colors.transparent,
+                      backgroundColor: Colors.transparent,
+                      textColor: Colors.black,
+                      padding: const EdgeInsets.all(0),
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      onPress: () {
+                        Navigator.pop(context);
+                        if (userProvider.currentUser != null) {
+                          userProvider.signOut();
+                          return;
+                        }
 
-                Navigator.pushNamed(context, '/auth');
-                return;
-              })
+                        Navigator.pushNamed(context, '/auth');
+                        return;
+                      }),
+                  if (userProvider.currentUser != null)
+                    Button(
+                        icon: Icons.edit,
+                        label: "Edit Profile",
+                        borderColor: Colors.transparent,
+                        backgroundColor: Colors.transparent,
+                        textColor: Colors.red,
+                        padding: const EdgeInsets.all(0),
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        onPress: () {
+                          Navigator.pop(context);
+                          Navigator.pushNamed(context, '/user/profile/edit');
+                          return;
+                        }),
+                ]),
+          ),
+          const SizedBox(
+            height: 15,
+          ),
         ]),
       ),
     );

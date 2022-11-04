@@ -7,7 +7,6 @@ const Visitor = require("../../database/models/Visitor");
 const Review = require("../../database/models/Review");
 const GasStation = require("../../database/models/GasStation");
 const { getUrlsArray } = require("../../libraries/aws-s3-storage-upload");
-require("../../database/models/GasStation")();
 
 internals.add_place = async (req, reply) => {
   let payload = req.payload;
@@ -219,7 +218,26 @@ internals.visitor_form = async (req, reply) => {
 
 internals.visitor_list = async (req, reply) => {
   try {
-    let visitorList = await Visitor.find({})
+    let { startDate, endDate } = req.query;
+
+    let query = {};
+
+    if (startDate || endDate) {
+      query = {
+        $and: [
+          {
+            createdAt: endDate
+              ? { $gte: new Date(startDate), $lte: new Date(endDate) }
+              : {
+                  $gte: new Date(startDate),
+                  $lte: moment(startDate).endOf("day").toDate(),
+                },
+          },
+        ],
+      };
+    }
+
+    let visitorList = await Visitor.find(query)
       .populate({
         path: "placeId",
         populate: {
@@ -228,19 +246,29 @@ internals.visitor_list = async (req, reply) => {
       })
       .sort({ createdAt: -1 });
 
-    let visitorCount = await Visitor.aggregate([
-      { $group: { _id: 0, count: { $sum: "$numberOfVisitors" } } },
-    ]);
+    let query1 = [{ $group: { _id: 0, count: { $sum: "$numberOfVisitors" } } }];
+    if (startDate || endDate) {
+      query1.unshift({ $match: query });
+    }
+    let visitorCount = await Visitor.aggregate(query1);
 
-    let visitorCountInBukidnon = await Visitor.aggregate([
+    let query2 = [
       { $match: { "address.provinceId": "614c2580dd90f126474a5e26" } },
       { $group: { _id: 0, count: { $sum: "$numberOfVisitors" } } },
-    ]);
+    ];
+    if (startDate || endDate) {
+      query2.unshift({ $match: query });
+    }
+    let visitorCountInBukidnon = await Visitor.aggregate(query2);
 
-    let visitorCountOutsideBukidnon = await Visitor.aggregate([
+    let query3 = [
       { $match: { "address.provinceId": { $ne: "614c2580dd90f126474a5e26" } } },
       { $group: { _id: 0, count: { $sum: "$numberOfVisitors" } } },
-    ]);
+    ];
+    if (startDate || endDate) {
+      query3.unshift({ $match: query });
+    }
+    let visitorCountOutsideBukidnon = await Visitor.aggregate(query3);
 
     return reply
       .response({
@@ -255,6 +283,7 @@ internals.visitor_list = async (req, reply) => {
       })
       .code(200);
   } catch (e) {
+    console.log(e);
     return reply
       .response({
         message: "Server error",
@@ -325,152 +354,5 @@ internals.nearby_gas_stations = async (req, reply) => {
       .code(500);
   }
 };
-
-const stations = [
-  /* 1 */
-  {
-    name: "AGT Petroleum",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.05521525710373, 125.134475232513],
-    },
-  } /* 2 */,
-
-  {
-    name: "Caltex",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.05563752034916, 125.13424456254],
-    },
-  } /* 3 */,
-
-  {
-    name: "JACC Fuel",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.05183142953978, 125.131066879656],
-    },
-  } /* 4 */,
-
-  {
-    name: "Petron",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.05567735647946, 125.134673715972],
-    },
-  } /* 5 */,
-
-  {
-    name: "RM C Petrol",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.04965369465056, 125.126550039743],
-    },
-  } /* 6 */,
-
-  {
-    name: "JC Petron",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.05388234092127, 125.138769679707],
-    },
-  } /* 7 */,
-
-  {
-    name: "Phoenix Aglayan",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.0535666328871, 125.136385951785],
-    },
-  } /* 8 */,
-
-  {
-    name: "AIIJI Gasoline Station",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [7.99984310401245, 125.02408862699],
-    },
-  } /* 9 */,
-
-  {
-    name: "PLC Fuel",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [7.99878655610082, 125.021624828727],
-    },
-  } /* 10 */,
-
-  {
-    name: "M & Y Gasoline Station",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [7.99888973362361, 125.027093281981],
-    },
-  } /* 11 */,
-
-  {
-    name: "Gas Station",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [7.99748854905563, 125.029272723886],
-    },
-  } /* 12 */,
-
-  {
-    name: "Phoenix Gasoline Station",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.00289358643431, 125.010119681997],
-    },
-  } /* 13 */,
-
-  {
-    name: "NIPA GASOLINE STATION",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.02581809234537, 124.989592194115],
-    },
-  } /* 14 */,
-
-  {
-    name: "Aiji Fuel",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.04965552878343, 124.896842687902],
-    },
-  } /* 15 */,
-
-  {
-    name: "RC Fuel",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.047666711539, 124.893371212762],
-    },
-  } /* 16 */,
-
-  {
-    name: "UELZONE",
-    photos: [],
-    coordinates: {
-      type: "Point",
-      coordinates: [8.04957239698852, 124.891225645977],
-    },
-  },
-];
 
 module.exports = internals;

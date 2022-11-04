@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/models/user_model.dart';
 import 'package:app/models/visitor_model.dart';
 import 'package:app/services/api_services.dart';
@@ -91,6 +93,27 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  editProfile(
+      {required Map<String, dynamic> payload,
+      required Function callback,
+      File? photo}) async {
+    setLoading("profile-edit");
+    var response = await APIServices.post(
+        endpoint: "/profile/edit",
+        payload: payload,
+        files: photo == null ? [] : [photo]);
+    if (response is Success) {
+      User user = User.fromJson(response.response["data"]["profile"]);
+      setCurrentUser(user);
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Failed.");
+    }
+  }
+
   submitVisitorForm(
       {required Map<String, dynamic> payload,
       required Function callback}) async {
@@ -107,9 +130,11 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  getVisitors({required Function callback}) async {
+  getVisitors(
+      {required Map<String, dynamic> query, required Function callback}) async {
     setLoading("visitor-list");
-    var response = await APIServices.get(endpoint: "/visitor/list");
+    var response =
+        await APIServices.get(endpoint: "/visitor/list", query: query);
     if (response is Success) {
       _visitorList = List<Visitor>.from(response.response["data"]["visitorList"]
           .map((x) => Visitor.fromJson(x)));

@@ -1,5 +1,6 @@
 import 'package:app/provider/app_provider.dart';
 import 'package:app/widgets/button.dart';
+import 'package:app/widgets/calendar_popup.dart';
 import 'package:app/widgets/form/radiogroup.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:flutter/material.dart';
@@ -42,21 +43,21 @@ class DateFilter extends StatelessWidget {
     AppProvider appProvider = context.watch<AppProvider>();
 
     onChangeDate() {
-      // showDialog<dynamic>(
-      //   context: context,
-      //   builder: (BuildContext context) => CalendarPopupView(
-      //     singleDaySelection: false,
-      //     initialStartDate: DateTime.parse(startDate),
-      //     initialEndDate: DateTime.parse(endDate),
-      //     onApplyClick: (DateTime? startDate, DateTime? endDate) {
-      //       DateTime now = DateTime.now();
-      //       onApplyFilter(startDate ?? DateTime(now.year, now.month, 1),
-      //           endDate ?? DateTime(now.year, now.month + 1, 0));
-      //     },
-      //     onReset: () {},
-      //     onCancelClick: () {},
-      //   ),
-      // );
+      showDialog<dynamic>(
+        context: context,
+        builder: (BuildContext context) => CalendarPopupView(
+          singleDaySelection: false,
+          initialStartDate: DateTime.parse(startDate),
+          initialEndDate: DateTime.parse(endDate),
+          onApplyClick: (DateTime? startDate, DateTime? endDate) {
+            DateTime now = DateTime.now();
+            onApplyFilter(startDate ?? DateTime(now.year, now.month, 1),
+                endDate ?? DateTime(now.year, now.month + 1, 0));
+          },
+          onReset: () {},
+          onCancelClick: () {},
+        ),
+      );
     }
 
     return Container(

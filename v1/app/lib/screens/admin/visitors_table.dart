@@ -21,17 +21,21 @@ class _VisitorTableState extends State<VisitorTable> {
   String startDate = "2022-07-01";
   String endDate = "2022-07-30";
 
+  getVisitorsList() {
+    Provider.of<UserProvider>(context, listen: false).getVisitors(
+        query: {"startDate": startDate, "endDate": endDate},
+        callback: (code, message) {
+          if (code != 200) {
+            launchSnackbar(context: context, mode: "ERROR", message: message);
+          }
+        });
+  }
+
   @override
   void initState() {
     () async {
       await Future.delayed(Duration.zero);
       if (!mounted) return;
-      Provider.of<UserProvider>(context, listen: false).getVisitors(
-          callback: (code, message) {
-        if (code != 200) {
-          launchSnackbar(context: context, mode: "ERROR", message: message);
-        }
-      });
       DateTime now = DateTime.now();
       setState(() {
         startDate =
@@ -39,6 +43,7 @@ class _VisitorTableState extends State<VisitorTable> {
         endDate = DateFormat("yyyy-MM-dd")
             .format(DateTime(now.year, now.month + 1, 0));
       });
+      getVisitorsList();
     }();
     super.initState();
   }
@@ -46,6 +51,7 @@ class _VisitorTableState extends State<VisitorTable> {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = context.watch<UserProvider>();
+
     DataTableSource dataSource(List<Visitor> visitorList) =>
         TableData(dataList: visitorList);
 
@@ -80,10 +86,11 @@ class _VisitorTableState extends State<VisitorTable> {
       ),
       DateFilter(
           onApplyFilter: (startDate, endDate) {
-            // setState(() {
-            //   this.startDate = DateFormat("yyyy-MM-dd").format(startDate);
-            //   this.endDate = DateFormat("yyyy-MM-dd").format(endDate);
-            // });
+            setState(() {
+              this.startDate = DateFormat("yyyy-MM-dd").format(startDate);
+              this.endDate = DateFormat("yyyy-MM-dd").format(endDate);
+            });
+            getVisitorsList();
           },
           startDate: startDate,
           endDate: endDate),
@@ -113,7 +120,7 @@ class _VisitorTableState extends State<VisitorTable> {
       ),
       if (userProvider.loading == "visitor-list")
         const LinearProgressIndicator()
-      else
+      else if (userProvider.visitorList.isNotEmpty)
         Expanded(
             child: SingleChildScrollView(
           scrollDirection: Axis.vertical,

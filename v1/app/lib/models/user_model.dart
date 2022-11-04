@@ -2,6 +2,7 @@
 //
 //     final user = userFromJson(jsonString);
 
+import 'package:app/models/photo_model.dart';
 import 'package:meta/meta.dart';
 import 'dart:convert';
 
@@ -16,6 +17,7 @@ class User {
     required this.email,
     required this.password,
     required this.scope,
+    this.photo,
     required this.createdAt,
     required this.updatedAt,
     required this.emailVerification,
@@ -25,6 +27,7 @@ class User {
   String fullName;
   String email;
   String password;
+  Photo? photo;
   List<String> scope;
   DateTime createdAt;
   DateTime updatedAt;
@@ -36,6 +39,7 @@ class User {
       email: json["email"],
       password: json["password"] ?? "",
       scope: List<String>.from(json["scope"].map((x) => x)),
+      photo: json["photo"] == null ? null : Photo.fromJson(json["photo"]),
       createdAt: json["createdAt"] == null
           ? DateTime.now()
           : DateTime.parse(json["createdAt"]),

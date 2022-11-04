@@ -4,6 +4,7 @@ import 'package:app/screens/auth/index.dart';
 import 'package:app/screens/auth/otp.dart';
 import 'package:app/screens/forgot-password.dart';
 import 'package:app/screens/guest/add_review.dart';
+import 'package:app/screens/guest/edit_profile.dart';
 import 'package:app/screens/guest/index.dart';
 import 'package:app/screens/guest/mapview.dart';
 import 'package:app/screens/guest/nearby_gas_stations.dart';
@@ -27,6 +28,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => Guest());
       case '/admin':
         return CupertinoPageRoute(builder: (_) => Admin());
+      case '/user/profile/edit':
+        return CupertinoPageRoute(builder: (_) => EditProfile());
       case '/place/info':
         return CupertinoPageRoute(
             builder: (_) => PlaceInfo(arguments: args as Map<String, dynamic>));

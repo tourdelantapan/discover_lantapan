@@ -15,6 +15,23 @@ internals.endpoints = [
   },
   {
     method: ["POST"],
+    path: "/profile/edit",
+    options: {
+      payload: {
+        output: "file",
+        parse: true,
+        multipart: true,
+        maxBytes: 100000000000,
+      },
+      handler: Handlers.profile_edit,
+
+      auth: {
+        strategy: "token",
+      },
+    },
+  },
+  {
+    method: ["POST"],
     path: "/login",
     handler: Handlers.login,
     config: {
