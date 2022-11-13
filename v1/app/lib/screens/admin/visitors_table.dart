@@ -3,6 +3,7 @@ import 'package:app/provider/user_provider.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/generate_pdf.dart';
 import 'package:app/widgets/button.dart';
+import 'package:app/widgets/date_filter.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -17,16 +18,32 @@ class VisitorTable extends StatefulWidget {
 }
 
 class _VisitorTableState extends State<VisitorTable> {
+  String startDate = "2022-07-01";
+  String endDate = "2022-07-30";
+
+  getVisitorsList() {
+    Provider.of<UserProvider>(context, listen: false).getVisitors(
+        query: {"startDate": startDate, "endDate": endDate},
+        callback: (code, message) {
+          if (code != 200) {
+            launchSnackbar(context: context, mode: "ERROR", message: message);
+          }
+        });
+  }
+
   @override
   void initState() {
     () async {
       await Future.delayed(Duration.zero);
-      Provider.of<UserProvider>(context, listen: false).getVisitors(
-          callback: (code, message) {
-        if (code != 200) {
-          launchSnackbar(context: context, mode: "ERROR", message: message);
-        }
+      if (!mounted) return;
+      DateTime now = DateTime.now();
+      setState(() {
+        startDate =
+            DateFormat("yyyy-MM-dd").format(DateTime(now.year, now.month, 1));
+        endDate = DateFormat("yyyy-MM-dd")
+            .format(DateTime(now.year, now.month + 1, 0));
       });
+      getVisitorsList();
     }();
     super.initState();
   }
@@ -34,6 +51,7 @@ class _VisitorTableState extends State<VisitorTable> {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = context.watch<UserProvider>();
+
     DataTableSource dataSource(List<Visitor> visitorList) =>
         TableData(dataList: visitorList);
 
@@ -60,8 +78,41 @@ class _VisitorTableState extends State<VisitorTable> {
           Button(
               label: "Generate PDF",
               onPress: () {
-                generatePDF(context, visitors: userProvider.visitorList, totalCount: userProvider.visitorCount.toString());
+                generatePDF(context,
+                    visitors: userProvider.visitorList,
+                    totalCount: userProvider.visitorCount.toString());
               })
+        ]),
+      ),
+      DateFilter(
+          onApplyFilter: (startDate, endDate) {
+            setState(() {
+              this.startDate = DateFormat("yyyy-MM-dd").format(startDate);
+              this.endDate = DateFormat("yyyy-MM-dd").format(endDate);
+            });
+            getVisitorsList();
+          },
+          startDate: startDate,
+          endDate: endDate),
+      const SizedBox(
+        height: 15,
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Row(children: [
+          IconText(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+              label:
+                  "Visitors inside Bukidnon: ${userProvider.visitorCountInBukidnon}"),
+          const SizedBox(
+            width: 20,
+          ),
+          IconText(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+              label:
+                  "Visitors outside Bukidnon: ${userProvider.visitorCountOutsideBukidnon}"),
         ]),
       ),
       const SizedBox(
@@ -69,7 +120,7 @@ class _VisitorTableState extends State<VisitorTable> {
       ),
       if (userProvider.loading == "visitor-list")
         const LinearProgressIndicator()
-      else
+      else if (userProvider.visitorList.isNotEmpty)
         Expanded(
             child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -165,7 +216,8 @@ class TableData extends DataTableSource {
           Text(dataList[index].fullName),
         ),
         DataCell(
-          Text(dataList[index].homeAddress),
+          Text(
+              "${dataList[index].address.cityMunicipality}, ${dataList[index].address.province}, ${dataList[index].address.region}"),
         ),
         DataCell(
           Text(DateFormat("MMM dd, yyyy").format(dataList[index].dateOfVisit)),

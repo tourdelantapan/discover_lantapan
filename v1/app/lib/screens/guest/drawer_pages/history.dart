@@ -59,7 +59,7 @@ class _HistoryState extends State<History> {
                       onPress: () {},
                     )),
             options: CarouselOptions(
-              viewportFraction: 0.7,
+              viewportFraction: .1,
               enableInfiniteScroll: false,
               aspectRatio: 2,
               enlargeCenterPage: true,

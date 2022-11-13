@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/user_provider.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
+import 'package:app/widgets/StructuredAddress.dart';
+import 'package:app/widgets/bottom_modal.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/form/number_picker.dart';
+import 'package:app/widgets/privacy_policy.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:app/widgets/form/date_picker.dart';
@@ -17,13 +22,16 @@ class VisitorForm extends StatefulWidget {
 }
 
 class _VisitorFormState extends State<VisitorForm> {
+  bool policyAgreed = false;
   final _formKey = GlobalKey<FormState>();
+  var addressController = TextEditingController();
   Map<String, dynamic> payload = {
     "fullName": "",
     "contactNumber": "",
     "dateOfVisit": "",
     "homeAddress": "",
-    "numberOfVisitors": 1
+    "numberOfVisitors": 1,
+    "address": {}
   };
 
   @override
@@ -118,6 +126,8 @@ class _VisitorFormState extends State<VisitorForm> {
                       ),
                       const SizedBox(height: 15),
                       TextFormField(
+                        controller: addressController,
+                        readOnly: true,
                         onChanged: (e) =>
                             setState(() => payload["homeAddress"] = e.trim()),
                         validator: (val) {
@@ -125,8 +135,39 @@ class _VisitorFormState extends State<VisitorForm> {
                             return "This field is required";
                           }
                         },
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      isDismissible: false,
+                                      enableDrag: false,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      builder: (context) {
+                                        return StatefulBuilder(builder:
+                                            (BuildContext context,
+                                                StateSetter setModalState) {
+                                          return Modal(
+                                              title: "Your home address",
+                                              heightInPercentage: .9,
+                                              content: StructuredAddress(
+                                                  onSave: (address) {
+                                                setState(() =>
+                                                    payload["address"] =
+                                                        address);
+                                                addressController.text =
+                                                    "${address['cityMunicipality']}${address['cityMunicipality']?.isNotEmpty ? ", " : ""}${address['province']}${address['province']?.isNotEmpty ? ", " : ""}${address['region']}";
+                                                Navigator.pop(context);
+                                              }));
+                                        });
+                                      });
+                                },
+                                icon: const Icon(
+                                  Icons.list_alt_rounded,
+                                  color: Colors.red,
+                                )),
+                            border: const OutlineInputBorder(),
                             labelText: "Home Address"),
                       ),
                       const SizedBox(height: 15),
@@ -138,6 +179,39 @@ class _VisitorFormState extends State<VisitorForm> {
                           value: payload["numberOfVisitors"],
                           onChange: (e) =>
                               setState(() => payload["numberOfVisitors"] = e)),
+                      const SizedBox(height: 10),
+                      Row(children: [
+                        Checkbox(
+                            value: policyAgreed,
+                            onChanged: (val) {
+                              setState(() => policyAgreed = val!);
+                            }),
+                        const Text("I have read the "),
+                        Button(
+                            label: "Privacy Policy",
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            backgroundColor: Colors.transparent,
+                            borderColor: Colors.transparent,
+                            textColor: Colors.red,
+                            onPress: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  isDismissible: false,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) {
+                                    return StatefulBuilder(builder:
+                                        (BuildContext context,
+                                            StateSetter setModalState) {
+                                      return Modal(
+                                          heightInPercentage: .7,
+                                          title:
+                                              "Tour de Lantapan Privacy Policy",
+                                          content: const PrivacyPolicy());
+                                    });
+                                  });
+                            })
+                      ]),
                       const SizedBox(height: 40),
                       const Text(
                         "This form is intended for the tourism office in monitoring visitor and for further research. Your privacy is safe.",
@@ -152,28 +226,42 @@ class _VisitorFormState extends State<VisitorForm> {
                       ),
                       const SizedBox(height: 40),
                       Button(
-                          disabled: userProvider.loading == "visitor-form",
                           label: "Submit",
-                          onPress: () {
-                            if (_formKey.currentState!.validate()) {
-                              userProvider.submitVisitorForm(
-                                  payload: {
-                                    ...payload,
-                                    "placeId": placeProvider.placeInfo.id,
-                                    "dateOfVisit":
-                                        payload["dateOfVisit"].toIso8601String()
-                                  },
-                                  callback: (code, message) {
-                                    launchSnackbar(
-                                        context: context,
-                                        mode: code == 200 ? "SUCCESS" : "ERROR",
-                                        message: message);
-                                    if (code == 200) {
-                                      Navigator.pop(context);
+                          onPress: userProvider.loading == "visitor-form"
+                              ? null
+                              : () {
+                                  if (_formKey.currentState!.validate()) {
+                                    if (!policyAgreed) {
+                                      launchSnackbar(
+                                          context: context,
+                                          mode: "ERROR",
+                                          message:
+                                              "Please read the privacy policy first.");
+                                      return;
                                     }
-                                  });
-                            }
-                          },
+
+                                    userProvider.submitVisitorForm(
+                                        payload: {
+                                          ...payload,
+                                          "address":
+                                              jsonEncode(payload["address"]),
+                                          "placeId": placeProvider.placeInfo.id,
+                                          "dateOfVisit": payload["dateOfVisit"]
+                                              .toIso8601String()
+                                        },
+                                        callback: (code, message) {
+                                          launchSnackbar(
+                                              context: context,
+                                              mode: code == 200
+                                                  ? "SUCCESS"
+                                                  : "ERROR",
+                                              message: message);
+                                          if (code == 200) {
+                                            Navigator.pop(context);
+                                          }
+                                        });
+                                  }
+                                },
                           padding: const EdgeInsets.symmetric(vertical: 15)),
                       const SizedBox(height: 15),
                     ]),

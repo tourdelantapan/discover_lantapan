@@ -4,11 +4,13 @@ var internals = {};
 const User = require("../../database/models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
+const Crypto = require("../../libraries/Crypto");
 const Config = require("../../config");
 const moment = require("moment");
-const { sendOTP } = require("../../libraries/email-helper");
-const ObjectId = mongoose.Types.ObjectId;
+const { getUrls } = require("../../libraries/aws-s3-storage-upload");
+const { sendOTP, sendResetLink } = require("../../libraries/email-helper");
+
+const baseUrl = "http://127.0.0.1:9000";
 
 internals.profile = async (req, reply) => {
   try {
@@ -26,6 +28,44 @@ internals.profile = async (req, reply) => {
     });
 
     let profile = JSON.parse(JSON.stringify(_profile));
+    delete profile.password;
+    delete profile.__v;
+    delete profile.createdAt;
+    delete profile.updatedAt;
+
+    return reply
+      .response({
+        message: "Success.",
+        data: {
+          profile,
+        },
+      })
+      .code(200);
+  } catch (e) {
+    return reply
+      .response({
+        errorMessage: e,
+      })
+      .code(500);
+  }
+};
+
+internals.profile_edit = async (req, reply) => {
+  let payload = req.payload;
+  delete payload?.email;
+
+  if (!payload?.photos) {
+    delete payload?.photos;
+  } else {
+    let photoUrl = await getUrls(payload.photos, payload._id, "user");
+    payload.photo = photoUrl;
+    delete payload?.photos;
+  }
+
+  try {
+    await User.updateOne({ _id: payload._id }, payload);
+    let user = await User.findOne({ _id: payload._id });
+    let profile = JSON.parse(JSON.stringify(user));
     delete profile.password;
     delete profile.__v;
     delete profile.createdAt;
@@ -266,6 +306,121 @@ internals.confirm_pin = async (req, reply) => {
     return reply
       .response({
         message: "An error occurred.",
+      })
+      .code(500);
+  }
+};
+
+internals.email_reset_password = async (req, reply) => {
+  console.log(req.query);
+  try {
+    let userData = await User.findOne({ email: req.query.email });
+    if (userData) {
+      let token = Crypto.encrypt(
+        JSON.stringify({ userId: userData._id, createdAt: moment().valueOf() })
+      );
+      sendResetLink(
+        req.query.email,
+        `${baseUrl}/user/reset-password-form/${token}`
+      );
+      return reply
+        .response({
+          message: `Email has been sent to ${req.query.email}.`,
+        })
+        .code(200);
+    } else {
+      return reply
+        .response({
+          message: "There is no registered user with this email.",
+        })
+        .code(404);
+    }
+  } catch (error) {
+    console.log(error);
+    return reply
+      .response({
+        message: "Server error.",
+      })
+      .code(500);
+  }
+};
+
+internals.reset_password_form = async (req, reply) => {
+  let data = JSON.parse(Crypto.decrypt(req.params.token));
+  if (moment(data.createdAt).isAfter(moment().subtract(1, "hours"))) {
+    return reply
+      .view("auth/reset-password-form.html", {
+        userId: data.userId,
+        tokenHasExpired: false,
+      })
+      .code(200);
+  } else {
+    return reply
+      .view("auth/reset-password-form.html", {
+        tokenHasExpired: true,
+      })
+      .code(200);
+  }
+};
+
+internals.initiate_password_reset = async (req, reply) => {
+  try {
+    let userData = await User.findOne({ _id: req.params.userId });
+    if (userData) {
+      userData.password = await bcrypt.hash(req.payload.password, 10);
+      await userData.save();
+
+      return reply
+        .response({
+          success: true,
+          message: "Your password reset has been successful.",
+        })
+        .code(200);
+    } else {
+      return reply
+        .response({
+          message: "User not found.",
+        })
+        .code(404);
+    }
+  } catch (error) {
+    return reply
+      .response({
+        message: "Server error.",
+      })
+      .code(500);
+  }
+};
+
+internals.change_password = async (req, reply) => {
+  let userId = req.auth.credentials._id;
+  let oldPassword = req.payload.oldPassword;
+  let newPassword = req.payload.newPassword;
+
+  try {
+    let user = await User.findOne({ _id: userId });
+    let validPass = await bcrypt.compare(oldPassword, user.password);
+
+    if (!validPass) {
+      return reply
+        .response({
+          message: "Old password is incorrect.",
+        })
+        .code(401);
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    return reply
+      .response({
+        message: "Password has been successfully changed. Log in again.",
+      })
+      .code(200);
+  } catch (e) {
+    return reply
+      .response({
+        message: "Server error.",
       })
       .code(500);
   }

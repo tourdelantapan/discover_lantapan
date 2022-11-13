@@ -14,6 +14,7 @@ import 'package:app/widgets/image_carousel.dart';
 import 'package:app/widgets/review_item.dart';
 import 'package:app/widgets/shimmer/place_info_shimmer.dart';
 import 'package:app/widgets/snackbar.dart';
+import 'package:app/widgets/time_table_display.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -85,6 +86,46 @@ class _PlaceInfoState extends State<PlaceInfo> {
           ),
         ),
       );
+    }
+
+    String getIsOpenClose() {
+      int weekday = DateTime.now().weekday - 1;
+
+      if (placeProvider.placeInfo.timeTable.isEmpty) {
+        return "--";
+      }
+
+      if (placeProvider.placeInfo.timeTable[weekday].other == "247") {
+        return "Open";
+      }
+
+      if (placeProvider.placeInfo.timeTable[weekday].other == "CLOSED") {
+        return "Closed";
+      }
+
+      TimeOfDay from = TimeOfDay(
+          hour: placeProvider.placeInfo.timeTable[weekday].timeFromHour,
+          minute: placeProvider.placeInfo.timeTable[weekday].timeFromMinute);
+      TimeOfDay to = TimeOfDay(
+          hour: placeProvider.placeInfo.timeTable[weekday].timeToHour,
+          minute: placeProvider.placeInfo.timeTable[weekday].timeToMinute);
+      TimeOfDay now = TimeOfDay.now();
+
+      int _from =
+          int.parse("${from.hour}${from.minute < 10 ? "0" : ""}${from.minute}");
+      int _to = int.parse("${to.hour}${to.minute < 10 ? "0" : ""}${to.minute}");
+      int _now =
+          int.parse("${now.hour}${now.minute < 10 ? "0" : ""}${now.minute}");
+
+      if (_now > _to || _now < _from) {
+        return "Closed";
+      }
+
+      if (_now < _to && _now > _from) {
+        return "Open";
+      }
+
+      return "--";
     }
 
     return Scaffold(
@@ -232,7 +273,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: HORIZONTAL_PADDING),
                         child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               FeatureBadge(
                                   icon: Icons.star_rate_rounded,
@@ -251,8 +292,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
                                   accentColor: Colors.green,
                                   label:
                                       placeProvider.placeInfo.categoryId.name,
-                                  value: placeProvider.placeInfo.status
-                                      .titleCase())
+                                  value: getIsOpenClose())
                             ])),
                     const SizedBox(
                       height: 30,
@@ -265,6 +305,25 @@ class _PlaceInfoState extends State<PlaceInfo> {
                         style: const TextStyle(height: 1.5),
                       ),
                     ),
+                    if (placeProvider.placeInfo.timeTable.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(children: [
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          IconText(
+                            label: "Open/Close Time",
+                            icon: Icons.more_time_rounded,
+                            color: Colors.black,
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          TimeTableDisplay(
+                              timeTable: placeProvider.placeInfo.timeTable),
+                        ]),
+                      ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -406,7 +465,7 @@ class FeatureBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
         Container(
           padding: const EdgeInsets.all(10),
@@ -429,7 +488,7 @@ class FeatureBadge extends StatelessWidget {
           ),
         ),
         const SizedBox(
-          width: 10,
+          height: 10,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

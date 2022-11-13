@@ -118,6 +118,7 @@ class LocationProvider extends ChangeNotifier {
     var res = await Geolocator.getCurrentPosition(
         forceAndroidLocationManager: true,
         desiredAccuracy: LocationAccuracy.best);
+
     callback(res, true);
   }
 

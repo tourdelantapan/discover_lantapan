@@ -5,6 +5,7 @@ var Hapi = require("@hapi/hapi"),
   Path = require("path"),
   Inert = require("@hapi/inert"),
   Auth = require("./auth"),
+  Views = require("./views"),
   logger = require("node-color-log"),
   moment = require("moment");
 
@@ -78,6 +79,9 @@ exports.deployment = async () => {
       auth: false,
     },
   });
+
+  // Set Views
+  await Views.init(internals.server);
 
   // Set Routes
   Routes.init(internals.server);

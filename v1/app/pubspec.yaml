@@ -65,7 +65,8 @@ dependencies:
   email_validator: ^2.1.17
   flutter_map: ^2.2.0
   latlong2: ^0.8.1
-  image_cropper_for_web: ^1.0.3
+  time_range_picker: ^2.2.0
+  image_cropper: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -93,6 +94,7 @@ flutter:
     - assets/images/tourism_staff/
     - assets/json/
 
+    
   fonts:
     - family: Varela
       fonts:

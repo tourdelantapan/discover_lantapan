@@ -4,6 +4,8 @@ var internals = {};
 const Place = require("../../database/models/Place");
 const User = require("../../database/models/User");
 const Visitor = require("../../database/models/Visitor");
+const Review = require("../../database/models/Review");
+const GasStation = require("../../database/models/GasStation");
 const { getUrlsArray } = require("../../libraries/aws-s3-storage-upload");
 
 internals.add_place = async (req, reply) => {
@@ -15,6 +17,7 @@ internals.add_place = async (req, reply) => {
       longitude: parseFloat(payload.longitude),
     },
     ...payload,
+    timeTable: JSON.parse(payload.timeTable),
   });
 
   if (!Array.isArray(payload.photos) && payload.photos)
@@ -185,6 +188,18 @@ internals.visitor_form = async (req, reply) => {
   let payload = req.payload;
 
   try {
+    payload.address = JSON.parse(payload?.address);
+  } catch (e) {
+    return reply
+      .response({
+        message: "Error parsing address.",
+      })
+      .code(500);
+  }
+
+  console.log(payload);
+
+  try {
     await Visitor(payload).save();
     return reply
       .response({
@@ -203,7 +218,26 @@ internals.visitor_form = async (req, reply) => {
 
 internals.visitor_list = async (req, reply) => {
   try {
-    let visitorList = await Visitor.find({})
+    let { startDate, endDate } = req.query;
+
+    let query = {};
+
+    if (startDate || endDate) {
+      query = {
+        $and: [
+          {
+            createdAt: endDate
+              ? { $gte: new Date(startDate), $lte: new Date(endDate) }
+              : {
+                  $gte: new Date(startDate),
+                  $lte: moment(startDate).endOf("day").toDate(),
+                },
+          },
+        ],
+      };
+    }
+
+    let visitorList = await Visitor.find(query)
       .populate({
         path: "placeId",
         populate: {
@@ -212,19 +246,107 @@ internals.visitor_list = async (req, reply) => {
       })
       .sort({ createdAt: -1 });
 
-    let visitorCount = await Visitor.aggregate([
+    let query1 = [{ $group: { _id: 0, count: { $sum: "$numberOfVisitors" } } }];
+    if (startDate || endDate) {
+      query1.unshift({ $match: query });
+    }
+    let visitorCount = await Visitor.aggregate(query1);
+
+    let query2 = [
+      { $match: { "address.provinceId": "614c2580dd90f126474a5e26" } },
       { $group: { _id: 0, count: { $sum: "$numberOfVisitors" } } },
-    ]);
+    ];
+    if (startDate || endDate) {
+      query2.unshift({ $match: query });
+    }
+    let visitorCountInBukidnon = await Visitor.aggregate(query2);
+
+    let query3 = [
+      { $match: { "address.provinceId": { $ne: "614c2580dd90f126474a5e26" } } },
+      { $group: { _id: 0, count: { $sum: "$numberOfVisitors" } } },
+    ];
+    if (startDate || endDate) {
+      query3.unshift({ $match: query });
+    }
+    let visitorCountOutsideBukidnon = await Visitor.aggregate(query3);
 
     return reply
       .response({
+        message: "",
         data: {
           visitorList,
           visitorCount: visitorCount?.[0]?.count || 0,
+          visitorCountInBukidnon: visitorCountInBukidnon?.[0]?.count || 0,
+          visitorCountOutsideBukidnon:
+            visitorCountOutsideBukidnon?.[0]?.count || 0,
         },
       })
       .code(200);
   } catch (e) {
+    console.log(e);
+    return reply
+      .response({
+        message: "Server error",
+      })
+      .code(500);
+  }
+};
+
+internals.review_delete = async (req, reply) => {
+  let reviewId = req.params.reviewId;
+
+  try {
+    await Review.deleteOne({ _id: reviewId });
+    return reply
+      .response({
+        message: "Review/Comment successfully deleted.",
+      })
+      .code(200);
+  } catch (e) {
+    console.log(e);
+    return reply
+      .response({
+        message: "Server error",
+      })
+      .code(500);
+  }
+};
+
+internals.nearby_gas_stations = async (req, reply) => {
+  let { userLocation } = req.query;
+  let query = {};
+
+  try {
+    userLocation = userLocation && JSON.parse(userLocation);
+    console.log(userLocation);
+    const distance = 25;
+    const unitValue = 1000;
+    if (userLocation?.longitude && userLocation?.latitude) {
+      query = {
+        ...query,
+        coordinates: {
+          $near: {
+            $maxDistance: distance * unitValue,
+            $geometry: {
+              type: "Point",
+              coordinates: [userLocation?.longitude, userLocation?.latitude],
+            },
+          },
+        },
+      };
+    }
+
+    var gasStations = await GasStation.find(query);
+
+    return reply
+      .response({
+        data: {
+          gasStations,
+        },
+      })
+      .code(200);
+  } catch (e) {
+    console.log(e);
     return reply
       .response({
         message: "Server error",

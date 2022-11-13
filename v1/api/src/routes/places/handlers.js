@@ -314,6 +314,7 @@ internals.places_reviews_list = async (req, reply) => {
 
   try {
     let reviews = await Review.find({ placeId })
+      .sort({ createdAt: -1 })
       .populate({
         path: "placeId",
         populate: {
@@ -415,6 +416,7 @@ internals.edit_place = async (req, reply) => {
       },
       {
         ...payload,
+        timeTable: JSON.parse(payload.timeTable),
         coordinates: coordinates ?? payload.coordinates,
         ...photoQuery,
       }

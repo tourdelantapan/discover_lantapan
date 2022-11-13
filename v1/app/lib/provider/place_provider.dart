@@ -43,6 +43,11 @@ class PlaceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  setPlace(Place place) {
+    _placeInfo = place;
+    notifyListeners();
+  }
+
   getPlaces(
       {required Map<String, dynamic> query, required Function callback}) async {
     addLoading(query["mode"]);
@@ -152,8 +157,7 @@ class PlaceProvider extends ChangeNotifier {
 
   deletePlace({required String placeId, required Function callback}) async {
     addLoading("place-delete");
-    var response =
-        await APIServices.get(endpoint: "/place/delete/$placeId");
+    var response = await APIServices.get(endpoint: "/place/delete/$placeId");
 
     if (response is Success) {
       removeLoading("place-delete");

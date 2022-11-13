@@ -1,18 +1,21 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app/models/category_model.dart';
 import 'package:app/models/photo_model.dart';
 import 'package:app/models/place_model.dart';
 import 'package:app/provider/place_provider.dart';
-import 'package:app/screens/guest/mapview.dart';
 import 'package:app/screens/guest/select_location.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/utilities/string_extensions.dart';
 import 'package:app/widgets/add_photo.dart';
 import 'package:app/widgets/bottom_modal.dart';
+import 'package:app/widgets/button.dart';
 import 'package:app/widgets/chips.dart';
+import 'package:app/widgets/form/time_table.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
+import 'package:app/widgets/time_table_display.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +40,7 @@ class _AddPlaceState extends State<AddPlace> {
     "latitude": 0.0,
     "longitude": 0.0,
     "categoryId": "",
+    "timeTable": [],
     "status": "OPEN"
   };
   Map<String, dynamic> _payload = {};
@@ -55,6 +59,7 @@ class _AddPlaceState extends State<AddPlace> {
       payload = widget.arguments["payload"].toJson();
       addressController.text = payload["address"];
       payload["categoryId"] = payload["categoryId"].id;
+      payload["timeTable"] = payload["timeTable"] ?? [];
       payload
           .removeWhere((key, value) => ["photos", "coordinates"].contains(key));
       uploadedPhotos = widget.arguments["payload"].photos;
@@ -66,86 +71,101 @@ class _AddPlaceState extends State<AddPlace> {
     PlaceProvider placeProvider = context.watch<PlaceProvider>();
 
     return Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: placeProvider.loading.contains("place-add") ||
-                  placeProvider.loading.contains("place-edit")
-              ? null
-              : () {
-                  if (payload["latitude"] == 0.0) {
-                    launchSnackbar(
-                        context: context,
-                        mode: "ERROR",
-                        message: "Pin location on the map.");
-                    return;
-                  }
-
-                  if (payload["categoryId"].isEmpty) {
-                    launchSnackbar(
-                        context: context,
-                        mode: "ERROR",
-                        message: "Select a Category");
-                    return;
-                  }
-
-                  if (mode == "EDIT" && _formKey.currentState!.validate()) {
-                    Provider.of<PlaceProvider>(context, listen: false)
-                        .editPlace(
-                            payload: payload,
-                            files: photos,
-                            callback: (code, message) {
-                              if (code == 200) {
-                                launchSnackbar(
-                                    context: context,
-                                    mode: "SUCCESS",
-                                    message: message ?? "Success!");
-                                Navigator.pop(context, true);
-                                return;
-                              }
-                              if (code != 200) {
-                                launchSnackbar(
-                                    context: context,
-                                    mode: code == 200 ? "SUCCESS" : "ERROR",
-                                    message: message ?? "Error!");
-                              }
-                            });
-                  }
-
-                  if (mode == "ADD" && _formKey.currentState!.validate()) {
-                    Provider.of<PlaceProvider>(context, listen: false).addPlace(
-                        payload: payload,
-                        files: photos,
-                        callback: (code, message) {
-                          if (code == 200) {
-                            launchSnackbar(
-                                context: context,
-                                mode: "SUCCESS",
-                                message: message ?? "Success!");
-                            setState(() {
-                              photos = [];
-                              payload = _payload;
-                            });
-                            Navigator.pop(context);
-                            // addressController.clear();
-                            // _formKey.currentState!.reset();
-                            return;
-                          }
-                          if (code != 200) {
-                            launchSnackbar(
-                                context: context,
-                                mode: code == 200 ? "SUCCESS" : "ERROR",
-                                message: message ?? "Error!");
-                          }
-                        });
-                  }
-                },
-          label: Text(mode == "EDIT" ? "Save Changes" : "Add Place"),
-          icon: Icon(mode == "EDIT" ? Icons.edit : Icons.add),
-        ),
         appBar: AppBar(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
           elevation: 1,
           title: Text("${mode.titleCase()} Place"),
+          actions: [
+            Button(
+                label: mode == "EDIT" ? "Save Changes" : "Add Place",
+                icon: mode == "EDIT" ? Icons.edit : Icons.add,
+                backgroundColor: Colors.transparent,
+                borderColor: Colors.transparent,
+                textColor: Colors.red,
+                onPress: placeProvider.loading.contains("place-add") ||
+                        placeProvider.loading.contains("place-edit")
+                    ? null
+                    : () {
+                        if (payload["latitude"] == 0.0) {
+                          launchSnackbar(
+                              context: context,
+                              mode: "ERROR",
+                              message: "Pin location on the map.");
+                          return;
+                        }
+
+                        if (payload["categoryId"].isEmpty) {
+                          launchSnackbar(
+                              context: context,
+                              mode: "ERROR",
+                              message: "Select a Category");
+                          return;
+                        }
+
+                        if (mode == "EDIT" &&
+                            _formKey.currentState!.validate()) {
+                          Provider.of<PlaceProvider>(context, listen: false)
+                              .editPlace(
+                                  payload: {
+                                ...payload,
+                                "timeTable": jsonEncode(payload["timeTable"])
+                              },
+                                  files: photos,
+                                  callback: (code, message) {
+                                    if (code == 200) {
+                                      launchSnackbar(
+                                          context: context,
+                                          mode: "SUCCESS",
+                                          message: message ?? "Success!");
+                                      Navigator.pop(context, true);
+                                      return;
+                                    }
+                                    if (code != 200) {
+                                      launchSnackbar(
+                                          context: context,
+                                          mode:
+                                              code == 200 ? "SUCCESS" : "ERROR",
+                                          message: message ?? "Error!");
+                                    }
+                                  });
+                        }
+
+                        if (mode == "ADD" &&
+                            _formKey.currentState!.validate()) {
+                          Provider.of<PlaceProvider>(context, listen: false)
+                              .addPlace(
+                                  payload: {
+                                ...payload,
+                                "timeTable": jsonEncode(payload["timeTable"])
+                              },
+                                  files: photos,
+                                  callback: (code, message) {
+                                    if (code == 200) {
+                                      launchSnackbar(
+                                          context: context,
+                                          mode: "SUCCESS",
+                                          message: message ?? "Success!");
+                                      setState(() {
+                                        photos = [];
+                                        payload = _payload;
+                                      });
+                                      Navigator.pop(context);
+                                      // addressController.clear();
+                                      // _formKey.currentState!.reset();
+                                      return;
+                                    }
+                                    if (code != 200) {
+                                      launchSnackbar(
+                                          context: context,
+                                          mode:
+                                              code == 200 ? "SUCCESS" : "ERROR",
+                                          message: message ?? "Error!");
+                                    }
+                                  });
+                        }
+                      })
+          ],
         ),
         body: Form(
             key: _formKey,
@@ -256,6 +276,28 @@ class _AddPlaceState extends State<AddPlace> {
                               border: OutlineInputBorder(),
                               label: Text("Description")),
                         ),
+                        const SizedBox(height: 25),
+                        IconText(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            label: "Select one category"),
+                        const SizedBox(height: 5),
+                        Row(
+                            children: List.generate(
+                                categories.length,
+                                (index) => Chippy(
+                                    backgroundColor: payload["categoryId"] ==
+                                            categories[index].id
+                                        ? Colors.black
+                                        : Colors.grey,
+                                    margin: const EdgeInsets.only(right: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 10),
+                                    label: categories[index].name,
+                                    onPress: () => setState(() =>
+                                        payload["categoryId"] =
+                                            categories[index].id)))),
+                        const SizedBox(height: 15),
                         if (uploadedPhotos.isNotEmpty)
                           Column(children: [
                             const SizedBox(height: 15),
@@ -353,48 +395,86 @@ class _AddPlaceState extends State<AddPlace> {
                                                 ),
                                               ),
                                             ])))),
+                            const SizedBox(height: 15),
                           ]),
-                        const SizedBox(height: 15),
-                        IconText(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            label: "Select one category"),
-                        const SizedBox(height: 5),
+                        const Divider(),
                         Row(
-                            children: List.generate(
-                                categories.length,
-                                (index) => Chippy(
-                                    backgroundColor: payload["categoryId"] ==
-                                            categories[index].id
-                                        ? Colors.black
-                                        : Colors.grey,
-                                    margin: const EdgeInsets.only(right: 10),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 10),
-                                    label: categories[index].name,
-                                    onPress: () => setState(() =>
-                                        payload["categoryId"] =
-                                            categories[index].id)))),
-                        const SizedBox(height: 15),
-                        IconText(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            label: "Status"),
-                        const SizedBox(height: 5),
-                        Row(
-                            children: List.generate(
-                                status.length,
-                                (index) => Chippy(
-                                    backgroundColor:
-                                        payload["status"] == status[index]
-                                            ? Colors.black
-                                            : Colors.grey,
-                                    margin: const EdgeInsets.only(right: 10),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 10),
-                                    label: status[index],
-                                    onPress: () => setState(() =>
-                                        payload["status"] = status[index]))))
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconText(
+                                label: "Open/Close Time",
+                                icon: Icons.more_time_rounded,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              Button(
+                                  label: "Edit",
+                                  backgroundColor: Colors.transparent,
+                                  borderColor: Colors.transparent,
+                                  textColor: Colors.red,
+                                  icon: Icons.edit,
+                                  onPress: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        isDismissible: false,
+                                        enableDrag: false,
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        builder: (context) {
+                                          return StatefulBuilder(builder:
+                                              (BuildContext context,
+                                                  StateSetter setModalState) {
+                                            return Modal(
+                                                title:
+                                                    "Set Open and Close Time.",
+                                                heightInPercentage: .9,
+                                                content: TimeTableManager(
+                                                  value: payload["timeTable"] ==
+                                                          null
+                                                      ? []
+                                                      : List<TimeTable>.from(
+                                                          payload["timeTable"]
+                                                              .map((x) =>
+                                                                  TimeTable
+                                                                      .fromJson(
+                                                                          x))),
+                                                  onSave: (value) {
+                                                    setState(() =>
+                                                        payload["timeTable"] =
+                                                            value);
+                                                    Navigator.pop(context);
+                                                  },
+                                                ));
+                                          });
+                                        });
+                                  }),
+                            ]),
+                        if (payload["timeTable"].isNotEmpty)
+                          TimeTableDisplay(
+                              timeTable: payload["timeTable"] == null
+                                  ? []
+                                  : List<TimeTable>.from(payload["timeTable"]
+                                      .map((x) => TimeTable.fromJson(x)))),
+
+                        // IconText(
+                        //     color: Colors.black,
+                        //     fontWeight: FontWeight.bold,
+                        //     label: "Status"),
+                        // const SizedBox(height: 5),
+                        // Row(
+                        //     children: List.generate(
+                        //         status.length,
+                        //         (index) => Chippy(
+                        //             backgroundColor:
+                        //                 payload["status"] == status[index]
+                        //                     ? Colors.black
+                        //                     : Colors.grey,
+                        //             margin: const EdgeInsets.only(right: 10),
+                        //             padding: const EdgeInsets.symmetric(
+                        //                 horizontal: 15, vertical: 10),
+                        //             label: status[index],
+                        //             onPress: () => setState(() =>
+                        //                 payload["status"] = status[index]))))
                       ]),
                 ),
               ],

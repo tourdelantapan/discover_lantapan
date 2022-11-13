@@ -1,10 +1,14 @@
 import 'package:app/screens/admin/add_place.dart';
 import 'package:app/screens/admin/index.dart';
+import 'package:app/screens/auth/change_password.dart';
 import 'package:app/screens/auth/index.dart';
 import 'package:app/screens/auth/otp.dart';
+import 'package:app/screens/forgot-password.dart';
 import 'package:app/screens/guest/add_review.dart';
+import 'package:app/screens/guest/edit_profile.dart';
 import 'package:app/screens/guest/index.dart';
 import 'package:app/screens/guest/mapview.dart';
+import 'package:app/screens/guest/nearby_gas_stations.dart';
 import 'package:app/screens/guest/place_info.dart';
 import 'package:app/screens/guest/review_list.dart';
 import 'package:app/screens/guest/scan_qr.dart';
@@ -25,6 +29,10 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => Guest());
       case '/admin':
         return CupertinoPageRoute(builder: (_) => Admin());
+      case '/user/profile/edit':
+        return CupertinoPageRoute(builder: (_) => EditProfile());
+      case '/user/profile/change-password':
+        return CupertinoPageRoute(builder: (_) => ChangePassword());
       case '/place/info':
         return CupertinoPageRoute(
             builder: (_) => PlaceInfo(arguments: args as Map<String, dynamic>));
@@ -34,6 +42,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => MapView());
       case '/auth':
         return CupertinoPageRoute(builder: (_) => Auth());
+      case '/auth/password/reset':
+        return CupertinoPageRoute(builder: (_) => ForgotPassword());
       case '/place/add':
         return CupertinoPageRoute(
             builder: (_) => AddPlace(arguments: args as Map<String, dynamic>));
@@ -47,6 +57,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => VisitorForm());
       case '/verify/otp':
         return CupertinoPageRoute(builder: (_) => OneTimePin());
+      case '/nearby/gas-stations':
+        return CupertinoPageRoute(builder: (_) => NearbyGasStations());
       default:
         return _errorRoute();
     }

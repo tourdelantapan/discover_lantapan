@@ -1,4 +1,5 @@
 import 'package:app/models/place_model.dart';
+import 'package:app/provider/location_provider.dart';
 import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/user_provider.dart';
 import 'package:app/screens/guest/place_info.dart';
@@ -163,12 +164,22 @@ class _ManagePlacesState extends State<ManagePlaces> {
                                         child: IconText(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
+                                            icon: Icons.reviews_rounded,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            label: "Manage Reviews"),
+                                        value: '4'),
+                                    PopupMenuItem<String>(
+                                        // ignore: sort_child_properties_last
+                                        child: IconText(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
                                             icon: Icons
                                                 .remove_circle_outline_rounded,
                                             color: Colors.red,
                                             fontWeight: FontWeight.bold,
                                             label: "Delete Place"),
-                                        value: '4'),
+                                        value: '5'),
                                   ],
                               onSelected: (itemSelected) {
                                 if (itemSelected == "1") {
@@ -217,6 +228,13 @@ class _ManagePlacesState extends State<ManagePlaces> {
                                 }
 
                                 if (itemSelected == "4") {
+                                  Provider.of<PlaceProvider>(context,
+                                          listen: false)
+                                      .setPlace(place);
+                                  Navigator.pushNamed(context, '/review/list');
+                                }
+
+                                if (itemSelected == "5") {
                                   showModalBottomSheet(
                                       context: context,
                                       isDismissible: false,
@@ -230,7 +248,7 @@ class _ManagePlacesState extends State<ManagePlaces> {
                                             isLoading: true,
                                             title: "Confirm Delete?",
                                             subTitle:
-                                                "This action requires an account.",
+                                                "This action cannot be undone.",
                                             callback: (action) {
                                               if (action != "CONFIRM") {
                                                 Navigator.pop(context);

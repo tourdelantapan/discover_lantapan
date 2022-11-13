@@ -28,6 +28,9 @@ const Schema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    photo: {
+      type: Object,
+    },
     password: {
       type: String,
       required: true,

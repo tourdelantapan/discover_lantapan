@@ -45,14 +45,14 @@ class Province {
 
   String id;
   String name;
-  List<Citymunicipality> citymunicipalities;
+  List<CityMunicipality> citymunicipalities;
 
   factory Province.fromJson(Map<String, dynamic> json) => Province(
         id: json["_id"],
         name: json["name"],
-        citymunicipalities: List<Citymunicipality>.from(
+        citymunicipalities: List<CityMunicipality>.from(
             json["citymunicipalities"]
-                .map((x) => Citymunicipality.fromJson(x))),
+                .map((x) => CityMunicipality.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -63,8 +63,8 @@ class Province {
       };
 }
 
-class Citymunicipality {
-  Citymunicipality({
+class CityMunicipality {
+  CityMunicipality({
     required this.id,
     required this.name,
   });
@@ -72,8 +72,8 @@ class Citymunicipality {
   String id;
   String name;
 
-  factory Citymunicipality.fromJson(Map<String, dynamic> json) =>
-      Citymunicipality(
+  factory CityMunicipality.fromJson(Map<String, dynamic> json) =>
+      CityMunicipality(
         id: json["_id"],
         name: json["name"],
       );

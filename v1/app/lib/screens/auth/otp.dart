@@ -26,7 +26,7 @@ class _OneTimePinState extends State<OneTimePin> {
           foregroundColor: Colors.black,
           elevation: 0,
           actions: [
-            if (userProvider.loading == "confirm-otp")
+            if (["confirm-otp", "generate-otp"].contains(userProvider.loading))
               showDoubleBounce(size: 20),
             const SizedBox(
               width: 15,
@@ -114,7 +114,19 @@ class _OneTimePinState extends State<OneTimePin> {
                     fontWeight: FontWeight.bold,
                     label: "Didn't receive an email?"),
                 TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      userProvider.generatePin(
+                          query: {
+                            "email": userProvider.currentUser!.email,
+                            "recipient_name": userProvider.currentUser!.fullName
+                          },
+                          callback: (code, message) {
+                            launchSnackbar(
+                                context: context,
+                                mode: code == 200 ? "SUCCESS" : "ERROR",
+                                message: message);
+                          });
+                    },
                     child: IconText(
                         mainAxisAlignment: MainAxisAlignment.center,
                         color: Colors.blue,

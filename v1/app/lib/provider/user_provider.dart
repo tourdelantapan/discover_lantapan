@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/models/user_model.dart';
 import 'package:app/models/visitor_model.dart';
 import 'package:app/services/api_services.dart';
@@ -17,6 +19,12 @@ class UserProvider extends ChangeNotifier {
 
   int _visitorCount = 0;
   int get visitorCount => _visitorCount;
+
+  int _visitorCountInBukidnon = 0;
+  int get visitorCountInBukidnon => _visitorCountInBukidnon;
+
+  int _visitorCountOutsideBukidnon = 0;
+  int get visitorCountOutsideBukidnon => _visitorCountOutsideBukidnon;
 
   setLoading(String loading) async {
     _loading = loading;
@@ -59,7 +67,7 @@ class UserProvider extends ChangeNotifier {
     }
     if (response is Failure) {
       setLoading("stop");
-      callback(response.code, response.response["message"] ?? "Failed.");
+      callback(response.code, response.response["message"] ?? "Failed.", "");
     }
   }
 
@@ -85,6 +93,27 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  editProfile(
+      {required Map<String, dynamic> payload,
+      required Function callback,
+      File? photo}) async {
+    setLoading("profile-edit");
+    var response = await APIServices.post(
+        endpoint: "/profile/edit",
+        payload: payload,
+        files: photo == null ? [] : [photo]);
+    if (response is Success) {
+      User user = User.fromJson(response.response["data"]["profile"]);
+      setCurrentUser(user);
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Failed.");
+    }
+  }
+
   submitVisitorForm(
       {required Map<String, dynamic> payload,
       required Function callback}) async {
@@ -101,12 +130,19 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  getVisitors({required Function callback}) async {
+  getVisitors(
+      {required Map<String, dynamic> query, required Function callback}) async {
     setLoading("visitor-list");
-    var response = await APIServices.get(endpoint: "/visitor/list");
+    var response =
+        await APIServices.get(endpoint: "/visitor/list", query: query);
     if (response is Success) {
       _visitorList = List<Visitor>.from(response.response["data"]["visitorList"]
           .map((x) => Visitor.fromJson(x)));
+
+      _visitorCountInBukidnon =
+          response.response["data"]["visitorCountInBukidnon"];
+      _visitorCountOutsideBukidnon =
+          response.response["data"]["visitorCountOutsideBukidnon"];
       _visitorCount = response.response["data"]["visitorCount"];
       setLoading("stop");
 
@@ -146,6 +182,37 @@ class UserProvider extends ChangeNotifier {
     if (response is Failure) {
       setLoading("stop");
       callback(response.code, response.response["message"] ?? "Failed.", null);
+    }
+  }
+
+  requestPasswordReset(
+      {required Map<String, dynamic> query, required Function callback}) async {
+    setLoading("password-reset");
+    var response = await APIServices.get(
+        endpoint: "/user/email-reset-password", query: query);
+    if (response is Success) {
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      callback(response.code, response.response["message"] ?? "Failed.");
+      setLoading("stop");
+    }
+  }
+
+  changePassword(
+      {required Map<String, dynamic> payload,
+      required Function callback}) async {
+    setLoading("password-change");
+    var response = await APIServices.post(
+        endpoint: "/user/change-password", payload: payload);
+    if (response is Success) {
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      callback(response.code, response.response["message"] ?? "Failed.");
+      setLoading("stop");
     }
   }
 }
