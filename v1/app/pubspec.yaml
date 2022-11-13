@@ -65,6 +65,7 @@ dependencies:
   email_validator: ^2.1.17
   flutter_map: ^2.2.0
   latlong2: ^0.8.1
+  image_cropper_for_web: ^1.0.3
 
 dev_dependencies:
   flutter_test:
