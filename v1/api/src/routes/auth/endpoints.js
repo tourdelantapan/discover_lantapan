@@ -86,6 +86,14 @@ internals.endpoints = [
       auth: false,
     },
   },
+  {
+    method: ["POST"],
+    path: "/user/change-password",
+    handler: Handlers.change_password,
+    config: {
+      auth: "token",
+    },
+  },
 ];
 
 module.exports = internals;

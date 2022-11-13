@@ -199,4 +199,20 @@ class UserProvider extends ChangeNotifier {
       setLoading("stop");
     }
   }
+
+  changePassword(
+      {required Map<String, dynamic> payload,
+      required Function callback}) async {
+    setLoading("password-change");
+    var response = await APIServices.post(
+        endpoint: "/user/change-password", payload: payload);
+    if (response is Success) {
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      callback(response.code, response.response["message"] ?? "Failed.");
+      setLoading("stop");
+    }
+  }
 }

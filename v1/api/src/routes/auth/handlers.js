@@ -392,4 +392,38 @@ internals.initiate_password_reset = async (req, reply) => {
   }
 };
 
+internals.change_password = async (req, reply) => {
+  let userId = req.auth.credentials._id;
+  let oldPassword = req.payload.oldPassword;
+  let newPassword = req.payload.newPassword;
+
+  try {
+    let user = await User.findOne({ _id: userId });
+    let validPass = await bcrypt.compare(oldPassword, user.password);
+
+    if (!validPass) {
+      return reply
+        .response({
+          message: "Old password is incorrect.",
+        })
+        .code(401);
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    return reply
+      .response({
+        message: "Password has been successfully changed. Log in again.",
+      })
+      .code(200);
+  } catch (e) {
+    return reply
+      .response({
+        message: "Server error.",
+      })
+      .code(500);
+  }
+};
+
 module.exports = internals;

@@ -27,6 +27,7 @@ class _SignUpState extends State<ChangePassword> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = context.watch<UserProvider>();
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
@@ -119,25 +120,24 @@ class _SignUpState extends State<ChangePassword> {
                 const SizedBox(height: 15),
                 Button(
                     label: "Change Password",
+                    isLoading: userProvider.loading == "password-change",
                     onPress: () {
                       if (_formKey.currentState!.validate()) {
-                        //   Provider.of<UserProvider>(context, listen: false)
-                        //       .signup(
-                        //           payload: payload,
-                        //           callback: (code, message) {
-                        //             if (code != 200) {
-                        //               launchSnackbar(
-                        //                   context: context,
-                        //                   mode: "ERROR",
-                        //                   message: message ?? "Error!");
-                        //               return;
-                        //             }
-                        //             _formKey.currentState!.reset();
-                        //             launchSnackbar(
-                        //                 context: context,
-                        //                 mode: "SUCCESS",
-                        //                 message: message ?? "Success!");
-                        //           });
+                        Provider.of<UserProvider>(context, listen: false)
+                            .changePassword(
+                                payload: payload,
+                                callback: (code, message) {
+                                  launchSnackbar(
+                                      context: context,
+                                      mode: code == 200 ? "SUCCESS" : "ERROR",
+                                      message: message ?? "Error!");
+
+                                  if (code != 200) return;
+
+                                  userProvider.signOut();
+                                  Navigator.pushNamedAndRemoveUntil(
+                                      context, '/guest', (route) => false);
+                                });
                       }
                     },
                     padding: const EdgeInsets.symmetric(vertical: 15))
