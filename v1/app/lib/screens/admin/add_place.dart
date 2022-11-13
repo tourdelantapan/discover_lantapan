@@ -14,6 +14,7 @@ import 'package:app/widgets/chips.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 class AddPlace extends StatefulWidget {
@@ -213,6 +214,17 @@ class _AddPlaceState extends State<AddPlace> {
                                                 heightInPercentage: .9,
                                                 content: SelectLocation(
                                                     willDetectLocation: false,
+                                                    value: LatLng(
+                                                        payload['latitude'] ==
+                                                                0.0
+                                                            ? 8.04218877435775
+                                                            : payload[
+                                                                'latitude'],
+                                                        payload['longitude'] ==
+                                                                0.0
+                                                            ? 124.94591953989034
+                                                            : payload[
+                                                                'longitude']),
                                                     onSelectLocation:
                                                         (coordinates, address) {
                                                       payload["latitude"] =

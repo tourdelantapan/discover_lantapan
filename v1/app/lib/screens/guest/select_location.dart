@@ -99,7 +99,7 @@ class _SelectLocationState extends State<SelectLocation> {
             if (coordinates == null) {
               launchSnackbar(
                   context: context, mode: "ERROR", message: "No location yet.");
-              return;
+            return;
             }
 
             widget.onSelectLocation(coordinates, address);
