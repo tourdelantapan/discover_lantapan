@@ -28,7 +28,9 @@ class GasStation {
   factory GasStation.fromJson(Map<String, dynamic> json) => GasStation(
         id: json["_id"],
         name: json["name"],
-        photos: List<Photo>.from(json["photos"].map((x) => x)),
+        photos: json["photos"] != null
+            ? List<Photo>.from(json["photos"].map((x) => Photo.fromJson(x)))
+            : [],
         coordinates: Coordinates.fromJson(json["coordinates"]),
       );
 

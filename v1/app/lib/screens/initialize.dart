@@ -1,4 +1,5 @@
 import 'package:app/provider/user_provider.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_loaders.dart';
@@ -27,6 +28,17 @@ class _InitializeScreenState extends State<InitializeScreen> {
         }
 
         if ([200, 201].contains(code)) {
+          if (BUILD_MODE == "ADMIN" && code == 200) {
+            Navigator.pushNamedAndRemoveUntil(context, "/admin", (_) => false);
+            return;
+          }
+
+          if (BUILD_MODE == "ADMIN") {
+            Navigator.pushNamedAndRemoveUntil(
+                context, "/auth/admin", (_) => false);
+            return;
+          }
+
           Navigator.pushNamedAndRemoveUntil(context, "/guest", (_) => false);
         } else {
           launchSnackbar(context: context, mode: "ERROR", message: message);

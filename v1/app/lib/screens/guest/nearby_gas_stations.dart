@@ -142,14 +142,20 @@ class _NearbyGasStationsState extends State<NearbyGasStations> {
           if (appProvider.gasStations.isNotEmpty)
             Positioned(
                 bottom: MediaQuery.of(context).padding.bottom + 15,
-                child: SizedBox(
-                  width: width * .90,
-                  height: height * .2,
-                  child: PlaceCard(
-                      onPress: () {},
-                      photoUrl:
-                          appProvider.gasStations[index].photos[0].original,
-                      label: appProvider.gasStations[index].name),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: width * .90,
+                      height: height * .3,
+                      child: PlaceCard(
+                          onPress: () {},
+                          photoUrl:
+                              appProvider.gasStations[index].photos[0].original,
+                          label: appProvider.gasStations[index].name),
+                    ),
+                  ],
                 ))
         ]));
   }

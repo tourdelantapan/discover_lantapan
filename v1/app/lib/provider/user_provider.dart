@@ -67,7 +67,7 @@ class UserProvider extends ChangeNotifier {
     }
     if (response is Failure) {
       setLoading("stop");
-      callback(response.code, response.response["message"] ?? "Failed.", "");
+      callback(response.code, response.response["message"] ?? "Failed.", []);
     }
   }
 
