@@ -1,7 +1,7 @@
-// import 'dart:html';
 import 'dart:io';
 import 'dart:ui';
 import 'dart:convert';
+// import 'dart:html';
 
 import 'package:app/models/visitor_model.dart';
 import 'package:app/widgets/snackbar.dart';
@@ -69,26 +69,12 @@ generatePDF(BuildContext context,
       bounds: const Rect.fromLTWH(0, 0, 200, 50));
 
   try {
-    // if (!kIsWeb) {
+    // if (kIsWeb) {
     //   AnchorElement(
     //       href:
     //           "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(await document.save())}")
     //     ..setAttribute("download", "output.pdf")
     //     ..click();
-    // }
-
-    // if (await Permission.storage.request().isGranted) {
-    //   var path = await ExternalPath.getExternalStoragePublicDirectory(
-    //       ExternalPath.DIRECTORY_DOWNLOADS);
-    //   // Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
-    //   // String appDocumentsPath = appDocumentsDirectory.path; // 2
-    //   File('$path/lantapan_visitors.pdf').writeAsBytes(await document.save());
-    //   launchSnackbar(
-    //       context: context,
-    //       duration: 5000,
-    //       mode: "SUCCESS",
-    //       message:
-    //           "File saved to downloads folder. Filename: lantapan_visitors.pdf");
     // }
   } catch (e) {
     launchSnackbar(context: context, mode: "ERROR", message: "Failed to save");

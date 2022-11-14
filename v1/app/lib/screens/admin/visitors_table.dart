@@ -6,6 +6,7 @@ import 'package:app/widgets/button.dart';
 import 'package:app/widgets/date_filter.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -75,13 +76,14 @@ class _VisitorTableState extends State<VisitorTable> {
               size: 18,
             ),
           ]),
-          Button(
-              label: "Generate PDF",
-              onPress: () {
-                generatePDF(context,
-                    visitors: userProvider.visitorList,
-                    totalCount: userProvider.visitorCount.toString());
-              })
+          if (kIsWeb)
+            Button(
+                label: "Generate PDF",
+                onPress: () {
+                  generatePDF(context,
+                      visitors: userProvider.visitorList,
+                      totalCount: userProvider.visitorCount.toString());
+                })
         ]),
       ),
       DateFilter(
