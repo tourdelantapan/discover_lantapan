@@ -81,22 +81,28 @@ class _NearbyGasStationsState extends State<NearbyGasStations> {
   @override
   void initState() {
     if (!mounted) return;
-    fetchPlaces();
-    MarkerId locationMarkerId = const MarkerId("location");
-    Marker locationMarker = Marker(
-      icon: BitmapDescriptor.defaultMarkerWithHue(.5),
-      markerId: locationMarkerId,
-      position: LatLng(
-          Provider.of<LocationProvider>(context, listen: false)
-              .coordinates
-              .latitude,
-          Provider.of<LocationProvider>(context, listen: false)
-              .coordinates
-              .longitude),
-      infoWindow: const InfoWindow(title: "location", snippet: '*'),
-      onTap: () {},
-    );
-    markers[locationMarkerId] = locationMarker;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchPlaces();
+      MarkerId locationMarkerId = const MarkerId("location");
+      Marker locationMarker = Marker(
+        icon: BitmapDescriptor.defaultMarkerWithHue(.5),
+        markerId: locationMarkerId,
+        position: LatLng(
+            Provider.of<LocationProvider>(context, listen: false)
+                .coordinates
+                .latitude,
+            Provider.of<LocationProvider>(context, listen: false)
+                .coordinates
+                .longitude),
+        infoWindow: const InfoWindow(title: "location", snippet: '*'),
+        onTap: () {},
+      );
+      markers[locationMarkerId] = locationMarker;
+      launchSnackbar(
+          context: context,
+          mode: "SUCCESS",
+          message: "Tap on the gas icon to see details.");
+    });
     super.initState();
   }
 

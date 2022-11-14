@@ -3,8 +3,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 const bool IS_PODUCTION = false;
-
-const String BUILD_MODE = "GUEST"; //ADMIN, GUEST
+const String BUILD_MODE = "ADMIN"; //ADMIN, GUEST
 
 String BASE_URL = IS_PODUCTION
     ? dotenv.env['BASE_URL_PRODUCTION'] ?? ""
