@@ -2,7 +2,7 @@
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-const bool IS_PODUCTION = false;
+const bool IS_PODUCTION = true;
 const String BUILD_MODE = "GUEST"; //ADMIN, GUEST
 
 String BASE_URL = IS_PODUCTION
