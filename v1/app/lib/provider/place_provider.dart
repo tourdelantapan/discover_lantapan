@@ -122,6 +122,7 @@ class PlaceProvider extends ChangeNotifier {
     addLoading("place-info");
     await Future.delayed(const Duration(seconds: 1));
     var response = await APIServices.get(endpoint: "/places/$placeId");
+
     if (response is Success) {
       _placeInfo = Place.fromJson(response.response["data"]["place"]);
       if (response.response["data"]["review"] != null) {

@@ -1,5 +1,4 @@
 import 'package:app/models/place_model.dart';
-import 'package:app/provider/location_provider.dart';
 import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/user_provider.dart';
 import 'package:app/screens/guest/place_info.dart';
@@ -262,22 +261,22 @@ class _ManagePlacesState extends State<ManagePlaces> {
                                   return;
                                 }
                               }),
-                          upperLabelWidget: RatingBar.builder(
-                            initialRating: place.reviewsStat.average,
-                            minRating: 1,
-                            direction: Axis.horizontal,
-                            allowHalfRating: true,
-                            unratedColor: Colors.white54,
-                            itemCount: 5,
-                            itemSize: 15,
-                            itemPadding:
-                                const EdgeInsets.only(right: 2, bottom: 5),
-                            itemBuilder: (context, _) => const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                            onRatingUpdate: (rating) {},
-                          ),
+                          // upperLabelWidget: RatingBar.builder(
+                          //   initialRating: 0,
+                          //   minRating: 1,
+                          //   direction: Axis.horizontal,
+                          //   allowHalfRating: true,
+                          //   unratedColor: Colors.white54,
+                          //   itemCount: 5,
+                          //   itemSize: 15,
+                          //   itemPadding:
+                          //       const EdgeInsets.only(right: 2, bottom: 5),
+                          //   itemBuilder: (context, _) => const Icon(
+                          //     Icons.star,
+                          //     color: Colors.amber,
+                          //   ),
+                          //   onRatingUpdate: (rating) {},
+                          // ),
                           label: place.name,
                           subLabel: place.address);
                     }),

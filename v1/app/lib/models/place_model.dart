@@ -8,7 +8,6 @@ import 'package:meta/meta.dart';
 import 'dart:convert';
 import 'package:latlong2/latlong.dart' as coords;
 
-
 Place placeFromJson(String str) => Place.fromJson(json.decode(str));
 
 String placeToJson(Place data) => json.encode(data.toJson());
@@ -76,9 +75,7 @@ class Place {
           ? DateTime.parse(json["updatedAt"])
           : DateTime.now(),
       reviewsStat: !["[]", "null"].contains(json["reviewsStat"].toString())
-          ? json["reviewsStat"].runtimeType == List
-              ? ReviewsStat.fromJson(json["reviewsStat"][0])
-              : ReviewsStat.fromJson(json["reviewsStat"])
+          ? ReviewsStat.fromJson(json["reviewsStat"][0])
           : ReviewsStat(average: 0, reviewerCount: 0),
       favorites: json["favorites"] != null
           ? Favorites.fromJson(json["favorites"])
