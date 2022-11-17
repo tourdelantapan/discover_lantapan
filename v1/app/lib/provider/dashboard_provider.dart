@@ -45,9 +45,11 @@ class DashboardProvider extends ChangeNotifier {
     }
   }
 
-  getLikesCount({required Function callback}) async {
+  getLikesCount(
+      {required Map<String, dynamic> query, required Function callback}) async {
     addLoading("likes");
-    var response = await APIServices.get(endpoint: "/admin/dashboard/likes");
+    var response =
+        await APIServices.get(endpoint: "/admin/dashboard/likes", query: query);
     if (response is Success) {
       _dashboardLikes = List<DashboardLikes>.from(response.response["data"]
               ["likesCount"]
@@ -61,9 +63,11 @@ class DashboardProvider extends ChangeNotifier {
     }
   }
 
-  getRatingsCount({required Function callback}) async {
+  getRatingsCount(
+      {required Map<String, dynamic> query, required Function callback}) async {
     addLoading("ratings");
-    var response = await APIServices.get(endpoint: "/admin/dashboard/ratings");
+    var response = await APIServices.get(
+        endpoint: "/admin/dashboard/ratings", query: query);
     if (response is Success) {
       _dashboardRating = List<DashboardRating>.from(response.response["data"]
               ["ratingsCount"]

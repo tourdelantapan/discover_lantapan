@@ -28,15 +28,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   @override
   void initState() {
-    () async {
-      await Future.delayed(Duration.zero);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       Provider.of<DashboardProvider>(context, listen: false)
           .getCount(callback: apiCallback);
       Provider.of<DashboardProvider>(context, listen: false)
-          .getLikesCount(callback: apiCallback);
+          .getLikesCount(query: {}, callback: apiCallback);
       Provider.of<DashboardProvider>(context, listen: false)
-          .getRatingsCount(callback: apiCallback);
-    }();
+          .getRatingsCount(query: {}, callback: apiCallback);
+    });
     super.initState();
   }
 
@@ -144,14 +143,20 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ]),
             const SizedBox(height: 10),
             const Divider(),
-            if (dashboardProvider.loading.contains("likes"))
-              const Center(child: CircularProgressIndicator())
-            else
-              MostPopular(likes: dashboardProvider.dashboardLikes),
-            if (dashboardProvider.loading.contains("ratings"))
-              const Center(child: CircularProgressIndicator())
-            else
-              MostRated(ratings: dashboardProvider.dashboardRating)
+            MostPopular(
+              likes: dashboardProvider.dashboardLikes,
+              onFilter: (query) {
+                Provider.of<DashboardProvider>(context, listen: false)
+                    .getLikesCount(query: query, callback: apiCallback);
+              },
+            ),
+            MostRated(
+              ratings: dashboardProvider.dashboardRating,
+              onFilter: (query) {
+                Provider.of<DashboardProvider>(context, listen: false)
+                    .getRatingsCount(query: query, callback: apiCallback);
+              },
+            )
           ]),
     );
   }

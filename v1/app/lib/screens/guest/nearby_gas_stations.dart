@@ -5,7 +5,10 @@ import 'package:app/models/gas_station_model.dart';
 import 'package:app/models/photo_model.dart';
 import 'package:app/provider/app_provider.dart';
 import 'package:app/provider/location_provider.dart';
+import 'package:app/screens/image-viewer.dart';
 import 'package:app/utilities/constants.dart';
+import 'package:app/widgets/bottom_modal.dart';
+import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_loaders.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/image_carousel.dart';
@@ -64,6 +67,74 @@ class _NearbyGasStationsState extends State<NearbyGasStations> {
                 setState(() {
                   index = i;
                 });
+
+                showModalBottomSheet(
+                    context: context,
+                    isDismissible: false,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) {
+                      return StatefulBuilder(builder:
+                          (BuildContext context, StateSetter setModalState) {
+                        return Modal(
+                            content: Column(
+                              children: [
+                                Expanded(
+                                  child: Image.network(
+                                    Provider.of<AppProvider>(context,
+                                                listen: false)
+                                            .gasStations[index]
+                                            .photos[0]
+                                            .original ??
+                                        placeholderImage,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Button(
+                                    label: "Open Image",
+                                    backgroundColor: Colors.transparent,
+                                    borderColor: Colors.transparent,
+                                    textColor: Colors.black,
+                                    icon: Icons.open_in_browser_rounded,
+                                    onPress: () {
+                                      if (Provider.of<AppProvider>(context,
+                                              listen: false)
+                                          .gasStations[index]
+                                          .photos
+                                          .isEmpty) {
+                                        return;
+                                      }
+
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              GalleryPhotoViewWrapper(
+                                            galleryItems:
+                                                Provider.of<AppProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .gasStations[index]
+                                                    .photos,
+                                            backgroundDecoration:
+                                                const BoxDecoration(
+                                              color: Colors.black,
+                                            ),
+                                            initialIndex: index,
+                                            scrollDirection: Axis.horizontal,
+                                          ),
+                                        ),
+                                      );
+                                    })
+                              ],
+                            ),
+                            title:
+                                Provider.of<AppProvider>(context, listen: false)
+                                    .gasStations[index]
+                                    .name);
+                      });
+                    });
+
                 _controller.animateCamera(CameraUpdate.newCameraPosition(
                     CameraPosition(
                         target: Provider.of<AppProvider>(context, listen: false)
@@ -145,24 +216,24 @@ class _NearbyGasStationsState extends State<NearbyGasStations> {
                       zoom: mapZoom)));
             },
           )),
-          if (appProvider.gasStations.isNotEmpty)
-            Positioned(
-                bottom: MediaQuery.of(context).padding.bottom + 15,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: width * .90,
-                      height: height * .3,
-                      child: PlaceCard(
-                          onPress: () {},
-                          photoUrl:
-                              appProvider.gasStations[index].photos[0].original,
-                          label: appProvider.gasStations[index].name),
-                    ),
-                  ],
-                ))
+          // if (appProvider.gasStations.isNotEmpty)
+          //   Positioned(
+          //       bottom: MediaQuery.of(context).padding.bottom + 15,
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.center,
+          //         mainAxisAlignment: MainAxisAlignment.center,
+          //         children: [
+          //           SizedBox(
+          //             width: width * .90,
+          //             height: height * .3,
+          //             child: PlaceCard(
+          //                 onPress: () {},
+          //                 photoUrl:
+          //                     appProvider.gasStations[index].photos[0].original,
+          //                 label: appProvider.gasStations[index].name),
+          //           ),
+          //         ],
+          //       ))
         ]));
   }
 }

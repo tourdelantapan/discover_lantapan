@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
-import 'dart:convert';
-// import 'dart:html';
+import 'dart:convert' if (dart.library.html) 'dart:html';
 
 import 'package:app/models/visitor_model.dart';
 import 'package:app/widgets/snackbar.dart';
