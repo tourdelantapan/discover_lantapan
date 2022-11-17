@@ -1,6 +1,7 @@
+// import 'dart:html';
 import 'dart:io';
 import 'dart:ui';
-import 'dart:convert' if (dart.library.html) 'dart:html';
+import 'dart:convert';
 
 import 'package:app/models/visitor_model.dart';
 import 'package:app/widgets/snackbar.dart';
@@ -68,13 +69,13 @@ generatePDF(BuildContext context,
       bounds: const Rect.fromLTWH(0, 0, 200, 50));
 
   try {
-    // if (kIsWeb) {
-    //   AnchorElement(
-    //       href:
-    //           "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(await document.save())}")
-    //     ..setAttribute("download", "output.pdf")
-    //     ..click();
-    // }
+    if (kIsWeb) {
+      // AnchorElement(
+      //     href:
+      //         "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(await document.save())}")
+      //   ..setAttribute("download", "output.pdf")
+      //   ..click();
+    }
   } catch (e) {
     launchSnackbar(context: context, mode: "ERROR", message: "Failed to save");
   }
