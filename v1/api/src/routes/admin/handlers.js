@@ -1,6 +1,7 @@
 "use strict";
 
 var internals = {};
+const mongoose = require("mongoose");
 const Place = require("../../database/models/Place");
 const User = require("../../database/models/User");
 const Visitor = require("../../database/models/Visitor");
@@ -82,36 +83,48 @@ internals.admin_dashboard_count = async (req, reply) => {
 };
 
 internals.admin_dashboard_likes = async (req, reply) => {
-  try {
-    var likesCount = await Place.aggregate([
-      {
-        $lookup: {
-          from: "favorites",
-          localField: "_id",
-          foreignField: "placeId",
-          pipeline: [
-            {
-              $group: {
-                _id: 1,
-                count: { $sum: 1 },
-              },
+  let { categoryId } = req.query;
+
+  const query = [
+    {
+      $lookup: {
+        from: "favorites",
+        localField: "_id",
+        foreignField: "placeId",
+        pipeline: [
+          {
+            $group: {
+              _id: 1,
+              count: { $sum: 1 },
             },
-          ],
-          as: "favorites",
-        },
+          },
+        ],
+        as: "favorites",
       },
-      {
-        $unwind: "$favorites",
+    },
+    {
+      $unwind: "$favorites",
+    },
+    {
+      $project: {
+        _id: "$_id",
+        name: "$name",
+        photos: "$photos",
+        favorites: "$favorites",
       },
-      {
-        $project: {
-          _id: "$_id",
-          name: "$name",
-          photos: "$photos",
-          favorites: "$favorites",
-        },
+    },
+  ];
+
+  if (categoryId) {
+    query.unshift({
+      $match: {
+        categoryId: mongoose.Types.ObjectId(categoryId),
       },
-    ]);
+    });
+  }
+
+  try {
+    var likesCount = await Place.aggregate(query);
     return reply
       .response({
         data: {
@@ -129,44 +142,56 @@ internals.admin_dashboard_likes = async (req, reply) => {
 };
 
 internals.admin_dashboard_ratings = async (req, reply) => {
+  let { categoryId } = req.query;
+
+  const query = [
+    {
+      $lookup: {
+        from: "reviews",
+        localField: "_id",
+        foreignField: "placeId",
+        pipeline: [
+          {
+            $group: {
+              _id: "$placeId",
+              rating: { $sum: "$rating" },
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              average: { $divide: ["$rating", "$count"] },
+              reviewerCount: "$count",
+            },
+          },
+        ],
+        as: "reviewsStat",
+      },
+    },
+    {
+      $unwind: "$reviewsStat",
+    },
+    {
+      $project: {
+        _id: "$_id",
+        name: "$name",
+        photos: "$photos",
+        reviewsStat: "$reviewsStat",
+      },
+    },
+  ];
+
+  if (categoryId) {
+    query.unshift({
+      $match: {
+        categoryId: mongoose.Types.ObjectId(categoryId),
+      },
+    });
+  }
+
   try {
-    var ratingsCount = await Place.aggregate([
-      {
-        $lookup: {
-          from: "reviews",
-          localField: "_id",
-          foreignField: "placeId",
-          pipeline: [
-            {
-              $group: {
-                _id: "$placeId",
-                rating: { $sum: "$rating" },
-                count: { $sum: 1 },
-              },
-            },
-            {
-              $project: {
-                _id: 0,
-                average: { $divide: ["$rating", "$count"] },
-                reviewerCount: "$count",
-              },
-            },
-          ],
-          as: "reviewsStat",
-        },
-      },
-      {
-        $unwind: "$reviewsStat",
-      },
-      {
-        $project: {
-          _id: "$_id",
-          name: "$name",
-          photos: "$photos",
-          reviewsStat: "$reviewsStat",
-        },
-      },
-    ]);
+    var ratingsCount = await Place.aggregate(query);
 
     return reply
       .response({
@@ -317,24 +342,23 @@ internals.nearby_gas_stations = async (req, reply) => {
   let query = {};
 
   try {
-    userLocation = userLocation && JSON.parse(userLocation);
-    console.log(userLocation);
-    const distance = 25;
-    const unitValue = 1000;
-    if (userLocation?.longitude && userLocation?.latitude) {
-      query = {
-        ...query,
-        coordinates: {
-          $near: {
-            $maxDistance: distance * unitValue,
-            $geometry: {
-              type: "Point",
-              coordinates: [userLocation?.longitude, userLocation?.latitude],
-            },
-          },
-        },
-      };
-    }
+    // userLocation = userLocation && JSON.parse(userLocation);
+    // const distance = 25;
+    // const unitValue = 1000;
+    // if (userLocation?.longitude && userLocation?.latitude) {
+    //   query = {
+    //     ...query,
+    //     coordinates: {
+    //       $near: {
+    //         $maxDistance: distance * unitValue,
+    //         $geometry: {
+    //           type: "Point",
+    //           coordinates: [userLocation?.longitude, userLocation?.latitude],
+    //         },
+    //       },
+    //     },
+    //   };
+    // }
 
     var gasStations = await GasStation.find(query);
 
