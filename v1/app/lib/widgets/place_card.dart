@@ -31,7 +31,7 @@ class PlaceCard extends StatelessWidget {
     return Container(
       // margin: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(0),
         color: Colors.grey[300],
         image: DecorationImage(
           image: NetworkImage(photoUrl ?? placeholderImage),
@@ -48,7 +48,7 @@ class PlaceCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
           child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              borderRadius: const BorderRadius.all(Radius.circular(0)),
               child: Stack(
                 children: <Widget>[
                   if (topLeft != null)

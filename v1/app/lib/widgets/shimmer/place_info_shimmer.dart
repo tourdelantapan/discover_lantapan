@@ -39,10 +39,11 @@ class _PlaceInfoShimmerState extends State<PlaceInfoShimmer>
         FadeTransition(
           opacity: _animationController,
           child: Container(
-              height: MediaQuery.of(context).size.height * .45,
+            
+              height: MediaQuery.of(context).size.height * .5,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                color: Colors.grey[400],
+                color: colorBG2,
               )),
         ),
         const SizedBox(
@@ -56,7 +57,7 @@ class _PlaceInfoShimmerState extends State<PlaceInfoShimmer>
               height: 20,
               width: MediaQuery.of(context).size.width * .20,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: colorBG1,
               )),
         ),
         const SizedBox(
@@ -70,7 +71,7 @@ class _PlaceInfoShimmerState extends State<PlaceInfoShimmer>
               height: 20,
               width: MediaQuery.of(context).size.width * .30,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: colorBG1,
               )),
         ),
         const SizedBox(
@@ -87,7 +88,7 @@ class _PlaceInfoShimmerState extends State<PlaceInfoShimmer>
                   height: 60,
                   width: 60,
                   decoration: BoxDecoration(
-                      color: Colors.grey[300],
+                      color: colorBG1,
                       borderRadius:
                           const BorderRadius.all(Radius.circular(100)))),
               Container(
@@ -96,7 +97,7 @@ class _PlaceInfoShimmerState extends State<PlaceInfoShimmer>
                   height: 60,
                   width: 60,
                   decoration: BoxDecoration(
-                      color: Colors.grey[300],
+                      color: colorBG1,
                       borderRadius:
                           const BorderRadius.all(Radius.circular(100)))),
               Container(
@@ -105,7 +106,7 @@ class _PlaceInfoShimmerState extends State<PlaceInfoShimmer>
                   height: 60,
                   width: 60,
                   decoration: BoxDecoration(
-                      color: Colors.grey[300],
+                      color: colorBG1,
                       borderRadius:
                           const BorderRadius.all(Radius.circular(100)))),
             ],

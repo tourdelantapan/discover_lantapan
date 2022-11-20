@@ -11,35 +11,35 @@ class TourismStaff extends StatefulWidget {
 
 class _TourismStaffState extends State<TourismStaff> {
   Staff president = Staff(
-      name: "Nonelita C. Butaya",
+      name: "Nonelita C.\nButaya",
       designation: "Head",
       photo: const AssetImage('assets/images/tourism_staff/butaya.jpg'));
 
   List<List> staff = [
     [
       Staff(
-          name: "Gracel Joy. C Daanoy",
+          name: "Gracel Joy. C\nDaanoy",
           designation: "Staff",
           photo: const AssetImage('assets/images/tourism_staff/daanoy.jpg')),
       Staff(
-          name: "Marilyn A. Apat",
+          name: "Marilyn A.\nApat",
           designation: "Staff",
           photo: const AssetImage('assets/images/tourism_staff/apat.jpg')),
     ],
     [
       Staff(
-          name: "Patrocinia J. Eralino",
+          name: "Patrocinia J.\nEralino",
           designation: "Staff",
           photo: const AssetImage('assets/images/tourism_staff/eralino.jpg')),
       Staff(
-          name: "John Domenic C. Butaya",
+          name: "John Domenic C.\nButaya",
           designation: "Staff",
           photo:
               const AssetImage('assets/images/tourism_staff/john_butaya.jpg'))
     ],
     [
       Staff(
-          name: "Angel Mae L. Husayan",
+          name: "Angel Mae L.\nHusayan",
           designation: "Staff",
           photo: const AssetImage('assets/images/tourism_staff/husayan.jpg'))
     ]
@@ -89,11 +89,10 @@ class StaffBadge extends StatelessWidget {
         const SizedBox(
           height: 15,
         ),
-        IconText(
-          mainAxisAlignment: MainAxisAlignment.center,
-          label: staff.name,
-          size: 17,
-          color: Colors.black,
+        Text(
+          staff.name,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 17),
         ),
         IconText(
             label: staff.designation,

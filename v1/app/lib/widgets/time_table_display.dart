@@ -43,27 +43,27 @@ class DayOfWeek extends StatelessWidget {
             children: [
               IconText(
                 label: timeOfDay.day,
-                color: Colors.black,
+                color: Colors.white,
                 // fontWeight: FontWeight.bold,
               ),
               if (timeOfDay.other == "CLOSED")
                 IconText(
                     label: "Closed",
                     fontWeight: FontWeight.bold,
-                    color: Colors.red)
+                    color: Colors.white)
               else if (timeOfDay.other == "247")
                 IconText(
                     label: "Open 24/7",
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue)
+                    color: Colors.amber)
               else
                 Row(children: [
                   IconText(
-                      color: Colors.black,
+                      color: Colors.white,
                       label:
                           "${TimeOfDay(hour: timeOfDay.timeFromHour, minute: timeOfDay.timeFromMinute).format(context)} to "),
                   IconText(
-                      color: Colors.black,
+                      color: Colors.white,
                       label: TimeOfDay(
                               hour: timeOfDay.timeToHour,
                               minute: timeOfDay.timeToMinute)

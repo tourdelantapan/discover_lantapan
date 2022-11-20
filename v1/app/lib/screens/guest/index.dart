@@ -9,11 +9,14 @@ import 'package:app/screens/guest/drawer_pages/history.dart';
 import 'package:app/screens/guest/drawer_pages/home_feed.dart';
 import 'package:app/screens/guest/drawer_pages/tourism_staff.dart';
 import 'package:app/screens/guest/select_location.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/reverse_geocode.dart';
 import 'package:app/widgets/bottom_modal.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_loaders.dart';
 import 'package:app/widgets/icon_text.dart';
+import 'package:app/widgets/shape/inverted_triangle.dart';
+import 'package:app/widgets/shape/triangle.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -120,8 +123,8 @@ class _GuestState extends State<Guest> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: colorBG2,
+        foregroundColor: Colors.white,
         elevation: .5,
         title: const Text("Discover Lantapan"),
         actions: [
@@ -149,6 +152,7 @@ class _GuestState extends State<Guest> {
       ),
       body: Column(
         children: [
+          Container(),
           Expanded(
             child: PageView(
                 physics: const NeverScrollableScrollPhysics(),
@@ -208,19 +212,20 @@ class _GuestState extends State<Guest> {
         ],
       ),
       drawer: Drawer(
-        backgroundColor: Colors.white,
+        backgroundColor: colorBG1,
         child: Column(children: [
           Expanded(
               child: ListView(padding: EdgeInsets.zero, children: [
             DrawerHeader(
+                margin: const EdgeInsets.all(0),
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
+                  color: colorBG2,
                 ),
                 child: Column(children: [
                   IconText(
                     mainAxisAlignment: MainAxisAlignment.start,
                     label: "Tour De Lantapan",
-                    color: Colors.black,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     size: 17,
                   ),
@@ -249,7 +254,7 @@ class _GuestState extends State<Guest> {
                       icon: userProvider.currentUser?.photo == null
                           ? Icons.favorite
                           : null,
-                      color: Colors.black,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                       size: 17,
                     ),
@@ -260,10 +265,27 @@ class _GuestState extends State<Guest> {
                   IconText(
                     mainAxisAlignment: MainAxisAlignment.start,
                     label: userProvider.currentUser?.fullName ?? "Guest",
-                    color: Colors.black,
+                    color: Colors.white,
                     size: 17,
                   )
                 ])),
+            Container(
+                child: Row(children: [
+              ...List.generate(
+                  5,
+                  (index) => Transform.rotate(
+                      angle: 3.14 / 1,
+                      child: CustomPaint(
+                          painter: TrianglePainter(
+                            strokeColor: Colors.yellow,
+                            strokeWidth: 0,
+                            paintingStyle: PaintingStyle.fill,
+                          ),
+                          child: Container(
+                            height: 10,
+                            width: 15,
+                          ))))
+            ])),
             ListView.builder(
                 shrinkWrap: true,
                 itemCount: drawerItems.length,
@@ -276,8 +298,7 @@ class _GuestState extends State<Guest> {
                         ? Colors.grey[200]
                         : Colors.transparent,
                     borderColor: Colors.transparent,
-                    textColor:
-                        pageIndex == index ? Colors.black : Colors.grey[700],
+                    textColor: pageIndex == index ? Colors.black : Colors.white,
                     fontSize: 17,
                     icon: drawerItems[index].icon,
                     label: drawerItems[index].text,
@@ -313,7 +334,7 @@ class _GuestState extends State<Guest> {
                           : "Log Out",
                       borderColor: Colors.transparent,
                       backgroundColor: Colors.transparent,
-                      textColor: Colors.black,
+                      textColor: Colors.white60,
                       padding: const EdgeInsets.all(0),
                       mainAxisAlignment: MainAxisAlignment.start,
                       onPress: () {
@@ -332,7 +353,7 @@ class _GuestState extends State<Guest> {
                         label: "Edit Profile",
                         borderColor: Colors.transparent,
                         backgroundColor: Colors.transparent,
-                        textColor: Colors.red,
+                        textColor: Colors.white,
                         padding: const EdgeInsets.all(0),
                         mainAxisAlignment: MainAxisAlignment.start,
                         onPress: () {

@@ -1,3 +1,4 @@
+import 'package:app/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class PlaceCardShimmer extends StatefulWidget {
@@ -34,8 +35,8 @@ class _PlaceCardShimmerState extends State<PlaceCardShimmer>
         width: MediaQuery.of(context).size.width,
         margin: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-            color: Colors.grey[400],
-            borderRadius: const BorderRadius.all(Radius.circular(15))),
+            color: colorBG2,
+            borderRadius: const BorderRadius.all(Radius.circular(0))),
       ),
     );
   }

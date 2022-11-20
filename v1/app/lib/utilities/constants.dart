@@ -1,9 +1,10 @@
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
 
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 const bool IS_PODUCTION = true;
-const String BUILD_MODE = "ADMIN"; //ADMIN, GUEST
+const String BUILD_MODE = "GUEST"; //ADMIN, GUEST
 
 String BASE_URL = IS_PODUCTION
     ? dotenv.env['BASE_URL_PRODUCTION'] ?? ""
@@ -14,3 +15,6 @@ const String placeholderImage =
     "https://tourdelantapan.s3.ap-northeast-1.amazonaws.com/app_assets/SM-placeholder.png";
 
 double mapZoom = 15;
+
+Color colorBG1 = Colors.red;
+Color colorBG2 = Color.fromARGB(255, 190, 13, 0);

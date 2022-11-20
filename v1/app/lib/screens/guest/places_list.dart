@@ -10,6 +10,7 @@ import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/action_modal.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/place_card.dart';
+import 'package:app/widgets/shape/diamond_border.dart';
 import 'package:app/widgets/shimmer/place_card_shimmer.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -109,117 +110,132 @@ class _PlacesListState extends State<PlacesList> {
                         if (widget.arguments["mode"] == "top_rated") {
                           return IconText(
                               icon: Icons.star,
-                              backgroundColor: Colors.white,
+                              backgroundColor: Colors.yellow,
+                              fontWeight: FontWeight.bold,
                               color: Colors.black,
                               size: 12,
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 8),
-                              borderRadius: 5,
+                              borderRadius: 0,
                               label:
                                   "${place.reviewsStat.average.toStringAsFixed(1)} / ${place.reviewsStat.reviewerCount} review${place.reviewsStat.reviewerCount > 1 ? "s" : ""}");
                         }
                         if (widget.arguments["mode"] == "popular") {
                           return IconText(
                               icon: Icons.favorite,
-                              backgroundColor: Colors.white,
+                              backgroundColor: Colors.yellow,
                               color: Colors.black,
                               padding: const EdgeInsets.all(10),
-                              borderRadius: 100,
+                              borderRadius: 0,
                               label: "${place.favorites.count}");
                         }
                         return Container();
                       }
 
-                      return PlaceCard(
-                          photoUrl: place.photos.isNotEmpty
-                              ? place.photos[0].small
-                              : placeholderImage,
-                          onPress: () {
-                            if (!isMobile(context)) {
-                              widget.onPlaceTap(place.id);
-                              return;
-                            }
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: PlaceCard(
+                                photoUrl: place.photos.isNotEmpty
+                                    ? place.photos[0].small
+                                    : placeholderImage,
+                                onPress: () {
+                                  if (!isMobile(context)) {
+                                    widget.onPlaceTap(place.id);
+                                    return;
+                                  }
 
-                            Navigator.pushNamed(context, "/place/info",
-                                    arguments: {"placeId": place.id})
-                                .then((value) => fetchPlaces());
-                          },
-                          topLeft: getTopLeft(),
-                          bottomRight: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(100)),
-                              child: IconButton(
-                                  onPressed: () {
-                                    if (userProvider.currentUser == null) {
-                                      showModalBottomSheet(
-                                          context: context,
-                                          isDismissible: false,
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.transparent,
-                                          builder: (context) {
-                                            return StatefulBuilder(builder:
-                                                (BuildContext newContext,
-                                                    StateSetter setModalState) {
-                                              return ActionModal(
-                                                isLoading: true,
-                                                title: "Account Required.",
-                                                subTitle:
-                                                    "This action requires an account.",
-                                                confirmAction: "Log In/SignUp",
-                                                callback: (action) {
-                                                  if (action !=
-                                                      "Log In/SignUp") {
-                                                    return;
-                                                  }
-                                                  Navigator.pushNamed(
-                                                      context, "/auth");
-                                                },
-                                              );
-                                            });
-                                          });
-                                      return;
-                                    }
+                                  Navigator.pushNamed(context, "/place/info",
+                                          arguments: {"placeId": place.id})
+                                      .then((value) => fetchPlaces());
+                                },
+                                topLeft: getTopLeft(),
+                                bottomRight: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(100)),
+                                    child: IconButton(
+                                        onPressed: () {
+                                          if (userProvider.currentUser ==
+                                              null) {
+                                            showModalBottomSheet(
+                                                context: context,
+                                                isDismissible: false,
+                                                isScrollControlled: true,
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                builder: (context) {
+                                                  return StatefulBuilder(
+                                                      builder: (BuildContext
+                                                              newContext,
+                                                          StateSetter
+                                                              setModalState) {
+                                                    return ActionModal(
+                                                      isLoading: true,
+                                                      title:
+                                                          "Account Required.",
+                                                      subTitle:
+                                                          "This action requires an account.",
+                                                      confirmAction:
+                                                          "Log In/SignUp",
+                                                      callback: (action) {
+                                                        if (action !=
+                                                            "Log In/SignUp") {
+                                                          return;
+                                                        }
+                                                        Navigator.pushNamed(
+                                                            context, "/auth");
+                                                      },
+                                                    );
+                                                  });
+                                                });
+                                            return;
+                                          }
 
-                                    placeProvider.likePlace(
-                                        mode: widget.arguments["mode"],
-                                        index: index,
-                                        placeId: place.id,
-                                        callback: (code, message) {
-                                          launchSnackbar(
-                                              context: context,
-                                              mode: code == 200
-                                                  ? "SUCCESS"
-                                                  : "ERROR",
-                                              message: code == 200
-                                                  ? message
-                                                  : "Failed to submit like.");
-                                        });
-                                  },
-                                  icon: Icon(
-                                    !place.isLiked
-                                        ? Icons.favorite_border_outlined
-                                        : Icons.favorite_rounded,
-                                    color: Colors.red,
-                                  ))),
-                          upperLabelWidget: RatingBar.builder(
-                            initialRating: place.reviewsStat.average,
-                            minRating: 1,
-                            direction: Axis.horizontal,
-                            allowHalfRating: true,
-                            unratedColor: Colors.white54,
-                            itemCount: 5,
-                            itemSize: 15,
-                            itemPadding:
-                                const EdgeInsets.only(right: 2, bottom: 5),
-                            itemBuilder: (context, _) => const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                            onRatingUpdate: (rating) {},
+                                          placeProvider.likePlace(
+                                              mode: widget.arguments["mode"],
+                                              index: index,
+                                              placeId: place.id,
+                                              callback: (code, message) {
+                                                launchSnackbar(
+                                                    context: context,
+                                                    mode: code == 200
+                                                        ? "SUCCESS"
+                                                        : "ERROR",
+                                                    message: code == 200
+                                                        ? message
+                                                        : "Failed to submit like.");
+                                              });
+                                        },
+                                        icon: Icon(
+                                          !place.isLiked
+                                              ? Icons.favorite_border_outlined
+                                              : Icons.favorite_rounded,
+                                          color: Colors.red,
+                                        ))),
+                                upperLabelWidget: RatingBar.builder(
+                                  initialRating: place.reviewsStat.average,
+                                  minRating: 1,
+                                  direction: Axis.horizontal,
+                                  allowHalfRating: true,
+                                  unratedColor: Colors.white54,
+                                  itemCount: 5,
+                                  itemSize: 15,
+                                  itemPadding: const EdgeInsets.only(
+                                      right: 2, bottom: 5),
+                                  itemBuilder: (context, _) => const Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  onRatingUpdate: (rating) {},
+                                ),
+                                label: place.name,
+                                subLabel: place.address),
                           ),
-                          label: place.name,
-                          subLabel: place.address);
+                          DiamondBorder()
+                        ],
+                      );
                     }),
               )
             else

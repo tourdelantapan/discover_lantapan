@@ -1,5 +1,8 @@
 import 'package:app/screens/guest/place_info.dart';
 import 'package:app/screens/guest/places_list.dart';
+import 'package:app/utilities/constants.dart';
+import 'package:app/widgets/shape/inverted_triangle.dart';
+import 'package:app/widgets/shape/triangle.dart';
 import 'package:flutter/material.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
@@ -27,23 +30,26 @@ class _HomeFeedState extends State<HomeFeed> {
       length: 3,
       child: Scaffold(
           key: _scaffoldKey,
+          backgroundColor: colorBG1,
           endDrawer: Drawer(
               width: MediaQuery.of(context).size.width * .30,
               child: PlaceInfo(arguments: {"placeId": placeId})),
           appBar: AppBar(
               automaticallyImplyLeading: false,
               elevation: 0,
-              backgroundColor: Colors.white,
+              backgroundColor: colorBG2,
+              actions: <Widget>[Container()],
               flexibleSpace: Center(
                 child: TabBar(
                   isScrollable: true,
                   physics: const NeverScrollableScrollPhysics(),
                   padding: const EdgeInsets.only(left: 10, top: 5),
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.black45,
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.white54,
                   indicator: MaterialIndicator(
-                      bottomLeftRadius: 0,
-                      bottomRightRadius: 0,
+                      color: Colors.white,
+                      bottomLeftRadius: 100,
+                      bottomRightRadius: 100,
                       topLeftRadius: 100,
                       topRightRadius: 100),
                   tabs: const [
@@ -53,26 +59,29 @@ class _HomeFeedState extends State<HomeFeed> {
                   ],
                 ),
               )),
-          body: TabBarView(
+          body: Stack(
             children: [
-              PlacesList(
-                onPlaceTap: (id) => _openEndDrawer(id),
-                arguments: const {
-                  "mode": "popular",
-                },
-              ),
-              PlacesList(
-                onPlaceTap: (id) => _openEndDrawer(id),
-                arguments: const {
-                  "mode": "new",
-                },
-              ),
-              PlacesList(
-                onPlaceTap: (id) => _openEndDrawer(id),
-                arguments: const {
-                  "mode": "top_rated",
-                },
-              ),
+              Expanded(
+                  child: TabBarView(children: [
+                PlacesList(
+                  onPlaceTap: (id) => _openEndDrawer(id),
+                  arguments: const {
+                    "mode": "popular",
+                  },
+                ),
+                PlacesList(
+                  onPlaceTap: (id) => _openEndDrawer(id),
+                  arguments: const {
+                    "mode": "new",
+                  },
+                ),
+                PlacesList(
+                  onPlaceTap: (id) => _openEndDrawer(id),
+                  arguments: const {
+                    "mode": "top_rated",
+                  },
+                ),
+              ])),
             ],
           )),
     );

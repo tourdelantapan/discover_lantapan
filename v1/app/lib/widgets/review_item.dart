@@ -51,7 +51,7 @@ class ReviewItem extends StatelessWidget {
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             IconText(
                 label: review.userId.fullName,
-                color: Colors.black,
+                color: Colors.white,
                 fontWeight: FontWeight.bold),
             RatingBar.builder(
               initialRating: review.rating,
@@ -64,7 +64,7 @@ class ReviewItem extends StatelessWidget {
               itemPadding: const EdgeInsets.only(right: 2),
               itemBuilder: (context, _) => const Icon(
                 Icons.star,
-                color: Colors.red,
+                color: Colors.amber,
               ),
               onRatingUpdate: (rating) {
                 return;
@@ -76,7 +76,7 @@ class ReviewItem extends StatelessWidget {
         Text(
           review.content,
           style: const TextStyle(
-              color: Colors.black87, fontWeight: FontWeight.normal),
+              color: Colors.white, fontWeight: FontWeight.normal),
         ),
         const SizedBox(height: 10),
         if (review.photos.isNotEmpty)
@@ -102,7 +102,7 @@ class ReviewItem extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           IconText(
             label: DateFormat("MMM dd, yyyy").format(review.createdAt),
-            color: Colors.black45,
+            color: Colors.white70,
             size: 12,
           ),
           if (onDelete != null)
@@ -112,7 +112,7 @@ class ReviewItem extends StatelessWidget {
                   label: "Delete Review",
                   icon: Icons.remove_circle_rounded,
                   fontWeight: FontWeight.bold,
-                  color: Colors.red,
+                  color: Colors.white,
                 ))
         ])
         // const Divider(),

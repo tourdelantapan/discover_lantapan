@@ -75,7 +75,9 @@ class Place {
           ? DateTime.parse(json["updatedAt"])
           : DateTime.now(),
       reviewsStat: !["[]", "null"].contains(json["reviewsStat"].toString())
-          ? ReviewsStat.fromJson(json["reviewsStat"][0])
+          ? ReviewsStat.fromJson(json["reviewsStat"].runtimeType == List
+              ? json["reviewsStat"][0]
+              : json["reviewsStat"])
           : ReviewsStat(average: 0, reviewerCount: 0),
       favorites: json["favorites"] != null
           ? Favorites.fromJson(json["favorites"])
