@@ -1,4 +1,5 @@
 import 'package:app/utilities/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class PlaceCard extends StatelessWidget {
@@ -33,8 +34,12 @@ class PlaceCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.grey[300],
+        // image: DecorationImage(
+        //   image: NetworkImage(photoUrl ?? placeholderImage),
+        //   fit: BoxFit.cover,
+        // ),
         image: DecorationImage(
-          image: NetworkImage(photoUrl ?? placeholderImage),
+          image: CachedNetworkImageProvider(photoUrl ?? placeholderImage),
           fit: BoxFit.cover,
         ),
       ),

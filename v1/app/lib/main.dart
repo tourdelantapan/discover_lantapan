@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:app/provider/dashboard_provider.dart';
 import 'package:app/provider/place_provider.dart';
 import 'package:app/provider/review_provider.dart';
@@ -19,7 +21,7 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget { 
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override

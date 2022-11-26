@@ -1,6 +1,8 @@
+import 'package:app/provider/place_provider.dart';
 import 'package:app/screens/guest/place_info.dart';
 import 'package:app/screens/guest/places_list.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class HomeFeed extends StatefulWidget {
@@ -13,6 +15,14 @@ class HomeFeed extends StatefulWidget {
 class _HomeFeedState extends State<HomeFeed> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String placeId = '';
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    Provider.of<PlaceProvider>(context, listen: false).getPlaceIds();
+    });
+    super.initState();
+  }
 
   void _openEndDrawer(String placeId) {
     setState(() {

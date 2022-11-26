@@ -110,25 +110,37 @@ class _InitializeScreenState extends State<InitializeScreen> {
           const SizedBox(
             height: 30,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Button(
-                  backgroundColor: Colors.transparent,
-                  borderColor: Colors.black,
-                  textColor: Colors.black,
-                  borderRadius: 100,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  icon: Icons.replay_outlined,
-                  label: "Retry",
-                  onPress: () {
-                    setState(() => initialize = "WAITING");
-                    initializeApp();
-                  }),
-            ],
-          ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Button(
+                backgroundColor: Colors.transparent,
+                borderColor: Colors.black,
+                textColor: Colors.black,
+                borderRadius: 100,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                icon: Icons.replay_outlined,
+                label: "Retry",
+                onPress: () {
+                  setState(() => initialize = "WAITING");
+                  initializeApp();
+                }),
+          ]),
           Expanded(child: Container()),
+          Button(
+              backgroundColor: Colors.transparent,
+              borderColor: Colors.transparent,
+              textColor: Colors.black,
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              icon: Icons.wifi_off_outlined,
+              label: "Offline Mode",
+              onPress: () {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "/guest", (_) => false);
+              }),
+          const SizedBox(
+            height: 15,
+          ),
           IconText(
             mainAxisAlignment: MainAxisAlignment.center,
             label: "Discover Lantapan",

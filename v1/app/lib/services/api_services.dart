@@ -28,6 +28,8 @@ class APIServices {
     } on FormatException {
       return Failure(code: 102, response: {"message": 'Invalid Format'});
     } catch (e) {
+      print("GET: ERROR");
+      print(e);
       return Failure(code: 103, response: {"message": 'Unknown Error'});
     }
   }

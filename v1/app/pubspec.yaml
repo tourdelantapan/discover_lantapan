@@ -67,6 +67,8 @@ dependencies:
   latlong2: ^0.8.1
   time_range_picker: ^2.2.0
   image_cropper: ^3.0.1
+  connectivity_plus: ^3.0.2
+  cached_network_image: ^3.2.2
 
 dev_dependencies:
   flutter_test:

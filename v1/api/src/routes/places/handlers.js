@@ -205,8 +205,6 @@ internals.place_info = async (req, reply) => {
       })
       .populate("userId");
 
-    console.log(place);
-
     return reply
       .response({
         message: "Place fetched successfully",
@@ -444,6 +442,26 @@ internals.delete_place = async (req, reply) => {
     return reply
       .response({
         message: "Place deleted",
+      })
+      .code(200);
+  } catch (e) {
+    console.log(e);
+    return reply
+      .response({
+        message: "Server error",
+      })
+      .code(500);
+  }
+};
+
+internals.get_all_place_ids = async (req, reply) => {
+  try {
+    let placeIds = await Place.find({}).select("_id");
+    return reply
+      .response({
+        data: {
+          placeIds,
+        },
       })
       .code(200);
   } catch (e) {
