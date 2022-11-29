@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:app/models/photo_model.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AddPhotos extends StatelessWidget {
-  List<File> photos;
+  List<PlatformFile> photos;
   Function onAddPhotos;
   Function onDeletePhoto;
   AddPhotos(
@@ -28,10 +29,13 @@ class AddPhotos extends StatelessWidget {
         IconButton(
             onPressed: () async {
               try {
-                FilePickerResult? result = await FilePicker.platform
-                    .pickFiles(type: FileType.image, allowMultiple: true);
+                FilePickerResult? result = await FilePicker.platform.pickFiles(
+                    type: FileType.image,
+                    withReadStream: !kIsWeb,
+                    withData: kIsWeb,
+                    allowMultiple: true);
                 if (result == null) return;
-                onAddPhotos(result.files.map((e) => File(e.path!)).toList());
+                onAddPhotos([...photos, ...result.files]);
               } catch (e) {
                 print(e);
               }
@@ -51,12 +55,26 @@ class AddPhotos extends StatelessWidget {
                       ClipRRect(
                           borderRadius:
                               const BorderRadius.all(Radius.circular(8)),
-                          child: Image.file(
-                            File(photos[index].path),
-                            fit: BoxFit.cover,
-                            width: 200,
-                            height: MediaQuery.of(context).size.height,
-                          )),
+                          child: photos.isNotEmpty
+                              ? kIsWeb
+                                  ? Image.memory(
+                                      photos[index].bytes!,
+                                      fit: BoxFit.cover,
+                                      width: 200,
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                    )
+                                  : Image.file(
+                                      File(photos[index].path!),
+                                      fit: BoxFit.cover,
+                                      width: 200,
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                    )
+                              : IconText(
+                                  label: "Added photos will show here.",
+                                  color: Colors.black26,
+                                )),
                       Positioned(
                         right: -20,
                         top: -10,
@@ -71,7 +89,6 @@ class AddPhotos extends StatelessWidget {
                         ),
                       ),
                     ])))),
-  
       const SizedBox(
         height: 15,
       ),

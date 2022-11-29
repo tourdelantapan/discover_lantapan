@@ -88,7 +88,9 @@ class MostPopularState extends State<MostPopular> {
             height: 10,
           ),
           if (dashboardProvider.loading.contains("likes"))
-            const PlaceCardShimmer()
+            PlaceCardShimmer(
+              color: Colors.grey,
+            )
           else
             SfCartesianChart(
                 primaryXAxis: CategoryAxis(),

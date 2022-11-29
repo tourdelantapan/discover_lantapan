@@ -7,12 +7,14 @@ import 'package:app/screens/guest/place_info.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/grid_count.dart';
 import 'package:app/utilities/responsive_screen.dart';
+import 'package:app/utilities/you_are_offline.dart';
 import 'package:app/widgets/action_modal.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/place_card.dart';
 import 'package:app/widgets/shape/diamond_border.dart';
 import 'package:app/widgets/shimmer/place_card_shimmer.dart';
 import 'package:app/widgets/snackbar.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +30,16 @@ class PlacesList extends StatefulWidget {
 }
 
 class _PlacesListState extends State<PlacesList> {
-  fetchPlaces() {
+  fetchPlaces() async {
+    ConnectivityResult connectivityResult =
+        await (Connectivity().checkConnectivity());
+    if (ConnectivityResult.none == connectivityResult) {
+      if (!mounted) return;
+      Provider.of<PlaceProvider>(context, listen: false)
+          .loadPlacesOffline(mode: widget.arguments["mode"]);
+      return;
+    }
+    if (!mounted) return;
     Provider.of<PlaceProvider>(context, listen: false).getPlaces(
         query: {"mode": widget.arguments["mode"]},
         callback: (code, message) {
@@ -74,7 +85,7 @@ class _PlacesListState extends State<PlacesList> {
         child: Column(
           children: [
             if (placeProvider.loading.contains(widget.arguments["mode"]))
-              const PlaceCardShimmer()
+               PlaceCardShimmer()
             else if (!hasNoContent())
               Expanded(
                 child: GridView.builder(

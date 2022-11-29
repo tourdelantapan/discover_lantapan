@@ -91,6 +91,14 @@ internals.endpoints = [
       },
     },
   },
+  {
+    method: ["GET"],
+    path: "/place/all-ids",
+    handler: Handlers.get_all_place_ids,
+    config: {
+      auth: false,
+    },
+  },
 ];
 
 module.exports = internals;

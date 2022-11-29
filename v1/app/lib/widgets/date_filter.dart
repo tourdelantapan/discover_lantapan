@@ -22,8 +22,6 @@ class DateFilter extends StatelessWidget {
     DateTime startDate =
         DateTime(year, month[0], week[0] * 7).subtract(const Duration(days: 7));
     DateTime endDate = DateTime(year, month[0], week[0] * 7);
-    print(startDate);
-    print(endDate);
   }
 
   getMonth(month, year) {

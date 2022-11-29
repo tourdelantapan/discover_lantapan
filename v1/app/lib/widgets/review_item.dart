@@ -45,6 +45,14 @@ class ReviewItem extends StatelessWidget {
                     : placeholderImage,
                 width: 50,
                 height: 50,
+                errorBuilder: (context, error, stackTrace) => ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    color: Colors.grey,
+                  ),
+                ),
                 fit: BoxFit.cover,
               )),
           const SizedBox(width: 10),

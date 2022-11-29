@@ -54,6 +54,10 @@ class _AdminState extends State<Admin> {
               style: SideMenuStyle(
                   displayMode: SideMenuDisplayMode.auto,
                   hoverColor: Colors.grey[100],
+                  decoration: BoxDecoration(
+                      border: Border(
+                          right:
+                              BorderSide(color: Colors.grey.withOpacity(.2)))),
                   selectedTitleTextStyle:
                       const TextStyle(color: Colors.black87, fontSize: 15),
                   unselectedTitleTextStyle:

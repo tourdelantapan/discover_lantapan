@@ -11,6 +11,7 @@ import 'package:app/screens/guest/drawer_pages/tourism_staff.dart';
 import 'package:app/screens/guest/select_location.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/reverse_geocode.dart';
+import 'package:app/utilities/you_are_offline.dart';
 import 'package:app/widgets/bottom_modal.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_loaders.dart';
@@ -18,6 +19,7 @@ import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/shape/inverted_triangle.dart';
 import 'package:app/widgets/shape/triangle.dart';
 import 'package:app/widgets/snackbar.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:latlong2/latlong.dart' as coords;
@@ -33,6 +35,7 @@ class _GuestState extends State<Guest> {
   PageController page = PageController();
   int pageIndex = 0;
   bool detectingLocation = true;
+  late var connectivitySubscription;
 
   List<IconTextModel> drawerItems = [
     IconTextModel(Icons.home, "Home"),
@@ -45,7 +48,8 @@ class _GuestState extends State<Guest> {
     IconTextModel(Icons.local_gas_station_rounded, "Nearby Gas Stations"),
   ];
 
-  void setLocation() {
+  void setLocation() async {
+    if (await isOffline(context)) return;
     showModalBottomSheet(
         context: context,
         isDismissible: false,
@@ -73,7 +77,14 @@ class _GuestState extends State<Guest> {
         });
   }
 
-  void determinePosition() {
+  void determinePosition() async {
+    ConnectivityResult connectivityResult =
+        await (Connectivity().checkConnectivity());
+    if (ConnectivityResult.none == connectivityResult) {
+      setState(() => detectingLocation = false);
+      return;
+    }
+    if (!mounted) return;
     Provider.of<LocationProvider>(context, listen: false)
         .determinePosition(context, (res, isSuccess) async {
       if (isSuccess) {
@@ -113,8 +124,30 @@ class _GuestState extends State<Guest> {
       determinePosition();
       Provider.of<AppProvider>(context, listen: false).getPhilippines();
     }();
+
+    // connectivitySubscription = Connectivity()
+    //     .onConnectivityChanged
+    //     .listen((ConnectivityResult result) {
+    //   if (ConnectivityResult.none != result) {
+    //     launchSnackbar(
+    //         context: context,
+    //         mode: "SUCCESS",
+    //         message: "You are now connected to internet.",
+    //         action: SnackBarAction(
+    //             label: "Reload",
+    //             onPressed: () {
+    //               Navigator.pushNamed(context, '/');
+    //             }));
+    //   }
+    // });
     super.initState();
   }
+
+  // @override
+  // dispose() {
+  //   super.dispose();
+  //   connectivitySubscription.cancel();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -128,13 +161,6 @@ class _GuestState extends State<Guest> {
         elevation: .5,
         title: const Text("Discover Lantapan"),
         actions: [
-          // if (userProvider.currentUser != null &&
-          //     userProvider.currentUser!.scope.contains("ADMIN"))
-          //   IconButton(
-          //       onPressed: () {
-          //         Navigator.pushNamed(context, '/admin');
-          //       },
-          //       icon: const Icon(Icons.switch_account_rounded)),
           if (detectingLocation)
             showDoubleBounce(size: 20)
           else
@@ -144,7 +170,8 @@ class _GuestState extends State<Guest> {
                 },
                 icon: const Icon(Icons.pin_drop_rounded)),
           IconButton(
-              onPressed: () {
+              onPressed: () async {
+                if (await isOffline(context)) return;
                 Navigator.pushNamed(context, '/search/place');
               },
               icon: const Icon(Icons.search))
@@ -270,7 +297,8 @@ class _GuestState extends State<Guest> {
                   )
                 ])),
             Container(
-                child: Row(children: [
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ...List.generate(
                   5,
                   (index) => Transform.rotate(
@@ -278,6 +306,20 @@ class _GuestState extends State<Guest> {
                       child: CustomPaint(
                           painter: TrianglePainter(
                             strokeColor: Colors.yellow,
+                            strokeWidth: 0,
+                            paintingStyle: PaintingStyle.fill,
+                          ),
+                          child: Container(
+                            height: 10,
+                            width: 15,
+                          )))),
+              ...List.generate(
+                  5,
+                  (index) => Transform.rotate(
+                      angle: 3.14 / 1,
+                      child: CustomPaint(
+                          painter: TrianglePainter(
+                            strokeColor: Colors.black,
                             strokeWidth: 0,
                             paintingStyle: PaintingStyle.fill,
                           ),
@@ -302,15 +344,17 @@ class _GuestState extends State<Guest> {
                     fontSize: 17,
                     icon: drawerItems[index].icon,
                     label: drawerItems[index].text,
-                    onPress: () {
+                    onPress: () async {
                       if (index == 6) {
                         Navigator.pop(context);
+                        if (await isOffline(context)) return;
                         Navigator.pushNamed(context, '/scan/qr');
                         return;
                       }
 
                       if (index == 7) {
                         Navigator.pop(context);
+                        if (await isOffline(context)) return;
                         Navigator.pushNamed(context, '/nearby/gas-stations');
                         return;
                       }
@@ -337,8 +381,9 @@ class _GuestState extends State<Guest> {
                       textColor: Colors.white60,
                       padding: const EdgeInsets.all(0),
                       mainAxisAlignment: MainAxisAlignment.start,
-                      onPress: () {
+                      onPress: () async {
                         Navigator.pop(context);
+                        if (await isOffline(context)) return;
                         if (userProvider.currentUser != null) {
                           userProvider.signOut();
                           return;

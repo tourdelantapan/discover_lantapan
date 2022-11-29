@@ -51,14 +51,15 @@ class _ReviewListState extends State<ReviewList> {
     return Scaffold(
       appBar: AppBar(
         elevation: .5,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: colorBG2,
+        foregroundColor: Colors.white,
         title: const Text("Reviews"),
       ),
+      backgroundColor: colorBG1,
       body: Column(
         children: [
           Container(
-              color: Colors.white,
+              color: colorBG2,
               padding: const EdgeInsets.symmetric(
                   vertical: 15, horizontal: HORIZONTAL_PADDING),
               child: Row(children: [
@@ -78,19 +79,19 @@ class _ReviewListState extends State<ReviewList> {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   IconText(
                     label: placeProvider.placeInfo.name,
-                    color: Colors.black,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                   IconText(
                     label: placeProvider.placeInfo.address,
-                    color: Colors.black,
+                    color: Colors.white,
                   )
                 ])
               ])),
           if (reviewProvider.loading.contains("review-delete"))
             const LinearProgressIndicator(),
           if (reviewProvider.loading.contains("reviews-list"))
-            const PlaceCardShimmer()
+            PlaceCardShimmer()
           else
             Expanded(
                 child: ListView.builder(

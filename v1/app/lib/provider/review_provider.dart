@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:app/models/review_model.dart';
 import 'package:app/services/api_services.dart';
 import 'package:app/services/api_status.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 
 class ReviewProvider extends ChangeNotifier {
@@ -41,7 +42,7 @@ class ReviewProvider extends ChangeNotifier {
 
   postReview(
       {required Map<String, dynamic> payload,
-      required List<File> files,
+      required List<PlatformFile> files,
       required Function callback}) async {
     addLoading("post-review");
     await Future.delayed(const Duration(seconds: 1));

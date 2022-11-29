@@ -17,6 +17,7 @@ import 'package:app/widgets/shimmer/place_info_shimmer.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:app/widgets/time_table_display.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +37,23 @@ class _PlaceInfoState extends State<PlaceInfo> {
     () async {
       await Future.delayed(Duration.zero);
       if (!mounted) return;
+
+      ConnectivityResult connectivityResult =
+          await (Connectivity().checkConnectivity());
+      if (ConnectivityResult.none == connectivityResult) {
+        if (!mounted) return;
+        Provider.of<PlaceProvider>(context, listen: false).getPlaceOffline(
+            placeId: widget.arguments["placeId"],
+            onUnavailable: () {
+              launchSnackbar(
+                  context: context,
+                  mode: "ERROR",
+                  message: "Information is unavailable");
+              Navigator.pop(context);
+            });
+        return;
+      }
+
       Provider.of<PlaceProvider>(context, listen: false).getPlace(
           placeId: widget.arguments["placeId"],
           callback: (code, message) {
@@ -152,11 +170,18 @@ class _PlaceInfoState extends State<PlaceInfo> {
                         child: ListView(children: [
                       Stack(children: [
                         Image.network(
-                            placeProvider.placeInfo.photos[0].large ??
-                                placeholderImage,
-                            fit: BoxFit.cover,
+                          placeProvider.placeInfo.photos[0].large ??
+                              placeholderImage,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: height * .5,
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
                             width: double.infinity,
-                            height: height * .5),
+                            height: height * .5,
+                            color: colorBG1.withOpacity(.1),
+                          ),
+                        ),
                         Positioned(
                             right: 10,
                             bottom: 10,
@@ -288,7 +313,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
                                           : const Icon(Icons.favorite_border),
                                       color: placeProvider.placeInfo.isLiked
                                           ? Colors.red
-                                          : Colors.black))
+                                          : Colors.white))
                             ]),
                       ),
                       const SizedBox(

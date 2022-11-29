@@ -1,15 +1,16 @@
-import 'package:app/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
-class PlaceCardShimmer extends StatefulWidget {
-  Color? color;
-  PlaceCardShimmer({Key? key, this.color}) : super(key: key);
+class BoxShimmer extends StatefulWidget {
+  double? heightInPercentage;
+  double? borderRadius;
+  BoxShimmer({Key? key, this.borderRadius, this.heightInPercentage})
+      : super(key: key);
 
   @override
-  State<PlaceCardShimmer> createState() => _PlaceCardShimmerState();
+  State<BoxShimmer> createState() => _BoxShimmerState();
 }
 
-class _PlaceCardShimmerState extends State<PlaceCardShimmer>
+class _BoxShimmerState extends State<BoxShimmer>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
@@ -32,13 +33,16 @@ class _PlaceCardShimmerState extends State<PlaceCardShimmer>
     return FadeTransition(
       opacity: _animationController,
       child: Container(
-        height: MediaQuery.of(context).size.height * .40,
-        width: MediaQuery.of(context).size.width,
-        margin: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-            color: widget.color ?? colorBG2,
-            borderRadius: const BorderRadius.all(Radius.circular(0))),
+            color: Colors.grey[400],
+            borderRadius:
+                BorderRadius.all(Radius.circular(widget.borderRadius ?? 15))),
       ),
     );
   }
 }
+
+  // height: MediaQuery.of(context).size.height *
+  //           (widget.heightInPercentage ?? .40),
+  //       width: MediaQuery.of(context).size.width,
+  //       margin: const EdgeInsets.all(15),

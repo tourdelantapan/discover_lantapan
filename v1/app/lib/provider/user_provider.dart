@@ -5,6 +5,7 @@ import 'package:app/models/visitor_model.dart';
 import 'package:app/services/api_services.dart';
 import 'package:app/services/api_status.dart';
 import 'package:app/utilities/shared_preferences.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 
 class UserProvider extends ChangeNotifier {
@@ -96,7 +97,7 @@ class UserProvider extends ChangeNotifier {
   editProfile(
       {required Map<String, dynamic> payload,
       required Function callback,
-      File? photo}) async {
+      PlatformFile? photo}) async {
     setLoading("profile-edit");
     var response = await APIServices.post(
         endpoint: "/profile/edit",

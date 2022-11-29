@@ -60,6 +60,11 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  resetFilter() {
+    _DATE_FILTER_TYPE = "Custom";
+    notifyListeners();
+  }
+
   Future<String> getPhilippinesJson() {
     return rootBundle.loadString('assets/json/philippines.json');
   }

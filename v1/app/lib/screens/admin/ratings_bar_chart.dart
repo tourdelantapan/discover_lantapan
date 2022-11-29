@@ -90,7 +90,9 @@ class MostRatedState extends State<MostRated> {
             height: 10,
           ),
           if (dashboardProvider.loading.contains("ratings"))
-            const PlaceCardShimmer()
+            PlaceCardShimmer(
+              color: Colors.grey,
+            )
           else
             SfCartesianChart(
                 primaryXAxis: CategoryAxis(),
@@ -112,8 +114,8 @@ class MostRatedState extends State<MostRated> {
                       width: 0.5,
                       dataSource: widget.ratings,
                       xValueMapper: (DashboardRating data, _) => data.name,
-                      yValueMapper: (DashboardRating data, _) =>
-                          data.reviewsStat.average,
+                      yValueMapper: (DashboardRating data, _) => double.parse(
+                          data.reviewsStat.average.toStringAsFixed(1)),
                       color: Colors.red)
                 ]),
         ],

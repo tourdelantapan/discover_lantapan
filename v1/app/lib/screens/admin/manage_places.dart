@@ -9,6 +9,7 @@ import 'package:app/widgets/action_modal.dart';
 import 'package:app/widgets/bottom_modal.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/place_card.dart';
+import 'package:app/widgets/shimmer/grid_shimmer.dart';
 import 'package:app/widgets/shimmer/place_card_shimmer.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +101,7 @@ class _ManagePlacesState extends State<ManagePlaces> {
             if (placeProvider.loading.contains("place-delete"))
               const LinearProgressIndicator(),
             if (placeProvider.loading.contains("admin"))
-              const PlaceCardShimmer()
+              GridShimmer()
             else if (placeProvider.adminPlaces.isNotEmpty)
               Expanded(
                 child: GridView.builder(

@@ -1,4 +1,5 @@
 import 'package:app/models/visitor_model.dart';
+import 'package:app/provider/app_provider.dart';
 import 'package:app/provider/user_provider.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/generate_pdf.dart';
@@ -37,6 +38,7 @@ class _VisitorTableState extends State<VisitorTable> {
     () async {
       await Future.delayed(Duration.zero);
       if (!mounted) return;
+      Provider.of<AppProvider>(context, listen: false).resetFilter();
       DateTime now = DateTime.now();
       setState(() {
         startDate =
@@ -121,7 +123,10 @@ class _VisitorTableState extends State<VisitorTable> {
         height: 15,
       ),
       if (userProvider.loading == "visitor-list")
-        const LinearProgressIndicator()
+        const Padding(
+          padding: EdgeInsets.all(25),
+          child: Center(child: CircularProgressIndicator()),
+        )
       else if (userProvider.visitorList.isNotEmpty)
         Expanded(
             child: SingleChildScrollView(

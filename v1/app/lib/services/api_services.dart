@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:app/services/api_status.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/shared_preferences.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
@@ -28,6 +30,8 @@ class APIServices {
     } on FormatException {
       return Failure(code: 102, response: {"message": 'Invalid Format'});
     } catch (e) {
+      print("GET: ERROR");
+      print(e);
       return Failure(code: 103, response: {"message": 'Unknown Error'});
     }
   }
@@ -35,7 +39,7 @@ class APIServices {
   static Future<Object> post(
       {required String endpoint,
       required Map<String, dynamic> payload,
-      List<File>? files}) async {
+      List<PlatformFile>? files}) async {
     try {
       String token = await getToken();
       var url = Uri.parse("$BASE_URL$endpoint");
@@ -55,10 +59,9 @@ class APIServices {
           request.fields[key] = value.toString();
         });
         files.forEach((e) {
-          request.files.add(http.MultipartFile.fromBytes(
-              'photos', e.readAsBytesSync(),
-              filename: e.path.split("/").last,
-              contentType: MediaType('image', 'jpeg')));
+          request.files.add(http.MultipartFile.fromBytes('photos',
+              !kIsWeb ? File(e.path!).readAsBytesSync() : e.bytes!.toList(),
+              filename: e.name, contentType: MediaType('image', 'jpeg')));
         });
         response = await http.Response.fromStream(await request.send());
       }

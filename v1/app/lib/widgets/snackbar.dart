@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 launchSnackbar(
     {required BuildContext context,
     required String mode,
+    SnackBarAction? action,
     IconData? icon,
     int? duration,
     required String message}) {
@@ -20,6 +21,7 @@ launchSnackbar(
 
   final snackBar = SnackBar(
     duration: Duration(milliseconds: duration ?? 3000),
+    action: action,
     content: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [

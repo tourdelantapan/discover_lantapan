@@ -80,6 +80,11 @@ class LocationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  resetPolyline() {
+    polylines = {};
+    notifyListeners();
+  }
+
   determinePosition(BuildContext context, Function callback) async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -152,9 +157,9 @@ class LocationProvider extends ChangeNotifier {
     getPolyline();
   }
 
-  getPolyline() async {
+  getPolyline({coords.LatLng? pos}) async {
     coords.LatLng origin = _coordinates;
-    coords.LatLng dest = _destination.coordinates;
+    coords.LatLng dest = pos ?? _destination.coordinates;
     Directions? direction = await DirectionsRepository.getDirections(
         location: origin, destination: dest);
     if (direction != null) {

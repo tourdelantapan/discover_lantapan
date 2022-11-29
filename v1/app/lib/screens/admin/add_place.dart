@@ -16,6 +16,7 @@ import 'package:app/widgets/form/time_table.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:app/widgets/time_table_display.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +45,7 @@ class _AddPlaceState extends State<AddPlace> {
     "status": "OPEN"
   };
   Map<String, dynamic> _payload = {};
-  List<File> photos = [];
+  List<PlatformFile> photos = [];
   List<Photo> uploadedPhotos = [];
   List<String> status = ["OPEN", "CLOSED"];
   String mode = "";
@@ -186,7 +187,7 @@ class _AddPlaceState extends State<AddPlace> {
                             photos: photos,
                             onDeletePhoto: (index) =>
                                 setState(() => photos.removeAt(index)),
-                            onAddPhotos: (List<File> photos) {
+                            onAddPhotos: (List<PlatformFile> photos) {
                               setState(() => this.photos = photos);
                             }),
                         const SizedBox(height: 15),
@@ -451,6 +452,7 @@ class _AddPlaceState extends State<AddPlace> {
                             ]),
                         if (payload["timeTable"].isNotEmpty)
                           TimeTableDisplay(
+                              isLightMode: true,
                               timeTable: payload["timeTable"] == null
                                   ? []
                                   : List<TimeTable>.from(payload["timeTable"]

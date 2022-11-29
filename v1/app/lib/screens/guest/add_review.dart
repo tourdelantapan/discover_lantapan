@@ -9,6 +9,7 @@ import 'package:app/widgets/add_photo.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,7 @@ class AddReview extends StatefulWidget {
 class _AddReviewState extends State<AddReview> {
   Map<String, dynamic> payload = {"placeId": "", "content": "", "rating": 0.0};
   Map<String, dynamic> _payload = {};
-  List<File> photos = [];
+  List<PlatformFile> photos = [];
 
   bool validateForm() {
     if (payload["content"].isEmpty) {
@@ -155,7 +156,7 @@ class _AddReviewState extends State<AddReview> {
                         photos: photos,
                         onDeletePhoto: (index) =>
                             setState(() => photos.removeAt(index)),
-                        onAddPhotos: (List<File> photos) {
+                        onAddPhotos: (List<PlatformFile> photos) {
                           setState(() => this.photos = photos);
                         }),
                     const SizedBox(

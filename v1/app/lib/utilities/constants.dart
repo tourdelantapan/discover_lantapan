@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-const bool IS_PODUCTION = true;
+const bool IS_PODUCTION = false;
 const String BUILD_MODE = "GUEST"; //ADMIN, GUEST
 
 String BASE_URL = IS_PODUCTION
@@ -18,3 +18,9 @@ double mapZoom = 15;
 
 Color colorBG1 = Colors.red;
 Color colorBG2 = Color.fromARGB(255, 190, 13, 0);
+
+Color colorAdminBG1 = Colors.black54;
+Color colorAdminBG2 = Colors.black87;
+
+Color textColor1 = Colors.white70;
+Color textColor2 = Colors.white;

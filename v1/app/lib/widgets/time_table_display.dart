@@ -3,26 +3,29 @@ import 'package:app/widgets/icon_text.dart';
 import 'package:flutter/material.dart';
 
 class TimeTableDisplay extends StatelessWidget {
+  bool? isLightMode;
+
   List<TimeTable> timeTable;
-  TimeTableDisplay({Key? key, required this.timeTable}) : super(key: key);
+  TimeTableDisplay({Key? key, this.isLightMode, required this.timeTable})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
       Row(children: [
-        DayOfWeek(timeOfDay: timeTable[0]),
-        DayOfWeek(timeOfDay: timeTable[1])
+        DayOfWeek(isLightMode: isLightMode, timeOfDay: timeTable[0]),
+        DayOfWeek(isLightMode: isLightMode, timeOfDay: timeTable[1])
       ]),
       Row(children: [
-        DayOfWeek(timeOfDay: timeTable[2]),
-        DayOfWeek(timeOfDay: timeTable[3])
+        DayOfWeek(isLightMode: isLightMode, timeOfDay: timeTable[2]),
+        DayOfWeek(isLightMode: isLightMode, timeOfDay: timeTable[3])
       ]),
       Row(children: [
-        DayOfWeek(timeOfDay: timeTable[4]),
-        DayOfWeek(timeOfDay: timeTable[5])
+        DayOfWeek(isLightMode: isLightMode, timeOfDay: timeTable[4]),
+        DayOfWeek(isLightMode: isLightMode, timeOfDay: timeTable[5])
       ]),
       Row(children: [
-        DayOfWeek(timeOfDay: timeTable[6]),
+        DayOfWeek(isLightMode: isLightMode, timeOfDay: timeTable[6]),
       ])
     ]);
   }
@@ -30,7 +33,9 @@ class TimeTableDisplay extends StatelessWidget {
 
 class DayOfWeek extends StatelessWidget {
   TimeTable timeOfDay;
-  DayOfWeek({Key? key, required this.timeOfDay}) : super(key: key);
+  bool? isLightMode;
+  DayOfWeek({Key? key, this.isLightMode, required this.timeOfDay})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +48,14 @@ class DayOfWeek extends StatelessWidget {
             children: [
               IconText(
                 label: timeOfDay.day,
-                color: Colors.white,
+                color: isLightMode ?? false ? Colors.black : Colors.white,
                 // fontWeight: FontWeight.bold,
               ),
               if (timeOfDay.other == "CLOSED")
                 IconText(
                     label: "Closed",
                     fontWeight: FontWeight.bold,
-                    color: Colors.white)
+                    color: isLightMode ?? false ? Colors.black : Colors.white)
               else if (timeOfDay.other == "247")
                 IconText(
                     label: "Open 24/7",
@@ -59,11 +64,11 @@ class DayOfWeek extends StatelessWidget {
               else
                 Row(children: [
                   IconText(
-                      color: Colors.white,
+                      color: isLightMode ?? false ? Colors.black : Colors.white,
                       label:
                           "${TimeOfDay(hour: timeOfDay.timeFromHour, minute: timeOfDay.timeFromMinute).format(context)} to "),
                   IconText(
-                      color: Colors.white,
+                      color: isLightMode ?? false ? Colors.black : Colors.white,
                       label: TimeOfDay(
                               hour: timeOfDay.timeToHour,
                               minute: timeOfDay.timeToMinute)

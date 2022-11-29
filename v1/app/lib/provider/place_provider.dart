@@ -6,6 +6,8 @@ import 'package:app/models/place_model.dart';
 import 'package:app/models/review_model.dart';
 import 'package:app/services/api_services.dart';
 import 'package:app/services/api_status.dart';
+import 'package:app/utilities/shared_preferences.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 
 class PlaceProvider extends ChangeNotifier {
@@ -48,6 +50,22 @@ class PlaceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  loadPlacesOffline({required String mode}) async {
+    if (mode == "popular") {
+      _popularPlaces = List<Place>.from(
+          (await getOfflineData(mode))!.map((x) => Place.fromJson(x)));
+    }
+    if (mode == "new") {
+      _newPlaces = List<Place>.from(
+          (await getOfflineData(mode))!.map((x) => Place.fromJson(x)));
+    }
+    if (mode == "top_rated") {
+      _topRatedPlaces = List<Place>.from(
+          (await getOfflineData(mode))!.map((x) => Place.fromJson(x)));
+    }
+    notifyListeners();
+  }
+
   getPlaces(
       {required Map<String, dynamic> query, required Function callback}) async {
     addLoading(query["mode"]);
@@ -56,12 +74,15 @@ class PlaceProvider extends ChangeNotifier {
       List<Place> places = List<Place>.from(
           response.response["data"]["places"].map((x) => Place.fromJson(x)));
       if (query["mode"] == "popular") {
+        setOffline("popular", response.response["data"]["places"]);
         _popularPlaces = places;
       }
       if (query["mode"] == "new") {
+        setOffline("new", response.response["data"]["places"]);
         _newPlaces = places;
       }
       if (query["mode"] == "top_rated") {
+        setOffline("top_rated", response.response["data"]["places"]);
         _topRatedPlaces = places;
       }
       if (query["mode"] == "search") {
@@ -82,7 +103,7 @@ class PlaceProvider extends ChangeNotifier {
 
   addPlace(
       {required Map<String, dynamic> payload,
-      required List<File> files,
+      required List<PlatformFile> files,
       required Function callback}) async {
     addLoading("place-add");
     await Future.delayed(const Duration(seconds: 1));
@@ -101,7 +122,7 @@ class PlaceProvider extends ChangeNotifier {
 
   editPlace(
       {required Map<String, dynamic> payload,
-      required List<File> files,
+      required List<PlatformFile> files,
       required Function callback}) async {
     addLoading("place-edit");
     await Future.delayed(const Duration(seconds: 1));
@@ -206,6 +227,60 @@ class PlaceProvider extends ChangeNotifier {
     if (response is Failure) {
       executeLike(null);
       callback(response.code, response.response["message"] ?? "Failed.");
+    }
+  }
+
+  getPlaceOffline(
+      {required String placeId, required Function onUnavailable}) async {
+    var res = await getOfflineMappedData(placeId);
+
+    if (res != null) {
+      _placeInfo = Place.fromJson(res["place"]);
+      if (res["review"] != null) {
+        _recentReview = Review.fromJson(res["review"]);
+      } else {
+        _recentReview = null;
+      }
+      notifyListeners();
+    } else {
+      onUnavailable();
+    }
+
+    // addLoading("place-info");
+    // await Future.delayed(const Duration(seconds: 1));
+    // var response = await APIServices.get(endpoint: "/places/$placeId");
+
+    // if (response is Success) {
+    //   _placeInfo = Place.fromJson(response.response["data"]["place"]);
+    //   if (response.response["data"]["review"] != null) {
+    //     _recentReview = Review.fromJson(response.response["data"]["review"]);
+    //   } else {
+    //     _recentReview = null;
+    //   }
+    //   removeLoading("place-info");
+    //   notifyListeners();
+    //   callback(response.code, response.response["message"] ?? "Success.");
+    // }
+    // if (response is Failure) {
+    //   callback(response.code, response.response["message"] ?? "Failed.");
+    //   removeLoading("place-info");
+    // }
+  }
+
+  getPlaceIds() async {
+    var response = await APIServices.get(endpoint: "/place/all-ids");
+    if (response is Success) {
+      List placeIds = response.response['data']['placeIds'];
+      for (int i = 0; i < placeIds.length; i++) {
+        var getPlaceInfo =
+            await APIServices.get(endpoint: "/places/${placeIds[i]['_id']}");
+        if (getPlaceInfo is Success) {
+          setMappedOffline(placeIds[i]['_id'], getPlaceInfo.response['data']);
+        }
+      }
+    }
+    if (response is Failure) {
+      print(response.response);
     }
   }
 }

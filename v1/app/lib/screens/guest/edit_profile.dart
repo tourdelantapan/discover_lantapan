@@ -8,10 +8,12 @@ import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:path/path.dart' as path;
 
 class EditProfile extends StatefulWidget {
   EditProfile({Key? key}) : super(key: key);
@@ -76,7 +78,14 @@ class _EditProfileState extends State<EditProfile> {
                               width: 150,
                               height: 150,
                               fit: BoxFit.cover,
-                            )
+                              errorBuilder: (context, error, stackTrace) =>
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: Container(
+                                        width: 150,
+                                        height: 150,
+                                        color: Colors.grey,
+                                      )))
                           : Image.file(
                               File(croppedImage!.path),
                               width: 150,
@@ -144,14 +153,18 @@ class _EditProfileState extends State<EditProfile> {
                 Button(
                     isLoading: userProvider.loading == "profile-edit",
                     label: "Save Changes",
-                    onPress: () {
+                    onPress: () async {
                       if (_formKey.currentState!.validate()) {
                         Provider.of<UserProvider>(context, listen: false)
                             .editProfile(
                                 payload: payload,
                                 photo: croppedImage == null
                                     ? null
-                                    : File(croppedImage!.path),
+                                    : PlatformFile(
+                                        path: croppedImage!.path,
+                                        name: path.basename(croppedImage!.path),
+                                        size: File(croppedImage!.path)
+                                            .lengthSync()),
                                 callback: (code, message) {
                                   launchSnackbar(
                                       context: context,
