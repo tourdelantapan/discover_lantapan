@@ -85,7 +85,7 @@ class _PlacesListState extends State<PlacesList> {
         child: Column(
           children: [
             if (placeProvider.loading.contains(widget.arguments["mode"]))
-               PlaceCardShimmer()
+              PlaceCardShimmer()
             else if (!hasNoContent())
               Expanded(
                 child: GridView.builder(
@@ -163,7 +163,7 @@ class _PlacesListState extends State<PlacesList> {
                                 topLeft: getTopLeft(),
                                 bottomRight: Container(
                                     decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: textColor2,
                                         borderRadius:
                                             BorderRadius.circular(100)),
                                     child: IconButton(
@@ -230,7 +230,7 @@ class _PlacesListState extends State<PlacesList> {
                                   minRating: 1,
                                   direction: Axis.horizontal,
                                   allowHalfRating: true,
-                                  unratedColor: Colors.white54,
+                                  unratedColor: textColor2,
                                   itemCount: 5,
                                   itemSize: 15,
                                   itemPadding: const EdgeInsets.only(
@@ -244,7 +244,7 @@ class _PlacesListState extends State<PlacesList> {
                                 label: place.name,
                                 subLabel: place.address),
                           ),
-                          DiamondBorder()
+                          const DiamondBorder()
                         ],
                       );
                     }),

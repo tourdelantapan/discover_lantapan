@@ -1,6 +1,6 @@
+import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/button.dart';
 import 'package:flutter/material.dart';
-
 
 class RadioGroup extends StatelessWidget {
   List<dynamic> choices;
@@ -53,7 +53,7 @@ class RadioButton extends StatelessWidget {
           borderColor: color ?? Colors.black87,
           backgroundColor:
               isSelected ? color ?? Colors.black87 : Colors.transparent,
-          textColor: !isSelected ? Colors.black87 : Colors.white,
+          textColor: !isSelected ? Colors.black87 : textColor2,
           label: label,
           onPress: onPress),
     );

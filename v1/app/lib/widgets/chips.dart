@@ -1,3 +1,4 @@
+import 'package:app/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class Chippy extends StatelessWidget {
@@ -41,7 +42,7 @@ class Chippy extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            splashColor: Colors.white24,
+            splashColor: textColor2,
             borderRadius: const BorderRadius.all(Radius.circular(100)),
             onTap:
                 disabled != null || disabled == true ? null : () => onPress(),
@@ -52,7 +53,7 @@ class Chippy extends StatelessWidget {
                 child: Row(
                   children: [
                     if (icon != null)
-                      Icon(icon, color: textColor ?? Colors.white),
+                      Icon(icon, color: textColor ?? textColor2),
                     if (icon != null)
                       const SizedBox(
                         width: 5,
@@ -63,23 +64,23 @@ class Chippy extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: 10,
                           letterSpacing: 0.27,
-                          color: textColor ?? Colors.white,
+                          color: textColor ?? textColor2,
                         )),
                     if (action != null)
                       InkWell(
                         splashColor: Colors.transparent,
                         child: Container(
-                            child: const Icon(
-                              Icons.cancel,
-                              color: Colors.white,
-                              size: 16,
-                            ),
                             height: 24.0,
-                            width: 24.0),
+                            width: 24.0,
+                            child: Icon(
+                              Icons.cancel,
+                              color: textColor2,
+                              size: 16,
+                            )),
                         onTap: () => action!.onPress(),
                       )
                     // IconButton(
-                    //     color: textColor ?? Colors.white,
+                    //     color: textColor ?? textColor2,
                     //     splashRadius: 10,
                     //     padding: EdgeInsets.zero,
                     //     onPressed: () => action!.onPress(),

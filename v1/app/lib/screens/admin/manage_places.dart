@@ -125,7 +125,7 @@ class _ManagePlacesState extends State<ManagePlaces> {
                           topRight: PopupMenuButton<String>(
                               icon: Container(
                                   decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: textColor2,
                                       borderRadius: BorderRadius.circular(100)),
                                   child: const Icon(Icons.more_horiz_rounded)),
                               itemBuilder: (context) => [
@@ -267,7 +267,7 @@ class _ManagePlacesState extends State<ManagePlaces> {
                           //   minRating: 1,
                           //   direction: Axis.horizontal,
                           //   allowHalfRating: true,
-                          //   unratedColor: Colors.white54,
+                          //   unratedColor: textColor254,
                           //   itemCount: 5,
                           //   itemSize: 15,
                           //   itemPadding:

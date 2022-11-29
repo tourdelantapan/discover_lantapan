@@ -1,4 +1,5 @@
 import 'package:app/provider/user_provider.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:email_validator/email_validator.dart';
@@ -20,7 +21,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Request Password Reset"),
-        backgroundColor: Colors.white,
+        backgroundColor: textColor2,
         foregroundColor: Colors.black,
       ),
       body: Padding(

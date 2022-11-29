@@ -1,3 +1,4 @@
+import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/image_carousel.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -38,50 +39,55 @@ class _HistoryState extends State<History> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        const SizedBox(
-          height: 20,
-        ),
-        CarouselSlider(
-            items: List.generate(
-                barangays.length,
-                (index) => ImageCarousel(
-                      borderRadius: 5,
-                      bottomLabel: IconText(
-                        label: barangays[index].name,
-                        color: Colors.black,
-                        size: 16,
-                        padding: const EdgeInsets.only(top: 10),
-                        fontWeight: FontWeight.bold,
-                      ),
-                      assetImage: barangays[index].photo,
-                      onPress: () {},
-                    )),
-            options: CarouselOptions(
-              // viewportFraction: .1,
-              enableInfiniteScroll: false,
-              aspectRatio: 2,
-              enlargeCenterPage: true,
-              onPageChanged: (index, reason) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
-              pageViewKey: const PageStorageKey<String>('carousel_slider'),
-            )),
-        const SizedBox(
-          height: 20,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: Text(
+    return Container(
+      color: colorBG1,
+      child: ListView(
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          CarouselSlider(
+              items: List.generate(
+                  barangays.length,
+                  (index) => ImageCarousel(
+                        borderRadius: 5,
+                        bottomLabel: IconText(
+                          label: barangays[index].name,
+                          color: textColor2,
+                          size: 16,
+                          padding: const EdgeInsets.only(top: 10),
+                          fontWeight: FontWeight.bold,
+                        ),
+                        assetImage: barangays[index].photo,
+                        onPress: () {},
+                      )),
+              options: CarouselOptions(
+                // viewportFraction: .1,
+                enableInfiniteScroll: false,
+                aspectRatio: 2,
+                enlargeCenterPage: true,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                pageViewKey: const PageStorageKey<String>('carousel_slider'),
+              )),
+          const SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Text(
                   key: ValueKey<int>(_currentIndex),
-                  barangays[_currentIndex].history)),
-        )
-      ],
+                  barangays[_currentIndex].history,
+                  style: TextStyle(color: textColor2),
+                )),
+          )
+        ],
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:app/models/photo_model.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -73,8 +74,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
                       borderRadius:
                           BorderRadius.circular(AppBar().preferredSize.height),
                       onTap: () => Navigator.pop(context),
-                      child:
-                          const Icon(Icons.arrow_back_ios, color: Colors.white),
+                      child: Icon(Icons.arrow_back_ios, color: textColor2),
                     ),
                   ),
                 ),
@@ -84,7 +84,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
               right: 15,
               bottom: MediaQuery.of(context).viewPadding.bottom,
               child: IconText(
-                  color: Colors.white,
+                  color: textColor2,
                   label: "${currentIndex + 1}/${widget.galleryItems.length}"),
             )
           ],

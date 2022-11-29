@@ -1,4 +1,5 @@
 import 'package:app/models/place_model.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/chips.dart';
 import 'package:app/widgets/icon_text.dart';
@@ -92,10 +93,10 @@ class _TimeTableState extends State<TimeTableManager>
           appBar: AppBar(
               elevation: 0,
               toolbarHeight: 0,
-              backgroundColor: Colors.white,
+              backgroundColor: textColor2,
               bottom: TabBar(
                 isScrollable: true,
-                labelColor: Colors.white,
+                labelColor: textColor2,
                 unselectedLabelColor: Colors.black,
                 indicator: MaterialIndicator(
                     bottomLeftRadius: 100,

@@ -12,6 +12,7 @@ import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/image_carousel.dart';
 import 'package:app/widgets/review_item.dart';
+import 'package:app/widgets/shape/diamond_border.dart';
 import 'package:app/widgets/shape/square_border.dart';
 import 'package:app/widgets/shimmer/place_info_shimmer.dart';
 import 'package:app/widgets/snackbar.dart';
@@ -152,7 +153,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
       appBar: isMobile(context)
           ? AppBar(
               backgroundColor: colorBG2,
-              foregroundColor: Colors.white,
+              foregroundColor: textColor2,
               elevation: 0,
               title: const Text("Place Details"),
             )
@@ -170,8 +171,9 @@ class _PlaceInfoState extends State<PlaceInfo> {
                         child: ListView(children: [
                       Stack(children: [
                         Image.network(
-                          placeProvider.placeInfo.photos[0].large ??
-                              placeholderImage,
+                          placeProvider.placeInfo.photos.isNotEmpty
+                              ? placeProvider.placeInfo.photos.first.large!
+                              : placeholderImage,
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: height * .5,
@@ -188,15 +190,14 @@ class _PlaceInfoState extends State<PlaceInfo> {
                             child: Button(
                                 label: "Photos",
                                 icon: Icons.photo_filter_rounded,
-                                backgroundColor: Colors.white,
-                                borderColor: Colors.white,
+                                backgroundColor: textColor2,
+                                borderColor: textColor2,
                                 borderRadius: 100,
                                 textColor: Colors.black,
                                 onPress: () {
                                   openImageViewer(context, 0);
                                 }))
                       ]),
-                      SquareBorder(),
                       // CarouselSlider(
                       //     items: List.generate(
                       //         placeProvider.placeInfo.photos.isNotEmpty
@@ -240,12 +241,11 @@ class _PlaceInfoState extends State<PlaceInfo> {
                                         size: 18,
                                         label: placeProvider.placeInfo.name,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: textColor2,
                                       ),
                                       Text(
                                         placeProvider.placeInfo.address,
-                                        style: const TextStyle(
-                                            color: Colors.white54),
+                                        style: TextStyle(color: textColor1),
                                       ),
                                     ]),
                               ),
@@ -313,7 +313,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
                                           : const Icon(Icons.favorite_border),
                                       color: placeProvider.placeInfo.isLiked
                                           ? Colors.red
-                                          : Colors.white))
+                                          : textColor2))
                             ]),
                       ),
                       const SizedBox(
@@ -352,8 +352,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
                             horizontal: HORIZONTAL_PADDING),
                         child: Text(
                           placeProvider.placeInfo.description,
-                          style:
-                              const TextStyle(height: 1.5, color: Colors.white),
+                          style: TextStyle(height: 1.5, color: textColor2),
                         ),
                       ),
                       if (placeProvider.placeInfo.timeTable.isNotEmpty)
@@ -366,7 +365,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
                             IconText(
                               label: "Open/Close Time",
                               icon: Icons.more_time_rounded,
-                              color: Colors.white,
+                              color: textColor2,
                             ),
                             const SizedBox(
                               height: 15,
@@ -378,6 +377,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
                       const SizedBox(
                         height: 20,
                       ),
+                      const DiamondBorder(),
                       if (placeProvider.recentReview != null)
                         Column(children: [
                           const SizedBox(
@@ -391,7 +391,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: HORIZONTAL_PADDING),
                                   label: "Recent Review",
-                                  color: Colors.white,
+                                  color: textColor2,
                                 ),
                                 Button(
                                     padding: const EdgeInsets.symmetric(
@@ -419,6 +419,10 @@ class _PlaceInfoState extends State<PlaceInfo> {
                         height: 20,
                       ),
                     ])),
+                    SquareBorder(
+                      size: 5,
+                      count: 100,
+                    ),
                     Container(
                       decoration: BoxDecoration(
                         color: colorBG2,
@@ -525,7 +529,7 @@ class FeatureBadge extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: textColor2,
             borderRadius: BorderRadius.circular(100),
             boxShadow: [
               BoxShadow(
@@ -550,11 +554,11 @@ class FeatureBadge extends StatelessWidget {
           children: [
             IconText(
               label: label,
-              color: Colors.white,
+              color: textColor2,
             ),
             IconText(
               label: value,
-              color: Colors.white,
+              color: textColor2,
               fontWeight: FontWeight.bold,
             )
           ],

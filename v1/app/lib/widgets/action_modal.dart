@@ -1,3 +1,4 @@
+import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
@@ -28,6 +29,10 @@ class ActionModal extends StatelessWidget {
     var width = MediaQuery.of(context).size.width;
     return Center(
       child: Container(
+          height: height * (heightInPercentage ?? 0.20),
+          width: isMobile(context) ? width * .90 : width * .30,
+          decoration: BoxDecoration(
+              color: textColor2, borderRadius: BorderRadius.circular(10)),
           child: Stack(
             children: [
               Container(
@@ -73,9 +78,9 @@ class ActionModal extends StatelessWidget {
               Container(
                   padding: const EdgeInsets.only(left: 15),
                   height: (height * 0.70) * .07,
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                      color: textColor2,
+                      borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10))),
                   child: Row(
@@ -96,11 +101,7 @@ class ActionModal extends StatelessWidget {
                         ),
                       ]))
             ],
-          ),
-          height: height * (heightInPercentage ?? 0.20),
-          width: isMobile(context) ? width * .90 : width * .30,
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(10))),
+          )),
     );
   }
 }

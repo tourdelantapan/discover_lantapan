@@ -48,7 +48,7 @@ class _VisitorFormState extends State<VisitorForm> {
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.black,
-        backgroundColor: Colors.white,
+        backgroundColor: textColor2,
         title: const Text("Visitor Form"),
         actions: [
           Row(children: [

@@ -2,26 +2,13 @@ import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/shape/triangle.dart';
 import 'package:flutter/material.dart';
 
-class DiamondBorder extends StatelessWidget {
-  const DiamondBorder({Key? key}) : super(key: key);
+class SimpleDiamondBorder extends StatelessWidget {
+  const SimpleDiamondBorder({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(
-          height: 20,
-        ),
-        Container(
-          height: 5,
-          color: const Color.fromARGB(255, 36, 30, 32),
-          width: double.infinity,
-        ),
-        Container(
-          height: 5,
-          color: Colors.yellow,
-          width: double.infinity,
-        ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           ...List.generate(
             10,
@@ -53,19 +40,6 @@ class DiamondBorder extends StatelessWidget {
             ),
           )
         ]),
-        Container(
-          height: 5,
-          color: Colors.yellow,
-          width: double.infinity,
-        ),
-        Container(
-          height: 5,
-          color: const Color.fromARGB(255, 36, 30, 32),
-          width: double.infinity,
-        ),
-        const SizedBox(
-          height: 15,
-        ),
       ],
     );
   }

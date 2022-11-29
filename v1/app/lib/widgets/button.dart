@@ -1,3 +1,4 @@
+import 'package:app/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
@@ -45,7 +46,7 @@ class Button extends StatelessWidget {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            splashColor: Colors.white24,
+            splashColor: textColor2,
             borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 5)),
             onTap: (onPress == null || isLoading!) ? null : () => onPress!(),
             child: Padding(
@@ -62,14 +63,14 @@ class Button extends StatelessWidget {
                         width: 15,
                         height: 15,
                         child: CircularProgressIndicator(
-                          color: textColor ?? Colors.white,
+                          color: textColor ?? textColor2,
                           strokeWidth: 1,
                         ),
                       ),
                     if (icon != null && !isLoading!)
                       Icon(
                         icon,
-                        color: textColor ?? Colors.white,
+                        color: textColor ?? textColor2,
                         size: fontSize ?? 14,
                       ),
                     if (icon != null || isLoading!)
@@ -83,7 +84,7 @@ class Button extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         fontSize: fontSize ?? 14,
                         letterSpacing: 0.27,
-                        color: textColor ?? Colors.white,
+                        color: textColor ?? textColor2,
                       ),
                     ),
                   ],

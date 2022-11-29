@@ -22,7 +22,7 @@ class _OneTimePinState extends State<OneTimePin> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: textColor2,
           foregroundColor: Colors.black,
           elevation: 0,
           actions: [

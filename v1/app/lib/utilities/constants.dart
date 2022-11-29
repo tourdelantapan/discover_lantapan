@@ -16,8 +16,8 @@ const String placeholderImage =
 
 double mapZoom = 15;
 
-Color colorBG1 = Colors.red;
-Color colorBG2 = Color.fromARGB(255, 190, 13, 0);
+Color colorBG1 = Color.fromARGB(255, 199, 52, 44);
+Color colorBG2 = Color.fromARGB(255, 140, 26, 28);
 
 Color colorAdminBG1 = Colors.black54;
 Color colorAdminBG2 = Colors.black87;

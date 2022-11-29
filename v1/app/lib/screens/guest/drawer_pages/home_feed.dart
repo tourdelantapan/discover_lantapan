@@ -22,7 +22,7 @@ class _HomeFeedState extends State<HomeFeed> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-    Provider.of<PlaceProvider>(context, listen: false).getPlaceIds();
+      Provider.of<PlaceProvider>(context, listen: false).getPlaceIds();
     });
     super.initState();
   }
@@ -54,10 +54,10 @@ class _HomeFeedState extends State<HomeFeed> {
                   isScrollable: true,
                   physics: const NeverScrollableScrollPhysics(),
                   padding: const EdgeInsets.only(left: 10, top: 5),
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.white54,
+                  labelColor: textColor2,
+                  unselectedLabelColor: textColor1,
                   indicator: MaterialIndicator(
-                      color: Colors.white,
+                      color: textColor2,
                       bottomLeftRadius: 100,
                       bottomRightRadius: 100,
                       topLeftRadius: 100,

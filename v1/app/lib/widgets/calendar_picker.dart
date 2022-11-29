@@ -1,3 +1,4 @@
+import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/simple_dialog.dart';
 import 'package:flutter/material.dart';
@@ -372,7 +373,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                               const BorderRadius.all(Radius.circular(32.0)),
                           border: Border.all(
                             color: getIsItStartAndEndDate(date)
-                                ? Colors.white
+                                ? textColor2
                                 : Colors.transparent,
                             width: 2,
                           ),
@@ -413,7 +414,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                                   DateTime.now().month == date.month &&
                                   DateTime.now().year == date.year
                               ? getIsInRange(date)
-                                  ? Colors.white
+                                  ? textColor2
                                   : Colors.red
                               : Colors.transparent,
                           shape: BoxShape.circle),
@@ -437,7 +438,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
 
   Color getDateColor(date) {
     if (getIsItStartAndEndDate(date) || bookedDates.containsKey(date)) {
-      return Colors.white;
+      return textColor2;
     }
 
     if ((DateTime.now().isBefore(date) ||

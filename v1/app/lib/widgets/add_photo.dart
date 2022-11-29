@@ -10,8 +10,10 @@ class AddPhotos extends StatelessWidget {
   List<PlatformFile> photos;
   Function onAddPhotos;
   Function onDeletePhoto;
+  Color? foregroundColor;
   AddPhotos(
       {Key? key,
+      this.foregroundColor,
       required this.photos,
       required this.onAddPhotos,
       required this.onDeletePhoto})
@@ -23,7 +25,7 @@ class AddPhotos extends StatelessWidget {
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         IconText(
             size: 15,
-            color: Colors.black,
+            color: foregroundColor ?? Colors.black,
             label: "Add Photos",
             icon: Icons.photo_sharp),
         IconButton(
@@ -40,9 +42,14 @@ class AddPhotos extends StatelessWidget {
                 print(e);
               }
             },
-            icon: const Icon(Icons.add)),
+            icon: Icon(
+              Icons.add,
+              color: foregroundColor ?? Colors.black,
+            )),
       ]),
-      const Divider(),
+      Divider(
+        color: foregroundColor ?? Colors.black,
+      ),
       if (photos.isNotEmpty)
         SizedBox(
             height: MediaQuery.of(context).size.height * .15,

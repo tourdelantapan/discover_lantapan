@@ -1,4 +1,5 @@
 import 'package:app/provider/user_provider.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/snackbar.dart';
@@ -33,117 +34,160 @@ class _SignUpState extends State<ChangePassword> {
 
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.black,
-        backgroundColor: Colors.white,
+        backgroundColor: colorBG2,
+        foregroundColor: textColor2,
+        elevation: 0,
         title: const Text("Change Password"),
       ),
-      body: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: ListView(
-              padding: EdgeInsets.only(
-                  top: height * .15,
-                  bottom: 15,
-                  right: isMobile(context) ? 0 : width * .3,
-                  left: isMobile(context) ? 0 : width * .3),
-              children: [
-                TextFormField(
-                    onChanged: (e) =>
-                        setState(() => payload["oldPassword"] = e),
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "This field is required";
-                      }
-                    },
-                    obscureText: !showPasswordA,
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        hintText: "Old Password",
-                        prefixIcon: const Icon(Icons.key_rounded),
-                        suffixIcon: IconButton(
-                            onPressed: () =>
-                                setState(() => showPasswordA = !showPasswordA),
-                            icon: Icon(
-                              Icons.remove_red_eye_rounded,
-                              color: !showPasswordA ? Colors.grey : Colors.red,
-                            )))),
-                const SizedBox(height: 35),
-                const Divider(
-                  thickness: 2,
-                ),
-                const SizedBox(height: 15),
-                TextFormField(
-                    onChanged: (e) =>
-                        setState(() => payload["newPassword"] = e),
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "This field is required";
-                      }
-                    },
-                    obscureText: !showPasswordB,
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        hintText: "New Password",
-                        prefixIcon: const Icon(Icons.key_rounded),
-                        suffixIcon: IconButton(
-                            onPressed: () =>
-                                setState(() => showPasswordB = !showPasswordB),
-                            icon: Icon(
-                              Icons.remove_red_eye_rounded,
-                              color: !showPasswordB ? Colors.grey : Colors.red,
-                            )))),
-                const SizedBox(height: 15),
-                TextFormField(
-                    onChanged: (e) =>
-                        setState(() => payload["confirmPassword"] = e),
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "This field is required";
-                      }
-                      if (payload["newPassword"] != val) {
-                        return "Passwords don't match";
-                      }
-                    },
-                    obscureText: !showPasswordC,
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        hintText: "Confirm Password",
-                        prefixIcon: const Icon(Icons.key_rounded),
-                        suffixIcon: IconButton(
-                            onPressed: () =>
-                                setState(() => showPasswordC = !showPasswordC),
-                            icon: Icon(
-                              Icons.remove_red_eye_rounded,
-                              color: !showPasswordC ? Colors.grey : Colors.red,
-                            )))),
-                const SizedBox(height: 15),
-                Button(
-                    label: "Change Password",
-                    isLoading: userProvider.loading == "password-change",
-                    onPress: () {
-                      if (_formKey.currentState!.validate()) {
-                        Provider.of<UserProvider>(context, listen: false)
-                            .changePassword(
-                                payload: payload,
-                                callback: (code, message) {
-                                  launchSnackbar(
-                                      context: context,
-                                      mode: code == 200 ? "SUCCESS" : "ERROR",
-                                      message: message ?? "Error!");
+      body: Container(
+        color: colorBG1,
+        child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: ListView(
+                padding: EdgeInsets.only(
+                    top: height * .15,
+                    bottom: 15,
+                    right: isMobile(context) ? 0 : width * .3,
+                    left: isMobile(context) ? 0 : width * .3),
+                children: [
+                  TextFormField(
+                      onChanged: (e) =>
+                          setState(() => payload["oldPassword"] = e),
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "This field is required";
+                        }
+                      },
+                      style: TextStyle(color: textColor2),
+                      obscureText: !showPasswordA,
+                      decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: colorBG2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: colorBG2,
+                              width: 2.0,
+                            ),
+                          ),
+                          hintText: "Old Password",
+                          prefixIcon: const Icon(Icons.key_rounded),
+                          suffixIcon: IconButton(
+                              onPressed: () => setState(
+                                  () => showPasswordA = !showPasswordA),
+                              icon: Icon(
+                                Icons.remove_red_eye_rounded,
+                                color: !showPasswordA ? textColor1 : Colors.red,
+                              )))),
+                  const SizedBox(height: 35),
+                  const Divider(
+                    thickness: 2,
+                  ),
+                  const SizedBox(height: 15),
+                  TextFormField(
+                      onChanged: (e) =>
+                          setState(() => payload["newPassword"] = e),
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "This field is required";
+                        }
+                      },
+                      style: TextStyle(color: textColor2),
+                      obscureText: !showPasswordB,
+                      decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: colorBG2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: colorBG2,
+                              width: 2.0,
+                            ),
+                          ),
+                          hintText: "New Password",
+                          prefixIcon: const Icon(Icons.key_rounded),
+                          suffixIcon: IconButton(
+                              onPressed: () => setState(
+                                  () => showPasswordB = !showPasswordB),
+                              icon: Icon(
+                                Icons.remove_red_eye_rounded,
+                                color: !showPasswordB ? textColor1 : Colors.red,
+                              )))),
+                  const SizedBox(height: 15),
+                  TextFormField(
+                      onChanged: (e) =>
+                          setState(() => payload["confirmPassword"] = e),
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "This field is required";
+                        }
+                        if (payload["newPassword"] != val) {
+                          return "Passwords don't match";
+                        }
+                      },
+                      style: TextStyle(color: textColor2),
+                      obscureText: !showPasswordC,
+                      decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: colorBG2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: colorBG2,
+                              width: 2.0,
+                            ),
+                          ),
+                          hintText: "Confirm Password",
+                          focusColor: colorBG2,
+                          prefixIcon: const Icon(Icons.key_rounded),
+                          suffixIcon: IconButton(
+                              onPressed: () => setState(
+                                  () => showPasswordC = !showPasswordC),
+                              icon: Icon(
+                                Icons.remove_red_eye_rounded,
+                                color:
+                                    !showPasswordC ? textColor1 : Colors.amber,
+                              )))),
+                  const SizedBox(height: 15),
+                  Button(
+                      label: "Change Password",
+                      isLoading: userProvider.loading == "password-change",
+                      backgroundColor: colorBG2,
+                      onPress: () {
+                        if (_formKey.currentState!.validate()) {
+                          Provider.of<UserProvider>(context, listen: false)
+                              .changePassword(
+                                  payload: payload,
+                                  callback: (code, message) {
+                                    launchSnackbar(
+                                        context: context,
+                                        mode: code == 200 ? "SUCCESS" : "ERROR",
+                                        message: message ?? "Error!");
 
-                                  if (code != 200) return;
+                                    if (code != 200) return;
 
-                                  userProvider.signOut();
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context, '/guest', (route) => false);
-                                });
-                      }
-                    },
-                    padding: const EdgeInsets.symmetric(vertical: 15))
-              ],
-            ),
-          )),
+                                    userProvider.signOut();
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context, '/guest', (route) => false);
+                                  });
+                        }
+                      },
+                      padding: const EdgeInsets.symmetric(vertical: 15))
+                ],
+              ),
+            )),
+      ),
     );
   }
 }

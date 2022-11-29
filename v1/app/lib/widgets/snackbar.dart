@@ -1,3 +1,4 @@
+import 'package:app/utilities/constants.dart';
 import 'package:flutter/material.dart';
 
 launchSnackbar(
@@ -25,12 +26,12 @@ launchSnackbar(
     content: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Icon(icon ?? _icon, color: Colors.white),
+        Icon(icon ?? _icon, color: textColor2),
         const SizedBox(width: 10),
         Expanded(
           child: Text(message,
-              style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold)),
+              style:  TextStyle(
+                  color: textColor2, fontWeight: FontWeight.bold)),
         )
       ],
     ),

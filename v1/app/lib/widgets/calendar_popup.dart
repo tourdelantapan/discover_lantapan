@@ -1,3 +1,4 @@
+import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/calendar_picker.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +88,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView>
                 child: Container(
                   width: isMobile(context) ? width * .90 : 400,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: textColor2,
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                     boxShadow: <BoxShadow>[
                       BoxShadow(
@@ -258,10 +259,10 @@ class ActionButton extends StatelessWidget {
               child: Center(
                 child: Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 18,
-                      color: Colors.white),
+                      color: textColor2),
                 ),
               ),
             ),

@@ -4,30 +4,31 @@ import 'package:flutter/material.dart';
 
 class SquareBorder extends StatelessWidget {
   double? size;
-  SquareBorder({Key? key, this.size}) : super(key: key);
+  int? count;
+  SquareBorder({Key? key, this.count, this.size}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-        clipBehavior: Clip.hardEdge,
-        // width: 400,
-        // decoration: BoxDecoration(),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          ...List.generate(
-            25,
-            (index) => Row(children: [
-              Container(
-                height: size ?? 10,
-                width: size ?? 10,
-                color: Colors.yellow,
-              ),
-              Container(
-                height: size ?? 10,
-                width: size ?? 10,
-                color: Colors.black,
-              ),
-            ]),
-          )
-        ]));
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const NeverScrollableScrollPhysics(),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        ...List.generate(
+          count ?? 25,
+          (index) => Row(children: [
+            Container(
+              height: size ?? 10,
+              width: size ?? 10,
+              color: Colors.yellow,
+            ),
+            Container(
+              height: size ?? 10,
+              width: size ?? 10,
+              color: Colors.black,
+            ),
+          ]),
+        )
+      ]),
+    );
   }
 }

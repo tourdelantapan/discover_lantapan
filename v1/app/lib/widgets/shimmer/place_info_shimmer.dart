@@ -33,86 +33,88 @@ class _PlaceInfoShimmerState extends State<PlaceInfoShimmer>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        FadeTransition(
-          opacity: _animationController,
-          child: Container(
-            
-              height: MediaQuery.of(context).size.height * .5,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: colorBG2,
-              )),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        FadeTransition(
-          opacity: _animationController,
-          child: Container(
-              margin:
-                  const EdgeInsets.symmetric(horizontal: HORIZONTAL_PADDING),
-              height: 20,
-              width: MediaQuery.of(context).size.width * .20,
-              decoration: BoxDecoration(
-                color: colorBG1,
-              )),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        FadeTransition(
-          opacity: _animationController,
-          child: Container(
-              margin:
-                  const EdgeInsets.symmetric(horizontal: HORIZONTAL_PADDING),
-              height: 20,
-              width: MediaQuery.of(context).size.width * .30,
-              decoration: BoxDecoration(
-                color: colorBG1,
-              )),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        FadeTransition(
-          opacity: _animationControllerB,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: HORIZONTAL_PADDING),
-                  height: 60,
-                  width: 60,
-                  decoration: BoxDecoration(
-                      color: colorBG1,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(100)))),
-              Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: HORIZONTAL_PADDING),
-                  height: 60,
-                  width: 60,
-                  decoration: BoxDecoration(
-                      color: colorBG1,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(100)))),
-              Container(
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: HORIZONTAL_PADDING),
-                  height: 60,
-                  width: 60,
-                  decoration: BoxDecoration(
-                      color: colorBG1,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(100)))),
-            ],
+    return Container(
+      color: Colors.red[100],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          FadeTransition(
+            opacity: _animationController,
+            child: Container(
+                height: MediaQuery.of(context).size.height * .5,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: colorBG2,
+                )),
           ),
-        )
-      ],
+          const SizedBox(
+            height: 20,
+          ),
+          FadeTransition(
+            opacity: _animationController,
+            child: Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: HORIZONTAL_PADDING),
+                height: 20,
+                width: MediaQuery.of(context).size.width * .20,
+                decoration: BoxDecoration(
+                  color: colorBG1,
+                )),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          FadeTransition(
+            opacity: _animationController,
+            child: Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: HORIZONTAL_PADDING),
+                height: 20,
+                width: MediaQuery.of(context).size.width * .30,
+                decoration: BoxDecoration(
+                  color: colorBG1,
+                )),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          FadeTransition(
+            opacity: _animationControllerB,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: HORIZONTAL_PADDING),
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                        color: colorBG1,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(100)))),
+                Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: HORIZONTAL_PADDING),
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                        color: colorBG1,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(100)))),
+                Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: HORIZONTAL_PADDING),
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                        color: colorBG1,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(100)))),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

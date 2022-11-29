@@ -1,4 +1,5 @@
 import 'package:app/provider/location_provider.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/reverse_geocode.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_text.dart';
@@ -66,88 +67,93 @@ class _SelectLocationState extends State<SelectLocation> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      if (detectingLocation) const LinearProgressIndicator(),
-      const SizedBox(
-        height: 15,
-      ),
-      IconText(
+    return Container(
+      color: colorBG1,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        if (detectingLocation) const LinearProgressIndicator(),
+        const SizedBox(
+          height: 15,
+        ),
+        IconText(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            mainAxisAlignment: MainAxisAlignment.start,
+            color: textColor1,
+            fontWeight: FontWeight.normal,
+            label: "Your Location"),
+        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          mainAxisAlignment: MainAxisAlignment.start,
-          color: Colors.black,
-          fontWeight: FontWeight.normal,
-          label: "Your Location"),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Text(
-            address.isNotEmpty
-                ? address.trim()
-                : detectingLocation
-                    ? "Detecting location..."
-                    : "Select Location",
-            style: const TextStyle(fontWeight: FontWeight.bold)),
-      ),
-      const SizedBox(
-        height: 15,
-      ),
-      Button(
-          backgroundColor: Colors.black87,
-          borderColor: Colors.transparent,
-          margin: const EdgeInsets.symmetric(horizontal: 15),
-          label: "Select Location",
-          onPress: () {
-            if (coordinates == null) {
-              launchSnackbar(
-                  context: context, mode: "ERROR", message: "No location yet.");
-            return;
-            }
+          child: Text(
+              address.isNotEmpty
+                  ? address.trim()
+                  : detectingLocation
+                      ? "Detecting location..."
+                      : "Select Location",
+              style: TextStyle(fontWeight: FontWeight.bold, color: textColor2)),
+        ),
+        const SizedBox(
+          height: 15,
+        ),
+        Button(
+            backgroundColor: Colors.black87,
+            borderColor: Colors.transparent,
+            margin: const EdgeInsets.symmetric(horizontal: 15),
+            label: "Select Location",
+            onPress: () {
+              if (coordinates == null) {
+                launchSnackbar(
+                    context: context,
+                    mode: "ERROR",
+                    message: "No location yet.");
+                return;
+              }
 
-            widget.onSelectLocation(coordinates, address);
-            Navigator.pop(context);
-          }),
-      const SizedBox(
-        height: 15,
-      ),
-      Expanded(
-          child: FlutterMap(
-        options: MapOptions(
-            minZoom: 5,
-            maxZoom: 18,
-            zoom: 13,
-            center: widget.value,
-            onLongPress: (pos, latlng) {
-              setMarker(latlng);
+              widget.onSelectLocation(coordinates, address);
+              Navigator.pop(context);
             }),
-        layers: [
-          TileLayerOptions(
-            urlTemplate:
-                "https://api.mapbox.com/styles/v1/tourdelantapan/cl95ltry3000j14ocq601prir/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoidG91cmRlbGFudGFwYW4iLCJhIjoiY2w4ZzJxc25uMGIyZzNvcHJuaWZ4Yzh0dyJ9.pLM4COThCSDADIYCDrfGFg",
-            additionalOptions: {
-              'mapStyleId': dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? "",
-              'accessToken': dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? "",
-            },
-          ),
-          MarkerLayerOptions(
-            markers: [
-              Marker(
-                height: 40,
-                width: 40,
-                point: coordinates ?? widget.value!,
-                builder: (_) {
-                  return GestureDetector(
-                    onTap: () {},
-                    child: const Icon(
-                      Icons.location_on_rounded,
-                      size: 40,
-                      color: Colors.red,
-                    ),
-                  );
-                },
-              )
-            ],
-          ),
-        ],
-      )),
-    ]);
+        const SizedBox(
+          height: 15,
+        ),
+        Expanded(
+            child: FlutterMap(
+          options: MapOptions(
+              minZoom: 5,
+              maxZoom: 18,
+              zoom: 13,
+              center: widget.value,
+              onLongPress: (pos, latlng) {
+                setMarker(latlng);
+              }),
+          layers: [
+            TileLayerOptions(
+              urlTemplate:
+                  "https://api.mapbox.com/styles/v1/tourdelantapan/cl95ltry3000j14ocq601prir/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoidG91cmRlbGFudGFwYW4iLCJhIjoiY2w4ZzJxc25uMGIyZzNvcHJuaWZ4Yzh0dyJ9.pLM4COThCSDADIYCDrfGFg",
+              additionalOptions: {
+                'mapStyleId': dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? "",
+                'accessToken': dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? "",
+              },
+            ),
+            MarkerLayerOptions(
+              markers: [
+                Marker(
+                  height: 40,
+                  width: 40,
+                  point: coordinates ?? widget.value!,
+                  builder: (_) {
+                    return GestureDetector(
+                      onTap: () {},
+                      child: const Icon(
+                        Icons.location_on_rounded,
+                        size: 40,
+                        color: Colors.red,
+                      ),
+                    );
+                  },
+                )
+              ],
+            ),
+          ],
+        )),
+      ]),
+    );
   }
 }

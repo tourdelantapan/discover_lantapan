@@ -52,7 +52,7 @@ class _ReviewListState extends State<ReviewList> {
       appBar: AppBar(
         elevation: .5,
         backgroundColor: colorBG2,
-        foregroundColor: Colors.white,
+        foregroundColor: textColor2,
         title: const Text("Reviews"),
       ),
       backgroundColor: colorBG1,
@@ -79,12 +79,12 @@ class _ReviewListState extends State<ReviewList> {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   IconText(
                     label: placeProvider.placeInfo.name,
-                    color: Colors.white,
+                    color: textColor2,
                     fontWeight: FontWeight.bold,
                   ),
                   IconText(
                     label: placeProvider.placeInfo.address,
-                    color: Colors.white,
+                    color: textColor2,
                   )
                 ])
               ])),

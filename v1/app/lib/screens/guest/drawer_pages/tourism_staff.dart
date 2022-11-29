@@ -1,3 +1,4 @@
+import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:flutter/material.dart';
@@ -47,25 +48,28 @@ class _TourismStaffState extends State<TourismStaff> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      StaffBadge(staff: president),
-      Expanded(
-        child: ListView.builder(
-            padding: EdgeInsets.symmetric(
-                horizontal: isMobile(context)
-                    ? 0
-                    : MediaQuery.of(context).size.width * .30,
-                vertical: 15),
-            itemCount: staff.length,
-            itemBuilder: (context, i) => Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: List.generate(
-                      staff[i].length,
-                      (ind) =>
-                          Expanded(child: StaffBadge(staff: staff[i][ind]))),
-                )),
-      )
-    ]);
+    return Container(
+      color: colorBG1,
+      child: Column(children: [
+        StaffBadge(staff: president),
+        Expanded(
+          child: ListView.builder(
+              padding: EdgeInsets.symmetric(
+                  horizontal: isMobile(context)
+                      ? 0
+                      : MediaQuery.of(context).size.width * .30,
+                  vertical: 15),
+              itemCount: staff.length,
+              itemBuilder: (context, i) => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: List.generate(
+                        staff[i].length,
+                        (ind) =>
+                            Expanded(child: StaffBadge(staff: staff[i][ind]))),
+                  )),
+        )
+      ]),
+    );
   }
 }
 
@@ -92,12 +96,12 @@ class StaffBadge extends StatelessWidget {
         Text(
           staff.name,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 17),
+          style: TextStyle(fontSize: 17, color: textColor2),
         ),
         IconText(
             label: staff.designation,
             mainAxisAlignment: MainAxisAlignment.center,
-            color: Colors.grey),
+            color: textColor1),
       ]),
     );
   }

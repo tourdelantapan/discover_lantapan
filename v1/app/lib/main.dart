@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Discover Lantapan',
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(primarySwatch: Colors.red, fontFamily: 'Varela'),
+          theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Varela'),
           initialRoute: '/',
           onGenerateRoute: RouteGenerator.generateRoute,
         ));

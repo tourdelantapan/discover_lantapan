@@ -58,7 +58,7 @@ class _AddReviewState extends State<AddReview> {
       return Button(
           margin: EdgeInsets.symmetric(vertical: isMobile(context) ? 0 : 5),
           borderColor: Colors.transparent,
-          backgroundColor: Colors.blue[700],
+          backgroundColor: colorBG1,
           label: "Submit Review",
           onPress: () {
             bool res = validateForm();
@@ -95,8 +95,8 @@ class _AddReviewState extends State<AddReview> {
     return Scaffold(
         appBar: AppBar(
           elevation: .5,
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
+          backgroundColor: colorBG2,
+          foregroundColor: textColor2,
           title: const Text("Add Review"),
           actions: [
             if (!isMobile(context)) submitButton(),
@@ -109,7 +109,7 @@ class _AddReviewState extends State<AddReview> {
           bottom: true,
           child: Column(children: [
             Container(
-                color: Colors.white,
+                color: colorBG2,
                 padding: const EdgeInsets.symmetric(
                     vertical: 15, horizontal: HORIZONTAL_PADDING),
                 child: Row(children: [
@@ -119,6 +119,13 @@ class _AddReviewState extends State<AddReview> {
                         placeProvider.placeInfo.photos.isNotEmpty
                             ? placeProvider.placeInfo.photos[0].small!
                             : placeholderImage,
+                        errorBuilder: (context, error, stackTrace) => ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              color: Colors.grey,
+                            )),
                         width: 50,
                         height: 50,
                         fit: BoxFit.cover,
@@ -131,81 +138,89 @@ class _AddReviewState extends State<AddReview> {
                       children: [
                         IconText(
                           label: placeProvider.placeInfo.name,
-                          color: Colors.black,
+                          color: textColor2,
                           fontWeight: FontWeight.bold,
                         ),
                         IconText(
                           label: placeProvider.placeInfo.address,
-                          color: Colors.black,
+                          color: textColor1,
                         )
                       ])
                 ])),
             if (reviewProvider.loading.contains("post-review"))
               const LinearProgressIndicator(),
             Expanded(
-              child: ListView(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: !isMobile(context)
-                          ? MediaQuery.of(context).size.width * .3
-                          : HORIZONTAL_PADDING),
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    AddPhotos(
-                        photos: photos,
-                        onDeletePhoto: (index) =>
-                            setState(() => photos.removeAt(index)),
-                        onAddPhotos: (List<PlatformFile> photos) {
-                          setState(() => this.photos = photos);
-                        }),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    RatingBar.builder(
-                      initialRating: payload["rating"] ?? 0.0,
-                      minRating: 1,
-                      direction: Axis.horizontal,
-                      allowHalfRating: true,
-                      itemCount: 5,
-                      itemSize: 35,
-                      wrapAlignment: WrapAlignment.center,
-                      textDirection: TextDirection.rtl,
-                      itemPadding: const EdgeInsets.symmetric(horizontal: 2),
-                      itemBuilder: (context, _) => const Icon(
-                        Icons.star,
-                        color: Colors.red,
+              child: Container(
+                color: colorBG1,
+                child: ListView(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: !isMobile(context)
+                            ? MediaQuery.of(context).size.width * .3
+                            : HORIZONTAL_PADDING),
+                    children: [
+                      const SizedBox(
+                        height: 20,
                       ),
-                      onRatingUpdate: (rating) {
-                        setState(() {
-                          payload["rating"] = rating;
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    TextFormField(
-                      maxLines: null,
-                      onChanged: (e) =>
-                          setState(() => payload["content"] = e.trim()),
-                      validator: (val) {
-                        if (val!.isEmpty) {
-                          return "This field is required";
-                        }
-                      },
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Write your review"),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                  ]),
+                      AddPhotos(
+                          photos: photos,
+                          foregroundColor: textColor2,
+                          onDeletePhoto: (index) =>
+                              setState(() => photos.removeAt(index)),
+                          onAddPhotos: (List<PlatformFile> photos) {
+                            setState(() => this.photos = photos);
+                          }),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      RatingBar.builder(
+                        initialRating: payload["rating"] ?? 0.0,
+                        minRating: 1,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemSize: 35,
+                        unratedColor: colorBG2,
+                        wrapAlignment: WrapAlignment.center,
+                        textDirection: TextDirection.rtl,
+                        itemPadding: const EdgeInsets.symmetric(horizontal: 2),
+                        itemBuilder: (context, _) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        onRatingUpdate: (rating) {
+                          setState(() {
+                            payload["rating"] = rating;
+                          });
+                        },
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      TextFormField(
+                        maxLines: null,
+                        onChanged: (e) =>
+                            setState(() => payload["content"] = e.trim()),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "This field is required";
+                          }
+                        },
+                        style: TextStyle(color: textColor1),
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(color: textColor2)),
+                            hintStyle: TextStyle(color: textColor2),
+                            hintText: "Write your review"),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                    ]),
+              ),
             ),
             if (isMobile(context))
               Container(
-                  color: Colors.white,
+                  color: colorBG2,
                   padding: const EdgeInsets.only(
                       top: 15,
                       left: 15,

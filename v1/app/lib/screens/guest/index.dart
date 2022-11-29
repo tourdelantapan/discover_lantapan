@@ -17,6 +17,8 @@ import 'package:app/widgets/button.dart';
 import 'package:app/widgets/icon_loaders.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/shape/inverted_triangle.dart';
+import 'package:app/widgets/shape/simple_diamond_border.dart';
+import 'package:app/widgets/shape/square_border.dart';
 import 'package:app/widgets/shape/triangle.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -157,7 +159,7 @@ class _GuestState extends State<Guest> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: colorBG2,
-        foregroundColor: Colors.white,
+        foregroundColor: textColor2,
         elevation: .5,
         title: const Text("Discover Lantapan"),
         actions: [
@@ -205,7 +207,7 @@ class _GuestState extends State<Guest> {
                         IconText(
                           label: "Email not verified!",
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: textColor2,
                         ),
                         Button(
                           isLoading: userProvider.loading == "generate-otp",
@@ -229,7 +231,7 @@ class _GuestState extends State<Guest> {
                                       message: message);
                                 });
                           },
-                          backgroundColor: Colors.white,
+                          backgroundColor: textColor2,
                           borderColor: Colors.transparent,
                           textColor: Colors.black,
                           borderRadius: 100,
@@ -252,7 +254,7 @@ class _GuestState extends State<Guest> {
                   IconText(
                     mainAxisAlignment: MainAxisAlignment.start,
                     label: "Tour De Lantapan",
-                    color: Colors.white,
+                    color: textColor2,
                     fontWeight: FontWeight.bold,
                     size: 17,
                   ),
@@ -270,6 +272,12 @@ class _GuestState extends State<Guest> {
                                   width: 20,
                                   height: 20,
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Container(
+                                    width: 20,
+                                    height: 20,
+                                    color: colorBG1.withOpacity(.1),
+                                  ),
                                 )
                               : null),
                     const SizedBox(
@@ -281,7 +289,7 @@ class _GuestState extends State<Guest> {
                       icon: userProvider.currentUser?.photo == null
                           ? Icons.favorite
                           : null,
-                      color: Colors.white,
+                      color: textColor2,
                       fontWeight: FontWeight.bold,
                       size: 17,
                     ),
@@ -292,42 +300,13 @@ class _GuestState extends State<Guest> {
                   IconText(
                     mainAxisAlignment: MainAxisAlignment.start,
                     label: userProvider.currentUser?.fullName ?? "Guest",
-                    color: Colors.white,
+                    color: textColor2,
                     size: 17,
                   )
                 ])),
-            Container(
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              ...List.generate(
-                  5,
-                  (index) => Transform.rotate(
-                      angle: 3.14 / 1,
-                      child: CustomPaint(
-                          painter: TrianglePainter(
-                            strokeColor: Colors.yellow,
-                            strokeWidth: 0,
-                            paintingStyle: PaintingStyle.fill,
-                          ),
-                          child: Container(
-                            height: 10,
-                            width: 15,
-                          )))),
-              ...List.generate(
-                  5,
-                  (index) => Transform.rotate(
-                      angle: 3.14 / 1,
-                      child: CustomPaint(
-                          painter: TrianglePainter(
-                            strokeColor: Colors.black,
-                            strokeWidth: 0,
-                            paintingStyle: PaintingStyle.fill,
-                          ),
-                          child: Container(
-                            height: 10,
-                            width: 15,
-                          ))))
-            ])),
+            SquareBorder(
+              size: 10,
+            ),
             ListView.builder(
                 shrinkWrap: true,
                 itemCount: drawerItems.length,
@@ -336,11 +315,10 @@ class _GuestState extends State<Guest> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
                     mainAxisAlignment: MainAxisAlignment.start,
-                    backgroundColor: pageIndex == index
-                        ? Colors.grey[200]
-                        : Colors.transparent,
+                    backgroundColor:
+                        pageIndex == index ? colorBG2 : Colors.transparent,
                     borderColor: Colors.transparent,
-                    textColor: pageIndex == index ? Colors.black : Colors.white,
+                    textColor: pageIndex == index ? textColor2 : textColor1,
                     fontSize: 17,
                     icon: drawerItems[index].icon,
                     label: drawerItems[index].text,
@@ -378,7 +356,7 @@ class _GuestState extends State<Guest> {
                           : "Log Out",
                       borderColor: Colors.transparent,
                       backgroundColor: Colors.transparent,
-                      textColor: Colors.white60,
+                      textColor: textColor1,
                       padding: const EdgeInsets.all(0),
                       mainAxisAlignment: MainAxisAlignment.start,
                       onPress: () async {
@@ -398,7 +376,7 @@ class _GuestState extends State<Guest> {
                         label: "Edit Profile",
                         borderColor: Colors.transparent,
                         backgroundColor: Colors.transparent,
-                        textColor: Colors.white,
+                        textColor: textColor2,
                         padding: const EdgeInsets.all(0),
                         mainAxisAlignment: MainAxisAlignment.start,
                         onPress: () {

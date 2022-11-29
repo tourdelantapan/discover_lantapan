@@ -61,7 +61,7 @@ class _VisitorTableState extends State<VisitorTable> {
     return Column(children: [
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
-        color: Colors.white,
+        color: textColor2,
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

@@ -1,5 +1,6 @@
 import 'package:app/screens/auth/login.dart';
 import 'package:app/screens/auth/signup.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
@@ -30,7 +31,7 @@ class _AuthState extends State<Auth> with SingleTickerProviderStateMixin {
         child: Scaffold(
             appBar: AppBar(
                 elevation: 0,
-                backgroundColor: Colors.white,
+                backgroundColor: textColor2,
                 foregroundColor: Colors.black,
                 title: const Text(
                   "Discover Lantapan",

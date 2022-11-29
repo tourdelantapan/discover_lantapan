@@ -1,3 +1,4 @@
+import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/bottom_modal.dart';
 import 'package:app/widgets/detect_place.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,7 @@ class _QRScannerState extends State<QRScanner>
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       IconButton(
-                        color: Colors.white,
+                        color: textColor2,
                         icon: ValueListenableBuilder(
                           valueListenable: controller.torchState,
                           builder: (context, state, child) {
@@ -95,7 +96,7 @@ class _QRScannerState extends State<QRScanner>
                         onPressed: () => controller.toggleTorch(),
                       ),
                       IconButton(
-                        color: Colors.white,
+                        color: textColor2,
                         icon: isStarted
                             ? const Icon(Icons.stop)
                             : const Icon(Icons.play_arrow),
@@ -116,13 +117,13 @@ class _QRScannerState extends State<QRScanner>
                               style: Theme.of(context)
                                   .textTheme
                                   .headline4!
-                                  .copyWith(color: Colors.white),
+                                  .copyWith(color: textColor2),
                             ),
                           ),
                         ),
                       ),
                       IconButton(
-                        color: Colors.white,
+                        color: textColor2,
                         icon: ValueListenableBuilder(
                           valueListenable: controller.cameraFacingState,
                           builder: (context, state, child) {
@@ -141,7 +142,7 @@ class _QRScannerState extends State<QRScanner>
                         onPressed: () => controller.switchCamera(),
                       ),
                       IconButton(
-                        color: Colors.white,
+                        color: textColor2,
                         icon: const Icon(Icons.image),
                         iconSize: 32.0,
                         onPressed: () async {

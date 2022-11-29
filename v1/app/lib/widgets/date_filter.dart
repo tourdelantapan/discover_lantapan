@@ -1,4 +1,5 @@
 import 'package:app/provider/app_provider.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/calendar_popup.dart';
 import 'package:app/widgets/form/radiogroup.dart';
@@ -59,7 +60,7 @@ class DateFilter extends StatelessWidget {
     }
 
     return Container(
-        color: Colors.white,
+        color: textColor2,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           child: Row(children: [

@@ -105,7 +105,7 @@ class _MapViewState extends State<MapView> {
                   left: HORIZONTAL_PADDING,
                   right: HORIZONTAL_PADDING,
                   bottom: bottomPadding == 0.0 ? 15 : bottomPadding),
-              color: Colors.white,
+              color: textColor2,
               child: Column(children: [
                 const SizedBox(
                   height: 15,

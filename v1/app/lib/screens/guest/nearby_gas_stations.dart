@@ -133,7 +133,7 @@ class _NearbyGasStationsState extends State<NearbyGasStations> {
           elevation: .3,
           actions: [
             if (appProvider.loading == "gas-station-list")
-              showDoubleBounce(size: 20, color: Colors.white),
+              showDoubleBounce(size: 20, color: textColor2),
             const SizedBox(
               width: 30,
             )
@@ -197,7 +197,7 @@ class _NearbyGasStationsState extends State<NearbyGasStations> {
                                             label: "Open Image",
                                             backgroundColor: Colors.transparent,
                                             borderColor: Colors.transparent,
-                                            textColor: Colors.black,
+                                            textColor: textColor2,
                                             icon: Icons.open_in_browser_rounded,
                                             onPress: () {
                                               if (Provider.of<AppProvider>(

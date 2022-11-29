@@ -1,3 +1,4 @@
+import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -21,9 +22,9 @@ class Modal extends StatelessWidget {
           EdgeInsets.symmetric(horizontal: isMobile(context) ? 0 : width * .3),
       height: height * (heightInPercentage ?? 0.70),
       width: isMobile(context) ? width * .90 : width * .30,
-      decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+          color: colorBG1,
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
           )),
@@ -35,9 +36,9 @@ class Modal extends StatelessWidget {
           Container(
               padding: const EdgeInsets.only(left: 15),
               height: (height * 0.70) * .07,
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                  color: colorBG2,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10),
                   )),
@@ -48,14 +49,18 @@ class Modal extends StatelessWidget {
                       child: Text(
                         title,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: textColor2),
                       ),
                     ),
                     Material(
                       color: Colors.transparent,
                       child: IconButton(
                           onPressed: () => Navigator.pop(context),
-                          icon: const Icon(Icons.close_rounded)),
+                          icon: Icon(
+                            Icons.close_rounded,
+                            color: textColor2,
+                          )),
                     ),
                   ]))
         ],

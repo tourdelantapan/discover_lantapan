@@ -90,16 +90,16 @@ class PlaceCard extends StatelessWidget {
                                       upperLabelWidget!,
                                     Text(label,
                                         maxLines: 1,
-                                        style: const TextStyle(
-                                          color: Colors.white,
+                                        style: TextStyle(
+                                          color: textColor2,
                                           fontSize: 20.0,
                                           fontWeight: FontWeight.bold,
                                         )),
                                     if (subLabel != null)
                                       Text(subLabel ?? "",
                                           maxLines: 1,
-                                          style: const TextStyle(
-                                            color: Colors.white,
+                                          style: TextStyle(
+                                            color: textColor2,
                                             fontSize: 16.0,
                                           )),
                                   ]),
