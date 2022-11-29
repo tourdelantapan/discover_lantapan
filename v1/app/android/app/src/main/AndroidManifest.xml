@@ -11,7 +11,7 @@
         android:label="Tour de Lantapan"
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
           <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyDTWLi_4rcmbPblZxSV9VETfoPvwI4tTHM"/>
         <activity

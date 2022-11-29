@@ -419,10 +419,6 @@ class _PlaceInfoState extends State<PlaceInfo> {
                         height: 20,
                       ),
                     ])),
-                    SquareBorder(
-                      size: 5,
-                      count: 100,
-                    ),
                     Container(
                       decoration: BoxDecoration(
                         color: colorBG2,
