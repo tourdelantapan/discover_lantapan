@@ -49,6 +49,7 @@ class _MapViewState extends State<MapView> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
           elevation: .3,
           actions: [
             IconButton(

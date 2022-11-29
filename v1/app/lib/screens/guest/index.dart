@@ -181,7 +181,11 @@ class _GuestState extends State<Guest> {
       ),
       body: Column(
         children: [
-          Container(),
+          // Container(),
+          // SquareBorder(
+          //   size: 4,
+          //   count: 100,
+          // ),
           Expanded(
             child: PageView(
                 physics: const NeverScrollableScrollPhysics(),

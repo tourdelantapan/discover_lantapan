@@ -191,7 +191,7 @@ class SearchPlace extends StatelessWidget {
                                 label: place.name,
                                 subLabel: place.address),
                           ),
-                          const DiamondBorder()
+                          DiamondBorder()
                         ]);
                       }))
           ],

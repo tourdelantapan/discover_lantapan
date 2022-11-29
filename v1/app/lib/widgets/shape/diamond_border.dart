@@ -3,7 +3,8 @@ import 'package:app/widgets/shape/triangle.dart';
 import 'package:flutter/material.dart';
 
 class DiamondBorder extends StatelessWidget {
-  const DiamondBorder({Key? key}) : super(key: key);
+  double? decreaseSize;
+  DiamondBorder({Key? key, this.decreaseSize}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class DiamondBorder extends StatelessWidget {
           height: 20,
         ),
         Container(
-          height: 5,
+          height: 5 - (decreaseSize ?? 0),
           color: const Color.fromARGB(255, 36, 30, 32),
           width: double.infinity,
         ),
@@ -34,8 +35,8 @@ class DiamondBorder extends StatelessWidget {
                       paintingStyle: PaintingStyle.fill,
                     ),
                     child: Container(
-                      height: 15,
-                      width: 20,
+                      height: 15 - (decreaseSize ?? 0),
+                      width: 20 - (decreaseSize ?? 0),
                     )),
                 Transform.rotate(
                     angle: 3.14 / 1,
@@ -46,20 +47,20 @@ class DiamondBorder extends StatelessWidget {
                           paintingStyle: PaintingStyle.fill,
                         ),
                         child: Container(
-                          height: 15,
-                          width: 20,
+                          height: 15 - (decreaseSize ?? 0),
+                          width: 20 - (decreaseSize ?? 0),
                         )))
               ],
             ),
           )
         ]),
         Container(
-          height: 5,
+          height: 5 - (decreaseSize ?? 0),
           color: Colors.yellow,
           width: double.infinity,
         ),
         Container(
-          height: 5,
+          height: 5 - (decreaseSize ?? 0),
           color: const Color.fromARGB(255, 36, 30, 32),
           width: double.infinity,
         ),

@@ -6,6 +6,9 @@ import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/action_modal.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/review_item.dart';
+import 'package:app/widgets/shape/diamond_border.dart';
+import 'package:app/widgets/shape/simple_diamond_border.dart';
+import 'package:app/widgets/shape/square_border.dart';
 import 'package:app/widgets/shimmer/place_card_shimmer.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
@@ -98,10 +101,13 @@ class _ReviewListState extends State<ReviewList> {
                     itemCount: reviewProvider.reviewList.length,
                     itemBuilder: (context, index) {
                       Review review = reviewProvider.reviewList[index];
-                      return ReviewItem(
-                        review: review,
-                        onDelete:
-                            userProvider.currentUser!.scope.contains("ADMIN")
+                      return Column(
+                        children: [
+                          ReviewItem(
+                            review: review,
+                            onDelete: userProvider.currentUser != null &&
+                                    userProvider.currentUser!.scope
+                                        .contains("ADMIN")
                                 ? () {
                                     showModalBottomSheet(
                                         context: context,
@@ -141,6 +147,8 @@ class _ReviewListState extends State<ReviewList> {
                                         });
                                   }
                                 : null,
+                          ),
+                        ],
                       );
                     }))
         ],

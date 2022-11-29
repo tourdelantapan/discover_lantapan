@@ -48,7 +48,7 @@ class AddPhotos extends StatelessWidget {
             )),
       ]),
       Divider(
-        color: foregroundColor ?? Colors.black,
+        color: foregroundColor ?? Colors.grey,
       ),
       if (photos.isNotEmpty)
         SizedBox(

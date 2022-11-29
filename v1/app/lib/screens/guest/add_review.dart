@@ -205,11 +205,11 @@ class _AddReviewState extends State<AddReview> {
                             return "This field is required";
                           }
                         },
-                        style: TextStyle(color: textColor1),
+                        style: TextStyle(color: textColor2),
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderSide: BorderSide(color: textColor2)),
-                            hintStyle: TextStyle(color: textColor2),
+                            hintStyle: TextStyle(color: textColor1),
                             hintText: "Write your review"),
                       ),
                       const SizedBox(

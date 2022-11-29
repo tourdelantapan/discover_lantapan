@@ -244,7 +244,7 @@ class _PlacesListState extends State<PlacesList> {
                                 label: place.name,
                                 subLabel: place.address),
                           ),
-                          const DiamondBorder()
+                          DiamondBorder()
                         ],
                       );
                     }),

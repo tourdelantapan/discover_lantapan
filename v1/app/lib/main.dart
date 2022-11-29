@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'provider/app_provider.dart';
 import 'provider/location_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +19,7 @@ void main() async {
     statusBarColor: Colors.transparent, // transparent status bar
   ));
   await dotenv.load(fileName: "dotenv");
+  usePathUrlStrategy();
   runApp(const MyApp());
 }
 

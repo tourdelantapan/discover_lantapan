@@ -161,6 +161,7 @@ class _EditProfileState extends State<EditProfile> {
                       isLoading: userProvider.loading == "profile-edit",
                       label: "Save Changes",
                       backgroundColor: colorBG2,
+                      borderColor: Colors.transparent,
                       onPress: () async {
                         if (_formKey.currentState!.validate()) {
                           Provider.of<UserProvider>(context, listen: false)

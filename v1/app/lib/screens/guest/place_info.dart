@@ -190,10 +190,10 @@ class _PlaceInfoState extends State<PlaceInfo> {
                             child: Button(
                                 label: "Photos",
                                 icon: Icons.photo_filter_rounded,
-                                backgroundColor: textColor2,
+                                backgroundColor: colorBG2,
                                 borderColor: textColor2,
                                 borderRadius: 100,
-                                textColor: Colors.black,
+                                textColor: textColor2,
                                 onPress: () {
                                   openImageViewer(context, 0);
                                 }))
@@ -377,7 +377,7 @@ class _PlaceInfoState extends State<PlaceInfo> {
                       const SizedBox(
                         height: 20,
                       ),
-                      const DiamondBorder(),
+                      DiamondBorder(),
                       if (placeProvider.recentReview != null)
                         Column(children: [
                           const SizedBox(

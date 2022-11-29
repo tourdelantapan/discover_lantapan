@@ -5,6 +5,7 @@
   },
   "scripts": {
     "web:run": "flutter run -d chrome --web-renderer html",
-    "web:build": "flutter build web --web-renderer html"
+    "web:build": "flutter build web --web-renderer html",
+    "web:b:d": "flutter build web --web-renderer html && firebase deploy"
   }
 }
