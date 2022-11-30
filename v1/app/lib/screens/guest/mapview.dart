@@ -106,14 +106,14 @@ class _MapViewState extends State<MapView> {
                   left: HORIZONTAL_PADDING,
                   right: HORIZONTAL_PADDING,
                   bottom: bottomPadding == 0.0 ? 15 : bottomPadding),
-              color: textColor2,
+              color: colorBG2,
               child: Column(children: [
                 const SizedBox(
                   height: 15,
                 ),
                 IconText(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    color: Colors.black,
+                    color: textColor2,
                     fontWeight: FontWeight.bold,
                     label: "Destination Tracking"),
                 const SizedBox(
@@ -143,11 +143,15 @@ class _MapViewState extends State<MapView> {
                                 ? "No location"
                                 : locationProvider.address.trim(),
                             maxLines: 2,
+                            style: TextStyle(color: textColor2),
                           ))
                         ]),
                       ),
-                      const Expanded(
-                          child: Icon(Icons.arrow_right_alt_rounded)),
+                      Expanded(
+                          child: Icon(
+                        Icons.arrow_right_alt_rounded,
+                        color: textColor2,
+                      )),
                       Expanded(
                         child: Row(children: [
                           ClipRRect(
@@ -168,6 +172,7 @@ class _MapViewState extends State<MapView> {
                               child: Text(
                             locationProvider.destination.name,
                             maxLines: 2,
+                            style: TextStyle(color: textColor2),
                           ))
                         ]),
                       ),
@@ -181,7 +186,7 @@ class _MapViewState extends State<MapView> {
                 ),
                 IconText(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    color: Colors.black,
+                    color: textColor2,
                     fontWeight: FontWeight.bold,
                     label: "Travel Gas Consumption"),
                 const SizedBox(
@@ -240,11 +245,8 @@ class _MapViewState extends State<MapView> {
                                 );
                               });
                         },
-                        icon: const Icon(
-                          Icons.edit_rounded,
-                          size: 15,
-                          color: Colors.blue,
-                        )),
+                        icon: Icon(Icons.edit_rounded,
+                            size: 15, color: textColor2)),
                   ),
                 ),
                 const SizedBox(
@@ -292,10 +294,10 @@ class _MapViewState extends State<MapView> {
                                 );
                               });
                         },
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.edit_rounded,
                           size: 15,
-                          color: Colors.blue,
+                          color: textColor2,
                         )),
                   ),
                 ),
@@ -336,13 +338,13 @@ class Details extends StatelessWidget {
           IconText(
             mainAxisAlignment: MainAxisAlignment.start,
             label: label,
-            color: Colors.black,
+            color: textColor2,
             fontWeight: FontWeight.bold,
           ),
           IconText(
             mainAxisAlignment: MainAxisAlignment.start,
             label: value,
-            color: Colors.black,
+            color: textColor2,
           )
         ]),
       ),
@@ -351,7 +353,7 @@ class Details extends StatelessWidget {
           IconText(
             mainAxisAlignment: MainAxisAlignment.start,
             label: measurement,
-            color: Colors.black,
+            color: textColor2,
           ),
           if (action != null) action!
         ]),

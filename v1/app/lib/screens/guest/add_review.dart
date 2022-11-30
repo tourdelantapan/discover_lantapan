@@ -7,6 +7,7 @@ import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/add_photo.dart';
 import 'package:app/widgets/button.dart';
+import 'package:app/widgets/form/form-theme.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:file_picker/file_picker.dart';
@@ -206,11 +207,7 @@ class _AddReviewState extends State<AddReview> {
                           }
                         },
                         style: TextStyle(color: textColor2),
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(color: textColor2)),
-                            hintStyle: TextStyle(color: textColor1),
-                            hintText: "Write your review"),
+                        decoration: textFieldStyle(label: "Write your review"),
                       ),
                       const SizedBox(
                         height: 15,

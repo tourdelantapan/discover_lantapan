@@ -3,6 +3,7 @@ import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/utilities/shared_preferences.dart';
 import 'package:app/widgets/button.dart';
+import 'package:app/widgets/form/form-theme.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:email_validator/email_validator.dart';
@@ -29,6 +30,7 @@ class _LoginState extends State<Login> {
     var width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: colorBG2,
       body: Form(
           key: _formKey,
           child: Padding(
@@ -49,45 +51,52 @@ class _LoginState extends State<Login> {
                     const LinearProgressIndicator(),
                   const SizedBox(height: 15),
                   TextFormField(
-                    initialValue: payload["email"],
-                    onChanged: (e) =>
-                        setState(() => payload["email"] = e.trim()),
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "This field is required";
-                      }
+                      initialValue: payload["email"],
+                      onChanged: (e) =>
+                          setState(() => payload["email"] = e.trim()),
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "This field is required";
+                        }
 
-                      if (!EmailValidator.validate(val)) {
-                        return "Email Invalid.";
-                      }
-                    },
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: "Email",
-                        prefixIcon: Icon(Icons.email)),
-                  ),
+                        if (!EmailValidator.validate(val)) {
+                          return "Email Invalid.";
+                        }
+                      },
+                      style: TextStyle(color: Colors.white),
+                      decoration: textFieldStyle(
+                        label: "Email",
+                        prefixIcon: const Icon(
+                          Icons.key_rounded,
+                          color: Colors.white,
+                        ),
+                      )),
                   const SizedBox(height: 15),
                   TextFormField(
-                    initialValue: payload["password"],
-                    onChanged: (e) => setState(() => payload["password"] = e),
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "This field is required";
-                      }
-                    },
-                    obscureText: !showPassword,
-                    decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        hintText: "Password",
-                        prefixIcon: const Icon(Icons.key_rounded),
-                        suffixIcon: IconButton(
-                            onPressed: () =>
-                                setState(() => showPassword = !showPassword),
-                            icon: Icon(
-                              Icons.remove_red_eye_rounded,
-                              color: !showPassword ? Colors.grey : Colors.red,
-                            ))),
-                  ),
+                      initialValue: payload["password"],
+                      onChanged: (e) => setState(() => payload["password"] = e),
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "This field is required";
+                        }
+                      },
+                      style: TextStyle(color: Colors.white),
+                      obscureText: !showPassword,
+                      decoration: textFieldStyle(
+                          label: "Password",
+                          prefixIcon: const Icon(
+                            Icons.key_rounded,
+                            color: Colors.white,
+                          ),
+                          suffixIcon: IconButton(
+                              onPressed: () =>
+                                  setState(() => showPassword = !showPassword),
+                              icon: Icon(
+                                Icons.remove_red_eye_rounded,
+                                color: !showPassword
+                                    ? Colors.white38
+                                    : Colors.amber,
+                              )))),
                   const SizedBox(height: 15),
                   Button(
                       label: "Log In",
@@ -132,7 +141,7 @@ class _LoginState extends State<Login> {
                       onPressed: () =>
                           Navigator.pushNamed(context, '/auth/password/reset'),
                       child: IconText(
-                          color: Colors.red, label: "Forgot Password?"))
+                          color: textColor1, label: "Forgot Password?"))
                 ]),
           )),
     );

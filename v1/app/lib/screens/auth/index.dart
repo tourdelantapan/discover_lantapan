@@ -31,8 +31,8 @@ class _AuthState extends State<Auth> with SingleTickerProviderStateMixin {
         child: Scaffold(
             appBar: AppBar(
                 elevation: 0,
-                backgroundColor: textColor2,
-                foregroundColor: Colors.black,
+                backgroundColor: colorBG2,
+                foregroundColor: textColor2,
                 title: const Text(
                   "Discover Lantapan",
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -43,11 +43,12 @@ class _AuthState extends State<Auth> with SingleTickerProviderStateMixin {
                       setState(() => _tabController.animateTo(index)),
                   isScrollable: true,
                   padding: const EdgeInsets.only(left: 10, top: 5),
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.black45,
+                  labelColor: textColor2,
+                  unselectedLabelColor: textColor2.withOpacity(.5),
                   indicator: MaterialIndicator(
                       bottomLeftRadius: 0,
                       bottomRightRadius: 0,
+                      color: textColor2,
                       topLeftRadius: 100,
                       topRightRadius: 100),
                   tabs: const [
