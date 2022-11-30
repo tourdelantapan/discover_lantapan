@@ -46,6 +46,9 @@ class Place {
   Favorites favorites;
 
   factory Place.fromJson(Map<String, dynamic> json) {
+    print((json["reviewsStat"] as List).isNotEmpty);
+    print(json["reviewsStat"].runtimeType == List);
+
     return Place(
       id: json["_id"],
       name: json["name"],
@@ -74,8 +77,10 @@ class Place {
       updatedAt: json["updatedAt"] != null
           ? DateTime.parse(json["updatedAt"])
           : DateTime.now(),
-      reviewsStat: !["[]", "null"].contains(json["reviewsStat"].toString())
-          ? ReviewsStat.fromJson(json["reviewsStat"].runtimeType == List
+      // reviewsStat: ReviewsStat(average: 0, reviewerCount: 0),
+      reviewsStat: json["reviewsStat"] != null &&
+              (json["reviewsStat"] as List).isNotEmpty
+          ? ReviewsStat.fromJson(json["reviewsStat"] is List
               ? json["reviewsStat"][0]
               : json["reviewsStat"])
           : ReviewsStat(average: 0, reviewerCount: 0),
@@ -156,8 +161,9 @@ class ReviewsStat {
   int reviewerCount;
 
   factory ReviewsStat.fromJson(Map<String, dynamic> json) => ReviewsStat(
-        average: json["average"].toDouble(),
-        reviewerCount: json["reviewerCount"],
+        average: json["average"] != null ? json["average"].toDouble() : 0,
+        reviewerCount:
+            json["reviewerCount"] != null ? json["reviewerCount"] : 0,
       );
 
   Map<String, dynamic> toJson() => {
