@@ -6,10 +6,14 @@ class Modal extends StatelessWidget {
   double? heightInPercentage;
   Widget content;
   String title;
+  Color? bgColor;
+  Color? textColor;
   Modal(
       {Key? key,
       required this.content,
       required this.title,
+      this.bgColor,
+      this.textColor,
       this.heightInPercentage})
       : super(key: key);
 
@@ -23,7 +27,7 @@ class Modal extends StatelessWidget {
       height: height * (heightInPercentage ?? 0.70),
       width: isMobile(context) ? width * .90 : width * .30,
       decoration: BoxDecoration(
-          color: colorBG1,
+          color: bgColor ?? colorBG1,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
@@ -37,7 +41,7 @@ class Modal extends StatelessWidget {
               padding: const EdgeInsets.only(left: 15),
               height: (height * 0.70) * .07,
               decoration: BoxDecoration(
-                  color: colorBG2,
+                  color: bgColor ?? colorBG2,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10),
@@ -50,7 +54,8 @@ class Modal extends StatelessWidget {
                         title,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: textColor2),
+                            fontWeight: FontWeight.bold,
+                            color: textColor ?? textColor2),
                       ),
                     ),
                     Material(
@@ -59,7 +64,7 @@ class Modal extends StatelessWidget {
                           onPressed: () => Navigator.pop(context),
                           icon: Icon(
                             Icons.close_rounded,
-                            color: textColor2,
+                            color: textColor ?? textColor2,
                           )),
                     ),
                   ]))

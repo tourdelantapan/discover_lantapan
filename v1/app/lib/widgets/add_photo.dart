@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:app/models/photo_model.dart';
+import 'package:app/utilities/constants.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -50,6 +51,7 @@ class AddPhotos extends StatelessWidget {
       Divider(
         color: foregroundColor ?? Colors.grey,
       ),
+      const Divider(height: 5),
       if (photos.isNotEmpty)
         SizedBox(
             height: MediaQuery.of(context).size.height * .15,
@@ -86,12 +88,13 @@ class AddPhotos extends StatelessWidget {
                         right: -20,
                         top: -10,
                         child: Material(
+                          color: colorBG2,
                           borderRadius: BorderRadius.circular(100),
                           child: IconButton(
                               onPressed: () => onDeletePhoto(index),
                               icon: const Icon(
                                 Icons.remove_circle,
-                                color: Colors.red,
+                                color: Colors.white,
                               )),
                         ),
                       ),

@@ -5,6 +5,7 @@ import 'package:app/provider/user_provider.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/button.dart';
+import 'package:app/widgets/form/form-theme.dart';
 import 'package:app/widgets/icon_text.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:email_validator/email_validator.dart';
@@ -131,12 +132,14 @@ class _EditProfileState extends State<EditProfile> {
                       }
                     },
                     style: TextStyle(color: textColor2),
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        label: Text("Full Name"),
-                        prefixIcon: Icon(Icons.person)),
+                    decoration: textFieldStyle(
+                        label: "Full Name",
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                        )),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 25),
                   TextFormField(
                     initialValue: userProvider.currentUser!.email,
                     onChanged: (e) =>
@@ -151,16 +154,18 @@ class _EditProfileState extends State<EditProfile> {
                     },
                     readOnly: true,
                     style: TextStyle(color: textColor2),
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        label: Text("Email (Not changeable)"),
-                        prefixIcon: Icon(Icons.email)),
+                    decoration: textFieldStyle(
+                        label: "Email (Not changeable)",
+                        prefixIcon: Icon(
+                          Icons.email,
+                          color: Colors.white,
+                        )),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 25),
                   Button(
                       isLoading: userProvider.loading == "profile-edit",
                       label: "Save Changes",
-                      backgroundColor: colorBG2,
+                      backgroundColor: Colors.red[900]!.withOpacity(.9),
                       borderColor: Colors.transparent,
                       onPress: () async {
                         if (_formKey.currentState!.validate()) {

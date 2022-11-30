@@ -2,6 +2,7 @@ import 'package:app/provider/user_provider.dart';
 import 'package:app/utilities/constants.dart';
 import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/button.dart';
+import 'package:app/widgets/form/form-theme.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -62,27 +63,20 @@ class _SignUpState extends State<ChangePassword> {
                       },
                       style: TextStyle(color: textColor2),
                       obscureText: !showPasswordA,
-                      decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: colorBG2,
-                            ),
+                      decoration: textFieldStyle(
+                          label: "Old Password",
+                          prefixIcon: const Icon(
+                            Icons.key_rounded,
+                            color: Colors.white,
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: colorBG2,
-                              width: 2.0,
-                            ),
-                          ),
-                          hintText: "Old Password",
-                          prefixIcon: const Icon(Icons.key_rounded),
                           suffixIcon: IconButton(
                               onPressed: () => setState(
                                   () => showPasswordA = !showPasswordA),
                               icon: Icon(
                                 Icons.remove_red_eye_rounded,
-                                color: !showPasswordA ? textColor1 : Colors.red,
+                                color: !showPasswordA
+                                    ? Colors.white54
+                                    : Colors.amber,
                               )))),
                   const SizedBox(height: 35),
                   const Divider(
@@ -99,27 +93,20 @@ class _SignUpState extends State<ChangePassword> {
                       },
                       style: TextStyle(color: textColor2),
                       obscureText: !showPasswordB,
-                      decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: colorBG2,
-                            ),
+                      decoration: textFieldStyle(
+                          label: "New Password",
+                          prefixIcon: const Icon(
+                            Icons.key_rounded,
+                            color: Colors.white,
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: colorBG2,
-                              width: 2.0,
-                            ),
-                          ),
-                          hintText: "New Password",
-                          prefixIcon: const Icon(Icons.key_rounded),
                           suffixIcon: IconButton(
                               onPressed: () => setState(
                                   () => showPasswordB = !showPasswordB),
                               icon: Icon(
                                 Icons.remove_red_eye_rounded,
-                                color: !showPasswordB ? textColor1 : Colors.red,
+                                color: !showPasswordB
+                                    ? Colors.white54
+                                    : Colors.amber,
                               )))),
                   const SizedBox(height: 15),
                   TextFormField(
@@ -135,35 +122,27 @@ class _SignUpState extends State<ChangePassword> {
                       },
                       style: TextStyle(color: textColor2),
                       obscureText: !showPasswordC,
-                      decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: colorBG2,
-                            ),
+                      decoration: textFieldStyle(
+                          label: "Confirm Password",
+                          prefixIcon: const Icon(
+                            Icons.key_rounded,
+                            color: Colors.white,
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: colorBG2,
-                              width: 2.0,
-                            ),
-                          ),
-                          hintText: "Confirm Password",
-                          focusColor: colorBG2,
-                          prefixIcon: const Icon(Icons.key_rounded),
                           suffixIcon: IconButton(
                               onPressed: () => setState(
                                   () => showPasswordC = !showPasswordC),
                               icon: Icon(
                                 Icons.remove_red_eye_rounded,
-                                color:
-                                    !showPasswordC ? textColor1 : Colors.amber,
+                                color: !showPasswordC
+                                    ? Colors.white54
+                                    : Colors.amber,
                               )))),
                   const SizedBox(height: 15),
                   Button(
                       label: "Change Password",
                       isLoading: userProvider.loading == "password-change",
-                      backgroundColor: colorBG2,
+                      backgroundColor: Colors.red[900]!.withOpacity(.6),
+                      borderColor: Colors.transparent,
                       onPress: () {
                         if (_formKey.currentState!.validate()) {
                           Provider.of<UserProvider>(context, listen: false)

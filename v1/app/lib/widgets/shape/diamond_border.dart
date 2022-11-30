@@ -13,57 +13,65 @@ class DiamondBorder extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        Container(
-          height: 5 - (decreaseSize ?? 0),
-          color: const Color.fromARGB(255, 36, 30, 32),
-          width: double.infinity,
-        ),
+        // Container(
+        //   height: 5 - (decreaseSize ?? 0),
+        //   color: const Color.fromARGB(255, 36, 30, 32),
+        //   width: double.infinity,
+        // ),
         Container(
           height: 5,
-          color: Colors.yellow,
+          color: Colors.white,
           width: double.infinity,
         ),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          ...List.generate(
-            10,
-            (index) => Column(
-              children: [
-                CustomPaint(
-                    painter: TrianglePainter(
-                      strokeColor: colorBG2,
-                      strokeWidth: 0,
-                      paintingStyle: PaintingStyle.fill,
-                    ),
-                    child: Container(
-                      height: 15 - (decreaseSize ?? 0),
-                      width: 20 - (decreaseSize ?? 0),
-                    )),
-                Transform.rotate(
-                    angle: 3.14 / 1,
-                    child: CustomPaint(
+        SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            ...List.generate(
+              100,
+              (index) => Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    Transform.rotate(
+                        angle: 3.14 / 1,
+                        child: CustomPaint(
+                            painter: TrianglePainter(
+                              strokeColor: Colors.black,
+                              strokeWidth: 0,
+                              paintingStyle: PaintingStyle.fill,
+                            ),
+                            child: Container(
+                              height: 15,
+                              width: 30,
+                            ))),
+                    CustomPaint(
                         painter: TrianglePainter(
-                          strokeColor: colorBG2,
+                          strokeColor: Colors.black,
                           strokeWidth: 0,
                           paintingStyle: PaintingStyle.fill,
                         ),
                         child: Container(
-                          height: 15 - (decreaseSize ?? 0),
-                          width: 20 - (decreaseSize ?? 0),
-                        )))
-              ],
-            ),
-          )
-        ]),
-        Container(
-          height: 5 - (decreaseSize ?? 0),
-          color: Colors.yellow,
-          width: double.infinity,
+                          height: 15,
+                          width: 30,
+                        )),
+                  ],
+                ),
+              ),
+            )
+          ]),
         ),
         Container(
           height: 5 - (decreaseSize ?? 0),
-          color: const Color.fromARGB(255, 36, 30, 32),
+          color: Colors.white,
           width: double.infinity,
         ),
+        // Container(
+        //   height: 5 - (decreaseSize ?? 0),
+        //   color: const Color.fromARGB(255, 36, 30, 32),
+        //   width: double.infinity,
+        // ),
         const SizedBox(
           height: 15,
         ),

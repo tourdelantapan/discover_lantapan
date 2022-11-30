@@ -314,37 +314,76 @@ class _GuestState extends State<Guest> {
             ListView.builder(
                 shrinkWrap: true,
                 itemCount: drawerItems.length,
-                itemBuilder: (context, index) => Button(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    backgroundColor:
-                        pageIndex == index ? colorBG2 : Colors.transparent,
-                    borderColor: Colors.transparent,
-                    textColor: pageIndex == index ? textColor2 : textColor1,
-                    fontSize: 17,
-                    icon: drawerItems[index].icon,
-                    label: drawerItems[index].text,
-                    onPress: () async {
-                      if (index == 6) {
-                        Navigator.pop(context);
-                        if (await isOffline(context)) return;
-                        Navigator.pushNamed(context, '/scan/qr');
-                        return;
-                      }
+                itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        children: [
+                          if (pageIndex == index)
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(children: [
+                                Container(
+                                  color: Colors.white,
+                                  height: 3,
+                                ),
+                                // Diamonds()
+                              ]),
+                            ),
+                          Button(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 7),
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              backgroundColor: pageIndex == index
+                                  ? Colors.black
+                                  : Colors.transparent,
+                              borderColor: Colors.transparent,
+                              borderRadius: 0,
+                              textColor: pageIndex == index
+                                  ? Colors.white
+                                  : textColor1,
+                              fontSize: 17,
+                              icon: drawerItems[index].icon,
+                              label: drawerItems[index].text,
+                              onPress: () async {
+                                if (index == 6) {
+                                  Navigator.pop(context);
+                                  if (await isOffline(context)) return;
+                                  Navigator.pushNamed(context, '/scan/qr');
+                                  return;
+                                }
 
-                      if (index == 7) {
-                        Navigator.pop(context);
-                        if (await isOffline(context)) return;
-                        Navigator.pushNamed(context, '/nearby/gas-stations');
-                        return;
-                      }
+                                if (index == 7) {
+                                  Navigator.pop(context);
+                                  if (await isOffline(context)) return;
+                                  Navigator.pushNamed(
+                                      context, '/nearby/gas-stations');
+                                  return;
+                                }
 
-                      setState(() => pageIndex = index);
-                      page.jumpToPage(index);
-                      Navigator.pop(context);
-                    }))
+                                setState(() => pageIndex = index);
+                                page.jumpToPage(index);
+                                Navigator.pop(context);
+                              }),
+                          if (pageIndex == index)
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(children: [
+                                // Diamonds(
+                                //   isInverted: true,
+                                // ),
+                                Container(
+                                  color: Colors.white,
+                                  height: 3,
+                                ),
+                              ]),
+                            ),
+                        ],
+                      ),
+                    ))
           ])),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -403,4 +442,41 @@ class IconTextModel {
   IconTextModel(this.icon, this.text);
   final IconData icon;
   final String text;
+}
+
+class Diamonds extends StatelessWidget {
+  bool? isInverted;
+  Diamonds({Key? key, this.isInverted}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        ...List.generate(
+          100,
+          (index) => Container(
+            color: Colors.white,
+            child: Column(
+              children: [
+                Transform.rotate(
+                    angle: isInverted ?? false ? 0 : 3.14 / 1,
+                    child: CustomPaint(
+                        painter: TrianglePainter(
+                          strokeColor: Colors.black,
+                          strokeWidth: 0,
+                          paintingStyle: PaintingStyle.fill,
+                        ),
+                        child: Container(
+                          height: 5,
+                          width: 30,
+                        ))),
+              ],
+            ),
+          ),
+        )
+      ]),
+    );
+  }
 }

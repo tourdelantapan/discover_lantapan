@@ -19,7 +19,7 @@ class SquareBorder extends StatelessWidget {
             Container(
               height: size ?? 10,
               width: size ?? 10,
-              color: Colors.yellow,
+              color: Colors.white,
             ),
             Container(
               height: size ?? 10,

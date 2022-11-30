@@ -205,6 +205,8 @@ class _ManagePlacesState extends State<ManagePlaces> {
                                           return Modal(
                                             heightInPercentage: .7,
                                             title: "${place.name} QR Code",
+                                            bgColor: Colors.white,
+                                            textColor: Colors.black,
                                             content: Center(
                                               child: QrImage(
                                                 data: place.id,

@@ -41,7 +41,7 @@ class SearchPlace extends StatelessWidget {
                 backgroundColor: Colors.blue,
               ),
             const SizedBox(
-              height: 15,
+              height: 0,
             ),
             Padding(
               padding:
@@ -72,7 +72,7 @@ class SearchPlace extends StatelessWidget {
                   }),
             ),
             const SizedBox(
-              height: 15,
+              height: 0,
             ),
             if (placeProvider.searchResult.isEmpty)
               IconText(

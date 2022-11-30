@@ -155,6 +155,16 @@ class _PlaceInfoState extends State<PlaceInfo> {
               backgroundColor: colorBG2,
               foregroundColor: textColor2,
               elevation: 0,
+              // leading: Material(
+              //     color: Colors.transparent,
+              //     child: IconButton(
+              //         onPressed: () {
+              //           Navigator.pop(context);
+              //         },
+              //         icon: Icon(
+              //           Icons.arrow_left_outlined,
+              //           size: 36,
+              //         ))),
               title: const Text("Place Details"),
             )
           : null,
@@ -421,15 +431,9 @@ class _PlaceInfoState extends State<PlaceInfo> {
                     ])),
                     Container(
                       decoration: BoxDecoration(
-                        color: colorBG2,
-                        // boxShadow: [
-                        //   BoxShadow(
-                        //     color: Colors.grey.withOpacity(.5),
-                        //     offset: const Offset(0.0, .5), //(x,y)
-                        //     blurRadius: 10.0,
-                        //   ),
-                        // ],
-                      ),
+                          color: colorBG2,
+                          border: Border(
+                              top: BorderSide(color: Colors.white, width: 2))),
                       padding: EdgeInsets.only(
                           left: 10,
                           right: 10,

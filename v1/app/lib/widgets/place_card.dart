@@ -33,6 +33,7 @@ class PlaceCard extends StatelessWidget {
       // margin: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(0),
+        border: Border.all(color: Colors.white, width: 4),
         color: Colors.grey[300],
         // image: DecorationImage(
         //   image: NetworkImage(photoUrl ?? placeholderImage),
@@ -70,8 +71,8 @@ class PlaceCard extends StatelessWidget {
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Color.fromARGB(158, 0, 0, 0),
-                            Color.fromARGB(30, 0, 0, 0)
+                            Color.fromARGB(200, 0, 0, 0),
+                            Color.fromARGB(26, 0, 0, 0)
                           ],
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,

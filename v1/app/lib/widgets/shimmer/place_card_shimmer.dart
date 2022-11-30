@@ -36,7 +36,7 @@ class _PlaceCardShimmerState extends State<PlaceCardShimmer>
         width: MediaQuery.of(context).size.width,
         margin: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-            color: widget.color ?? colorBG2,
+            color: widget.color ?? Colors.red.withOpacity(.5),
             borderRadius: const BorderRadius.all(Radius.circular(0))),
       ),
     );

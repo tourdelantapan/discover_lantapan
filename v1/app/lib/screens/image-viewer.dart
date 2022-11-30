@@ -43,6 +43,10 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.black,
+      ),
       body: Container(
         decoration: widget.backgroundDecoration,
         constraints: BoxConstraints.expand(
@@ -60,26 +64,26 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
               onPageChanged: onPageChanged,
               scrollDirection: widget.scrollDirection,
             ),
-            Positioned(
-              top: MediaQuery.of(context).viewPadding.top,
-              child: Padding(
-                padding:
-                    EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                child: SizedBox(
-                  width: AppBar().preferredSize.height,
-                  height: AppBar().preferredSize.height,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius:
-                          BorderRadius.circular(AppBar().preferredSize.height),
-                      onTap: () => Navigator.pop(context),
-                      child: Icon(Icons.arrow_back_ios, color: textColor2),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // Positioned(
+            //   top: MediaQuery.of(context).viewPadding.top,
+            //   child: Padding(
+            //     padding:
+            //         EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            //     child: SizedBox(
+            //       width: AppBar().preferredSize.height,
+            //       height: AppBar().preferredSize.height,
+            //       child: Material(
+            //         color: Colors.transparent,
+            //         child: InkWell(
+            //           borderRadius:
+            //               BorderRadius.circular(AppBar().preferredSize.height),
+            //           onTap: () => Navigator.pop(context),
+            //           child: Icon(Icons.arrow_back_ios, color: textColor2),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Positioned(
               right: 15,
               bottom: MediaQuery.of(context).viewPadding.bottom,

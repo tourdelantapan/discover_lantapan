@@ -58,7 +58,7 @@ class _AddReviewState extends State<AddReview> {
       return Button(
           margin: EdgeInsets.symmetric(vertical: isMobile(context) ? 0 : 5),
           borderColor: Colors.transparent,
-          backgroundColor: colorBG1,
+          backgroundColor: Colors.transparent,
           label: "Submit Review",
           onPress: () {
             bool res = validateForm();
@@ -179,7 +179,7 @@ class _AddReviewState extends State<AddReview> {
                         allowHalfRating: true,
                         itemCount: 5,
                         itemSize: 35,
-                        unratedColor: colorBG2,
+                        unratedColor: Colors.white30,
                         wrapAlignment: WrapAlignment.center,
                         textDirection: TextDirection.rtl,
                         itemPadding: const EdgeInsets.symmetric(horizontal: 2),

@@ -34,7 +34,7 @@ class _PlaceInfoShimmerState extends State<PlaceInfoShimmer>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red[100],
+      color: colorBG2.withOpacity(.7),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
