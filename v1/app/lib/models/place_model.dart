@@ -46,8 +46,15 @@ class Place {
   Favorites favorites;
 
   factory Place.fromJson(Map<String, dynamic> json) {
-    print((json["reviewsStat"] as List).isNotEmpty);
-    print(json["reviewsStat"].runtimeType == List);
+    ReviewsStat reviewsStat = ReviewsStat(average: 0, reviewerCount: 0);
+
+    try {
+      reviewsStat = ReviewsStat.fromJson(json["reviewsStat"] is List
+          ? json["reviewsStat"][0]
+          : json["reviewsStat"]);
+    } catch (e) {
+      reviewsStat = ReviewsStat(average: 0, reviewerCount: 0);
+    }
 
     return Place(
       id: json["_id"],
@@ -78,12 +85,7 @@ class Place {
           ? DateTime.parse(json["updatedAt"])
           : DateTime.now(),
       // reviewsStat: ReviewsStat(average: 0, reviewerCount: 0),
-      reviewsStat: json["reviewsStat"] != null &&
-              (json["reviewsStat"] as List).isNotEmpty
-          ? ReviewsStat.fromJson(json["reviewsStat"] is List
-              ? json["reviewsStat"][0]
-              : json["reviewsStat"])
-          : ReviewsStat(average: 0, reviewerCount: 0),
+      reviewsStat: reviewsStat,
       favorites: json["favorites"] != null
           ? Favorites.fromJson(json["favorites"])
           : Favorites(id: 0, count: 0),
