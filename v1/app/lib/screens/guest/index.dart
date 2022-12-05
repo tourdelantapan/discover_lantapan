@@ -254,60 +254,54 @@ class _GuestState extends State<Guest> {
                 decoration: BoxDecoration(
                   color: colorBG2,
                 ),
-                child: Column(children: [
-                  IconText(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    label: "Tour De Lantapan",
-                    color: textColor2,
-                    fontWeight: FontWeight.bold,
-                    size: 17,
-                  ),
-                  const Divider(),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(children: [
-                    if (userProvider.currentUser?.photo != null)
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: userProvider.currentUser?.photo != null
-                              ? Image.network(
-                                  "${userProvider.currentUser!.photo!.small!}?${DateTime.now().toString()}",
-                                  width: 20,
-                                  height: 20,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Container(
-                                    width: 20,
-                                    height: 20,
-                                    color: colorBG1.withOpacity(.1),
-                                  ),
-                                )
-                              : null),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    IconText(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      label: "Welcome,",
-                      icon: userProvider.currentUser?.photo == null
-                          ? Icons.favorite
-                          : null,
-                      color: textColor2,
-                      fontWeight: FontWeight.bold,
-                      size: 17,
-                    ),
-                  ]),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  IconText(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    label: userProvider.currentUser?.fullName ?? "Guest",
-                    color: textColor2,
-                    size: 17,
-                  )
-                ])),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconText(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        label: "Tour De Lantapan",
+                        color: textColor2,
+                        fontWeight: FontWeight.bold,
+                        size: 17,
+                      ),
+                      const Divider(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Maayad Ha Pag uma,\nDini Ta Lantapan",
+                        style: TextStyle(color: textColor2),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.network(
+                              userProvider.currentUser?.photo != null
+                                  ? "${userProvider.currentUser!.photo!.small!}?${DateTime.now().toString()}"
+                                  : placeholderImage,
+                              width: 20,
+                              height: 20,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                width: 20,
+                                height: 20,
+                                color: colorBG1.withOpacity(.1),
+                              ),
+                            )),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(userProvider.currentUser?.fullName ?? "Guest",
+                            style: TextStyle(
+                                color: textColor2,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold))
+                      ]),
+                    ])),
             SquareBorder(
               size: 10,
             ),
