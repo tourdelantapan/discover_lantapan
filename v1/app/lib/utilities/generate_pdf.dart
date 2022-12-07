@@ -1,4 +1,4 @@
-import 'dart:html';
+// import 'dart:html';
 import 'dart:convert';
 
 import 'package:app/models/visitor_model.dart';
@@ -65,11 +65,11 @@ generatePDF(BuildContext context,
 
   try {
     if (kIsWeb) {
-      AnchorElement(
-          href:
-              "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(await document.save())}")
-        ..setAttribute("download", "output.pdf")
-        ..click();
+      // AnchorElement(
+      //     href:
+      //         "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(await document.save())}")
+      //   ..setAttribute("download", "output.pdf")
+      //   ..click();
     }
   } catch (e) {
     launchSnackbar(context: context, mode: "ERROR", message: "Failed to save");
