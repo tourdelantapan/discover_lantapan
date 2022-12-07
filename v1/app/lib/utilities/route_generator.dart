@@ -1,5 +1,6 @@
 import 'package:app/screens/admin/add_place.dart';
 import 'package:app/screens/admin/index.dart';
+import 'package:app/screens/auth/admin_login.dart';
 import 'package:app/screens/auth/change_password.dart';
 import 'package:app/screens/auth/index.dart';
 import 'package:app/screens/auth/login.dart';
@@ -44,7 +45,7 @@ class RouteGenerator {
       case '/auth':
         return CupertinoPageRoute(builder: (_) => Auth());
       case '/auth/admin':
-        return CupertinoPageRoute(builder: (_) => Login());
+        return CupertinoPageRoute(builder: (_) => AdminLogin());
       case '/auth/password/reset':
         return CupertinoPageRoute(builder: (_) => ForgotPassword());
       case '/place/add':
