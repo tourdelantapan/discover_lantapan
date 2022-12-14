@@ -1,5 +1,6 @@
 import 'package:app/provider/user_provider.dart';
 import 'package:app/utilities/constants.dart';
+import 'package:app/utilities/responsive_screen.dart';
 import 'package:app/widgets/button.dart';
 import 'package:app/widgets/snackbar.dart';
 import 'package:email_validator/email_validator.dart';
@@ -18,6 +19,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider = context.watch<UserProvider>();
+    var width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Request Password Reset"),
@@ -25,7 +29,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         foregroundColor: Colors.black,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: EdgeInsets.symmetric(
+            horizontal: customSize(width, {
+          "400": 15,
+          "800": 15,
+          "1080": width * .30,
+          "1400": width * .30,
+          "1800": width * .30,
+          "2400": width * .30
+        })),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           TextFormField(
             onChanged: (e) => setState(() => email = e.trim()),
@@ -37,9 +49,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           const SizedBox(height: 15),
           Button(
               label: "Request Reset",
-              isLoading: Provider.of<UserProvider>(context, listen: false)
-                  .loading
-                  .contains("password-reset"),
+              isLoading: userProvider.loading == "password-reset",
               onPress: () {
                 if (email.isEmpty) {
                   launchSnackbar(
