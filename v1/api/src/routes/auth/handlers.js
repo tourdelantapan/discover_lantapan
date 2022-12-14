@@ -10,7 +10,7 @@ const moment = require("moment");
 const { getUrls } = require("../../libraries/aws-s3-storage-upload");
 const { sendOTP, sendResetLink } = require("../../libraries/email-helper");
 
-const baseUrl = "http://127.0.0.1:9000";
+const baseUrl = "https://tourdelantapan-api.onrender.com";
 
 internals.profile = async (req, reply) => {
   try {
