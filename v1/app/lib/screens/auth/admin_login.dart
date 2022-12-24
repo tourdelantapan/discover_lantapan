@@ -45,8 +45,8 @@ class _AdminLoginState extends State<AdminLogin> {
                       children: [
                         Container(
                           padding: const EdgeInsets.all(5),
-                          height: MediaQuery.of(context).size.height * .08,
-                          width: MediaQuery.of(context).size.height * .08,
+                          height: MediaQuery.of(context).size.height * .13,
+                          width: MediaQuery.of(context).size.height * .13,
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(100)),
@@ -64,8 +64,8 @@ class _AdminLoginState extends State<AdminLogin> {
                           child: Image(
                               image: const AssetImage(
                                   'assets/images/tour_office.png'),
-                              height: MediaQuery.of(context).size.height * .07,
-                              width: MediaQuery.of(context).size.height * .07),
+                              height: MediaQuery.of(context).size.height * .13,
+                              width: MediaQuery.of(context).size.height * .13),
                         ),
                       ]),
                 ),

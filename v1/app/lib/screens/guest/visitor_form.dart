@@ -205,6 +205,8 @@ class _VisitorFormState extends State<VisitorForm> {
                                             StateSetter setModalState) {
                                       return Modal(
                                           heightInPercentage: .7,
+                                          bgColor: Colors.white,
+                                          textColor: Colors.black,
                                           title:
                                               "Tour de Lantapan Privacy Policy",
                                           content: const PrivacyPolicy());

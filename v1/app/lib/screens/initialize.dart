@@ -68,8 +68,8 @@ class _InitializeScreenState extends State<InitializeScreen> {
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Container(
                 padding: const EdgeInsets.all(5),
-                height: MediaQuery.of(context).size.height * .07,
-                width: MediaQuery.of(context).size.height * .07,
+                height: MediaQuery.of(context).size.height * .12,
+                width: MediaQuery.of(context).size.height * .12,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(100)),
@@ -88,8 +88,8 @@ class _InitializeScreenState extends State<InitializeScreen> {
                     borderRadius: BorderRadius.circular(100)),
                 child: Image(
                     image: const AssetImage('assets/images/tour_office.png'),
-                    height: MediaQuery.of(context).size.height * .06,
-                    width: MediaQuery.of(context).size.height * .06),
+                    height: MediaQuery.of(context).size.height * .11,
+                    width: MediaQuery.of(context).size.height * .11),
               ),
             ]),
             Image(

@@ -113,6 +113,7 @@ flutter:
     - assets/images/
     - assets/images/tourism_staff/
     - assets/json/
+    - assets/text/
 
   fonts:
     - family: Varela

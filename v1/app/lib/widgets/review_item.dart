@@ -40,8 +40,8 @@ class ReviewItem extends StatelessWidget {
           ClipRRect(
               borderRadius: BorderRadius.circular(100),
               child: Image.network(
-                review.userId.photo?.small != null
-                    ? review.userId.photo!.small!
+                review.userId != null && review.userId?.photo?.small != null
+                    ? review.userId!.photo!.small!
                     : placeholderImage,
                 width: 50,
                 height: 50,
@@ -58,7 +58,9 @@ class ReviewItem extends StatelessWidget {
           const SizedBox(width: 10),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             IconText(
-                label: review.userId.fullName,
+                label: review.userId == null
+                    ? "Deleted User"
+                    : review.userId!.fullName,
                 color: textColor2,
                 fontWeight: FontWeight.bold),
             RatingBar.builder(
@@ -83,8 +85,7 @@ class ReviewItem extends StatelessWidget {
         const SizedBox(height: 15),
         Text(
           review.content,
-          style:
-               TextStyle(color: textColor2, fontWeight: FontWeight.normal),
+          style: TextStyle(color: textColor2, fontWeight: FontWeight.normal),
         ),
         const SizedBox(height: 10),
         if (review.photos.isNotEmpty)

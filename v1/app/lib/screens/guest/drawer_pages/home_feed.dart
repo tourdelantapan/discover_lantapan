@@ -71,8 +71,7 @@ class _HomeFeedState extends State<HomeFeed> {
               )),
           body: Stack(
             children: [
-              Expanded(
-                  child: TabBarView(children: [
+              TabBarView(children: [
                 PlacesList(
                   onPlaceTap: (id) => _openEndDrawer(id),
                   arguments: const {
@@ -91,7 +90,7 @@ class _HomeFeedState extends State<HomeFeed> {
                     "mode": "top_rated",
                   },
                 ),
-              ])),
+              ]),
             ],
           )),
     );

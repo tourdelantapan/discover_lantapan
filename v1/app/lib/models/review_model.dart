@@ -29,7 +29,7 @@ class Review {
   String content;
   List<Photo> photos;
   Place placeId;
-  User userId;
+  User? userId;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -41,7 +41,7 @@ class Review {
             ? []
             : List<Photo>.from(json["photos"].map((x) => Photo.fromJson(x))),
         placeId: Place.fromJson(json["placeId"]),
-        userId: User.fromJson(json["userId"]),
+        userId: json["userId"] == null ? null : User.fromJson(json["userId"]),
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
       );
@@ -52,7 +52,7 @@ class Review {
         "content": content,
         "photos": List<dynamic>.from(photos.map((x) => x.toJson())),
         "placeId": placeId.toJson(),
-        "userId": userId.toJson(),
+        "userId": userId!.toJson(),
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
       };
