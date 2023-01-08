@@ -379,4 +379,76 @@ internals.nearby_gas_stations = async (req, reply) => {
   }
 };
 
+internals.users_list = async (req, reply) => {
+  let { searchKey, pageSize, page } = req.query;
+
+  try {
+    let QUERY = {};
+    let AND = [];
+
+    if (searchKey) {
+      var re = new RegExp(searchKey, "i");
+      AND.push({ fullName: { $regex: re } });
+    }
+
+    if (AND.length > 0) {
+      QUERY = {
+        $and: AND,
+      };
+    }
+
+    let users = await User.find(QUERY)
+      .select("_id fullName email photo scope")
+      .skip(Number.parseInt(pageSize) * Number.parseInt(page))
+      .limit(Number.parseInt(pageSize));
+
+    return reply
+      .response({
+        meta: {
+          isEndReached: users.length < Number.parseInt(pageSize),
+        },
+        data: {
+          users,
+        },
+      })
+      .code(200);
+  } catch (e) {
+    console.log(e);
+    return reply
+      .response({
+        message: "Server Error",
+      })
+      .code(500);
+  }
+};
+
+internals.delete_user = async (req, reply) => {
+  let scope = req.auth.credentials.scope;
+
+  if (!scope.includes("ADMIN")) {
+    return reply
+      .response({
+        message: "Action forbidden.",
+      })
+      .code(403);
+  }
+
+  try {
+    let userId = req.params.userId;
+    await User.deleteOne({ _id: userId });
+    return reply
+      .response({
+        message: "User has been deleted successfully.",
+      })
+      .code(200);
+  } catch (e) {
+    console.log(e);
+    return reply
+      .response({
+        message: "Server Error",
+      })
+      .code(500);
+  }
+};
+
 module.exports = internals;

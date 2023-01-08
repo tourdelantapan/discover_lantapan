@@ -75,6 +75,22 @@ internals.endpoints = [
       auth: false,
     },
   },
+  {
+    method: "GET",
+    path: "/users/list",
+    handler: Handlers.users_list,
+    config: {
+      auth: "token",
+    },
+  },
+  {
+    method: "GET",
+    path: "/users/delete/{userId}",
+    handler: Handlers.delete_user,
+    config: {
+      auth: "token",
+    },
+  },
 ];
 
 module.exports = internals;
