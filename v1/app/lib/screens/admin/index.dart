@@ -3,6 +3,7 @@
 import 'package:app/provider/user_provider.dart';
 import 'package:app/screens/admin/dashboard.dart';
 import 'package:app/screens/admin/manage_places.dart';
+import 'package:app/screens/admin/user_list.dart';
 import 'package:app/screens/admin/visitors_table.dart';
 import 'package:app/widgets/button.dart';
 import 'package:easy_sidemenu/easy_sidemenu.dart';
@@ -108,12 +109,21 @@ class _AdminState extends State<Admin> {
                   ),
                   SideMenuItem(
                     priority: 2,
-                    title: 'Visitors',
+                    title: 'Users',
                     onTap: () {
                       setState(() => pageIndex = 2);
+                      page.jumpToPage(2);
+                    },
+                    icon: const Icon(Icons.supervised_user_circle),
+                  ),
+                  SideMenuItem(
+                    priority: 3,
+                    title: 'Visitors',
+                    onTap: () {
+                      setState(() => pageIndex = 3);
                       page.jumpToPage(3);
                     },
-                    icon: const Icon(Icons.people_alt_rounded),
+                    icon: const Icon(Icons.emoji_people_rounded),
                   ),
                 ]),
             Expanded(
@@ -127,6 +137,7 @@ class _AdminState extends State<Admin> {
                     ManagePlaces(
                       arguments: const {"mode": "admin"},
                     ),
+                    UserList(),
                     VisitorTable()
                   ],
                 ),

@@ -46,3 +46,7 @@ class MyApp extends StatelessWidget {
         ));
   }
 }
+
+
+
+// https://docs.flutter.dev/perf/shader

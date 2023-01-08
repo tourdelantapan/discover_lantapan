@@ -133,7 +133,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 fontWeight: FontWeight.bold),
                           const SizedBox(height: 5),
                           IconText(
-                              label: totalPlacesByCategory.count.toString(),
+                              label:
+                                  "${totalPlacesByCategory.count.toString()} ${totalPlacesByCategory.count == 1 ? "Place" : "Places"}",
                               color: Colors.black,
                               size: 25,
                               fontWeight: FontWeight.bold),

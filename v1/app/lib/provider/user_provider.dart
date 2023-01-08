@@ -18,6 +18,9 @@ class UserProvider extends ChangeNotifier {
   List<Visitor> _visitorList = [];
   List<Visitor> get visitorList => _visitorList;
 
+  List<User> _userList = [];
+  List<User> get userList => _userList;
+
   int _visitorCount = 0;
   int get visitorCount => _visitorCount;
 
@@ -208,6 +211,53 @@ class UserProvider extends ChangeNotifier {
     var response = await APIServices.post(
         endpoint: "/user/change-password", payload: payload);
     if (response is Success) {
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Success.");
+    }
+    if (response is Failure) {
+      callback(response.code, response.response["message"] ?? "Failed.");
+      setLoading("stop");
+    }
+  }
+
+  getUsers(
+      {required String fetchMode,
+      required Map<String, dynamic> query,
+      required Function callback}) async {
+    setLoading(fetchMode);
+    var response = await APIServices.get(endpoint: "/users/list", query: query);
+    if (response is Success) {
+      if (fetchMode == "users_more") {
+        _userList = [
+          ..._userList,
+          ...List<User>.from(
+              response.response["data"]["users"].map((x) => User.fromJson(x)))
+        ];
+      }
+
+      if (fetchMode == "users_pull") {
+        _userList = List<User>.from(
+            response.response["data"]["users"].map((x) => User.fromJson(x)));
+      }
+
+      setLoading("stop");
+      callback(response.code, response.response["message"] ?? "Success.",
+          response.response["meta"]["isEndReached"]);
+    }
+    if (response is Failure) {
+      callback(response.code, response.response["message"] ?? "Failed.", true);
+      setLoading("stop");
+    }
+  }
+
+  deleteUser(
+      {required int index,
+      required String userId,
+      required Function callback}) async {
+    setLoading("delete_user_$index");
+    var response = await APIServices.get(endpoint: "/users/delete/$userId");
+    if (response is Success) {
+      userList.removeAt(index);
       setLoading("stop");
       callback(response.code, response.response["message"] ?? "Success.");
     }

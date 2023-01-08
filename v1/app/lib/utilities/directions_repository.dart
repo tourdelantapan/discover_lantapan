@@ -40,8 +40,6 @@ class DirectionsRepository {
       'Content-Type': 'application/json; charset=UTF-8',
     });
 
-    print(response.body);
-
     if (response.statusCode == 200) {
       return Directions.fromJson(jsonDecode(response.body));
     } else {

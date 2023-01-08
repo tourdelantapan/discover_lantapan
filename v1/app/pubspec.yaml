@@ -112,6 +112,7 @@ flutter:
     - dotenv
     - assets/images/
     - assets/images/tourism_staff/
+    - assets/images/developers/
     - assets/json/
     - assets/text/
 
