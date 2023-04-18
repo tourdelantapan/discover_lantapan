@@ -1,4 +1,3 @@
-
 // To parse this JSON data, do
 //
 //     final directions = directionsFromJson(jsonString);
@@ -61,7 +60,7 @@ class Route {
   List<PointLatLng> geometry;
 
   factory Route.fromJson(Map<String, dynamic> json) => Route(
-        countryCrossed: json["country_crossed"],
+        countryCrossed: json["country_crossed"] ?? false,
         weightName: json["weight_name"],
         weight: json["weight"].toDouble(),
         duration: json["duration"].toDouble(),

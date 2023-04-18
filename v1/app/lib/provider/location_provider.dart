@@ -162,6 +162,7 @@ class LocationProvider extends ChangeNotifier {
     coords.LatLng dest = pos ?? _destination.coordinates;
     Directions? direction = await DirectionsRepository.getDirections(
         location: origin, destination: dest);
+    print(direction);
     if (direction != null) {
       info = direction;
       calculateGasFuelPrice(distanceByMeters: direction.routes[0].distance);

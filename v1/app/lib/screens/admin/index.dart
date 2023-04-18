@@ -19,6 +19,7 @@ class Admin extends StatefulWidget {
 
 class _AdminState extends State<Admin> {
   PageController page = PageController();
+  SideMenuController sideMenuController = SideMenuController();
   int pageIndex = 0;
 
   @override
@@ -41,7 +42,7 @@ class _AdminState extends State<Admin> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SideMenu(
-                controller: page,
+                controller: sideMenuController,
                 footer:
                     Column(mainAxisAlignment: MainAxisAlignment.end, children: [
                   Button(
@@ -92,36 +93,40 @@ class _AdminState extends State<Admin> {
                   SideMenuItem(
                     priority: 0,
                     title: 'Dashboard',
-                    onTap: () {
+                    onTap: (index, cont) {
                       setState(() => pageIndex = 0);
                       page.jumpToPage(0);
+                      sideMenuController.changePage(0);
                     },
                     icon: const Icon(Icons.dashboard_rounded),
                   ),
                   SideMenuItem(
                     priority: 1,
                     title: 'Places',
-                    onTap: () {
+                    onTap: (index, cont) {
                       setState(() => pageIndex = 1);
                       page.jumpToPage(1);
+                      sideMenuController.changePage(1);
                     },
                     icon: const Icon(Icons.place_rounded),
                   ),
                   SideMenuItem(
                     priority: 2,
                     title: 'Users',
-                    onTap: () {
+                    onTap: (index, cont) {
                       setState(() => pageIndex = 2);
                       page.jumpToPage(2);
+                      sideMenuController.changePage(2);
                     },
                     icon: const Icon(Icons.supervised_user_circle),
                   ),
                   SideMenuItem(
                     priority: 3,
                     title: 'Visitors',
-                    onTap: () {
+                    onTap: (index, cont) {
                       setState(() => pageIndex = 3);
                       page.jumpToPage(3);
+                      sideMenuController.changePage(3);
                     },
                     icon: const Icon(Icons.emoji_people_rounded),
                   ),

@@ -68,7 +68,7 @@ generatePDF(BuildContext context,
       // AnchorElement(
       //     href:
       //         "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(await document.save())}")
-      //   ..setAttribute("download", "output.pdf")
+      //    
       //   ..click();
     }
   } catch (e) {
