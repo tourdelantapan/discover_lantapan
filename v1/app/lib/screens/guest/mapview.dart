@@ -17,7 +17,7 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
-  Completer<GoogleMapController> _controller = Completer();
+  late GoogleMapController _controller;
 
   @override
   void initState() {
@@ -36,6 +36,15 @@ class _MapViewState extends State<MapView> {
           .isNotEmpty) {
         await Provider.of<LocationProvider>(context, listen: false)
             .getPolyline();
+        if (Provider.of<LocationProvider>(context, listen: false)
+            .polylineCoordinates
+            .isNotEmpty) {
+          _controller.animateCamera(CameraUpdate.newCameraPosition(
+              CameraPosition(
+                  target: Provider.of<LocationProvider>(context, listen: false)
+                      .polylineCoordinates[0],
+                  zoom: 12)));
+        }
       }
     }();
     super.initState();
@@ -91,14 +100,7 @@ class _MapViewState extends State<MapView> {
               markers: Set<Marker>.of(locationProvider.markers.values),
               polylines: locationProvider.polylines,
               onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-                // controller.animateCamera(CameraUpdate.newCameraPosition(
-                //     CameraPosition(
-                //         target: Provider.of<LocationProvider>(context,
-                //                 listen: false)
-                //             .destination
-                //             .coordinates,
-                //         zoom: mapZoom)));
+                _controller = controller;
               },
             )),
             Container(
